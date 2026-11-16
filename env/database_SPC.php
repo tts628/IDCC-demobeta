@@ -1,8 +1,8 @@
 <?php
-$serverName = getenv('HOST');
-$Database = getenv('MDSVN_SPC_DB');
-$UID = getenv('UID');
-$PWD = getenv('PWD');
+$serverName = getenv('SPC_DB_HOST') ?: getenv('HOST');
+$Database = getenv('SPC_DB_NAME') ?: getenv('MDSVN_SPC_DB');
+$UID = getenv('SPC_DB_UID') ?: getenv('UID');
+$PWD = getenv('SPC_DB_PWD') ?: getenv('PWD');
 $connectionInfo = array(
     "Database" => $Database,
     "UID" => $UID,

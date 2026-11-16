@@ -5,6 +5,9 @@ services:
       context: .
       dockerfile: Dockerfile
     image: idcc-demobata-web:local
+    env_file:
+      - path: ./.env
+        required: false
     environment:
       APACHE_RUN_USER: "${IDCC_APACHE_USER:-www-data}"
       APACHE_RUN_GROUP: "${IDCC_APACHE_GROUP:-www-data}"
