@@ -1,0 +1,402 @@
+<style>
+    html,
+    body {
+        background-image: url(/common/images/bg1.png);
+        background-size: 100% 100%;
+        font-weight: bold;
+        height: 100%;
+        /* zoom: 0.5;  */
+        /* transform: scale(0.8); 将图像放大到原始大小的 1.5 倍  */
+
+    }
+
+    h1 {
+        color: white;
+    }
+
+
+    text {
+        font-size: 2vh !important;
+    }
+
+    /* .highcharts-data-label text{
+
+font-size: 20px !important;
+} */
+
+    @media screen and (max-width: 900px) {
+        body {
+            zoom: 0.3;
+            height: 6000px;
+
+        }
+
+        /* #myGrid,#myGrid2,#myGrid3,#myGrid4,#myGrid5,#myGrid6,#myGrid7{
+        zoom: 0.65;
+
+      } */
+        #myGrid,
+        #myGrid2,
+        #myGrid3,
+        #myGrid4,
+        #myGrid5,
+        #myGrid6,
+        #myGrid7 {
+            zoom: 1.5;
+
+        }
+
+        #container,
+        #container2,
+        #container3,
+        #container4,
+        #container5,
+        #container6,
+        #container7 {
+            zoom: 0.8;
+        }
+    }
+
+    .ag-theme-alpine {
+        --ag-foreground-color: white;
+        /*字*/
+        --ag-background-color: rgba(26, 46, 57, 0.5);
+        --ag-header-foreground-color: white;
+        /*上面的字*/
+        --ag-header-background-color: rgba(14, 86, 114, 0.8);
+        --ag-odd-row-background-color: rgba(14, 86, 114, 0.5);
+        --ag-header-column-resize-handle-color: rgba(0, 238, 238, 0.3);
+
+        --ag-font-size: 20px;
+        --ag-font-family: monospace;
+        margin: 20px;
+    }
+
+    .ag-cell {
+        font-size: 18px;
+        /* 调整数值以增加或减小字体大小 */
+    }
+
+    .ag-header-cell-label {
+        font-size: 18px;
+    }
+
+    a {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        border: 1px solid #007bff;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    a:hover {
+        background-color: #fff;
+        color: #007bff;
+    }
+
+    /* 设置滚动条的宽度和高度 */
+    ::-webkit-scrollbar {
+        width: 5px;
+        height: 10px;
+    }
+
+    /* 设置滚动条的背景颜色 */
+    ::-webkit-scrollbar {
+        background-color: #f1f1f1;
+    }
+
+    /* 设置滚动条的边框 */
+    ::-webkit-scrollbar {
+        border: 1px solid #ccc;
+    }
+
+    /* 设置滚动条的圆角 */
+    ::-webkit-scrollbar {
+        border-radius: 5px;
+
+    }
+
+
+    /* 设置滚动条的阴影 */
+    ::-webkit-scrollbar {
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+
+    /* 设置滚动条滑块的背景颜色 */
+    ::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    /* 设置滚动条滑块的圆角 */
+    ::-webkit-scrollbar-thumb {
+        border-radius: 5px;
+    }
+
+    /* 设置滚动条滑块的阴影 */
+    ::-webkit-scrollbar-thumb {
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+</style>
+<?php
+$file = fopen('no5.csv', 'r'); // 開啟CSV檔案
+$datatitle = [];
+$i = 0;
+while (($row = fgetcsv($file)) !== false) {
+    $datatitle = $row;
+    break;
+}
+fclose($file);
+// var_dump($datatitle);
+
+require_once realpath($_SERVER['DOCUMENT_ROOT'] . "/common/autoload.php");
+use Config\DbMapper;
+
+$dbMapper = new DbMapper();
+$conn = $dbMapper->getLink(['IDCC', "ReturnDatesAsStrings"]);
+
+$data_gate = array();
+$data_piechart = array();
+
+
+// 正確的十大
+$sql = "    SELECT  top 20 [品名] as '列標籤'
+					
+,ROUND(SUM(TRY_CAST(REPLACE([異常數量], ',', '') AS FLOAT)),2) as '加總-數量'
+,ROUND(SUM(TRY_CAST(REPLACE([異常數量], ',', '') AS FLOAT)) *100 / 
+(SELECT SUM(TRY_CAST(REPLACE([異常數量], ',', '') AS FLOAT)) FROM [Daluen_quality_color_NG]), 2) AS '占比%'
+
+FROM [Daluen_quality_color_NG]
+WHERE [品名] <> '' and [客戶色名]<> ''
+GROUP BY [品名]
+ORDER BY ROUND(SUM(TRY_CAST(REPLACE([異常數量], ',', '') AS FLOAT)),2) DESC
+
+";
+$stmt = sqlsrv_query($conn, $sql);
+if ($stmt === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
+
+while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+    //$data_piechart[] = array("name"=>$row['區域別'], "num"=>$row['total']); // 将查询结果保存到数组中
+    $data_gate[] = ($row['列標籤']);
+    // $data_piechart[] = array("name" => $row['列標籤'], "y" => $row['加總-數量']); // 将查询结果保存到数组中
+    $data_piechart[] = array("name" => $row['列標籤'], "y" => $row['加總-數量']); // 将查询结果保存到数组中
+
+}
+// var_dump($data_gate);
+
+// echo "sad";
+$sql = "  
+
+";
+$stmt = sqlsrv_query($conn, $sql);
+if ($stmt === false) {
+    die(print_r(sqlsrv_errors(), true));
+}
+while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {
+    //$data_piechart[] = array("name"=>$row['區域別'], "num"=>$row['total']); // 将查询结果保存到数组中
+    // $data_gate[] = ($row['列標籤']);
+
+
+
+}
+
+// var_dump($data_gate[0]);
+// var_dump($data_piechart);
+
+$jsonData_piechart = json_encode($data_piechart);
+// echo "<br>";
+// var_dump($datatitle);
+?>
+
+<body>
+    <!-- <div><a href="../index.php" style=" position:relative; left: 95%;">首頁</a></div> -->
+
+    <div id="container" style="height: 400px;"></div>
+
+    <div style="display: flex; flex-wrap: wrap; margin-top: 10px;">
+        <div style="height: 100%; width: 50% ">
+            <?php for ($i = 0; $i < count($data_gate); $i += 2) {
+                echo '<h1>No. ' . ($i + 1) . ' ' . $data_gate[$i] . '</h1>';
+                echo '<div id="myGrid' . $i . '" class="ag-theme-alpine"  style="height: 180px;  "></div>';
+            }
+            ?>
+        </div>
+        <div style="height: 100%; width: 50% ">
+            <?php for ($i = 1; $i < count($data_gate); $i += 2) {
+                echo '<h1>No. ' . ($i + 1) . ' ' . $data_gate[$i] . '</h1>';
+                echo '<div id="myGrid' . $i . '" class="ag-theme-alpine"  style="height: 180px;  "></div>';
+            }
+            ?>
+        </div>
+    </div>
+
+
+
+    <script src="ag-grid/papaparse.min.js"></script>
+
+    <script type="text/javascript">
+
+        <?php
+        for ($i = 0; $i < count($data_gate); $i++) {
+
+
+            ?>
+            var gridOptions<?php echo $i; ?> = {
+
+                columnDefs: [
+                    // cellStyle: { "display": "none" },
+                    { field: "<?php echo $datatitle[0]; ?>".replace(/^\uFEFF/, ''), hide: true, headerName: "<?php echo ($i + 1) . "  " . $data_gate[$i]; ?>", flex: 1.5, },
+                    { field: "<?php echo $datatitle[1]; ?>".replace(/^\uFEFF/, ''), flex: 1.5, cellStyle: { "text-align": "left" } },
+                    { field: "<?php echo $datatitle[2]; ?>".replace(/^\uFEFF/, ''), flex: 1, cellRenderer: function (params) { return params.value !== "NULL" && params.value !== undefined ? Number(params.value).toLocaleString() : ''; } },
+                    // { field: "<//?php echo $datatitle[3]; ?>".replace(/^\uFEFF/, ''), flex: 1 },
+                    // { field: "<//?php echo $datatitle[4]; ?>".replace(/^\uFEFF/, ''), flex: 1 },
+
+
+                ],
+
+
+                // default col def properties get applied to all columns
+                defaultColDef: { sortable: false, filter: true, width: 170, cellStyle: { "text-align": "right" } },
+
+                rowSelection: null, // allow rows to be selected
+                animateRows: true, // have rows animate to new positions when sorted
+
+                // example event handler
+                onCellClicked: params => {
+                    console.log('cell was clicked', params)
+                }
+            };
+
+
+            // get div to host the grid
+            var eGridDiv<?php echo $i; ?> = document.getElementById("myGrid" + <?php echo $i; ?>);
+            // const eGridDiv2 = document.getElementById("myGrid2");
+
+            // new grid instance, passing in the hosting DIV and Grid Options
+            new agGrid.Grid(eGridDiv<?php echo $i; ?>, gridOptions<?php echo $i; ?>);
+            // new agGrid.Grid(eGridDiv2, gridOptions);
+
+            // Fetch data from local CSV file
+            fetch("no5.csv")
+                .then(response => response.text())
+                .then(data => {
+                    // convert CSV data to JSON format
+                    const jsonData<?php echo $i; ?> = Papa.parse(data, { header: true }).data;
+                    // 計算總和
+                    const sumRow = {};
+                    jsonData<?php echo $i; ?>.forEach(row => {
+                        Object.keys(row).forEach(key => {
+
+                            if (key !== "列標籤") {
+                                var value = 0;
+
+                                if (<?php echo 'row["列標籤"]=="' . "$data_gate[$i]" . '"'; ?>) {
+                                    value = parseFloat(row[key]);
+                                }
+
+                                else {
+                                    value = 0;
+                                }
+
+                                if (!isNaN(value)) {
+                                    sumRow[key] = (sumRow[key] || 0) + value;
+                                }
+
+                            }
+
+                        });
+                    });
+                    Object.keys(sumRow).forEach(key => {
+
+                        sumRow[key] = Math.round(sumRow[key]);;
+
+                    });
+                    sumRow["列標籤"] = "總計";
+                    sumRow["客戶色名"] = "總計";
+
+                    jsonData<?php echo $i; ?>.push(sumRow);
+
+                    const filteredData<?php echo $i; ?> = jsonData<?php echo $i; ?>.filter(row => <?php
+                           // echo "console.log(".var_dump($data_gate).")";
+                           // foreach ($data_gate as $key => $gate) {
+                           echo 'row["列標籤"]===("' . "$data_gate[$i]" . '")';
+                           // if ($key != count($data_gate) -1 ) {
+                           // echo " || ";
+                           // }
+                           // }
+                           echo '|| row["列標籤"]===("總計")'
+                               ?>);
+                    // row["部門異常"].includes("<?php echo $data_gate[0]; ?>") || 
+                    // row["部門異常"].includes("<?php echo $data_gate[1]; ?>"));
+
+                    // gridOptions<?php echo $i; ?>.api.setRowData(filteredData<?php echo $i; ?>);
+                    gridOptions<?php echo $i; ?>.api.setGridOption("rowData", filteredData<?php echo $i; ?>)
+                    // gridOptions2.api.setRowData(filteredData);
+                    // console.log(filteredData);
+                    // load fetched data into grid
+                    // gridOptions.api.setRowData(jsonData);
+                    // console.log(jsonData);
+
+
+                });
+
+        <?php }
+        ; ?>
+
+    </script>
+
+
+</body>
+
+</html>
+
+<script>
+    Highcharts.chart("container", {
+        credits: {
+            enabled: false
+        },
+        chart: {
+            type: "pie",
+            backgroundColor: "rgba(0,0,0,0)", // 设置透明背景
+            options3d: {
+                enabled: true,
+                alpha: 45, // X轴旋转角度
+                beta: 0 // Y轴旋转角度
+            },
+            // height: height // 设置图表高度为页面高度
+        },
+        title: {
+            text: "20大品名顏色異常",
+            style: {
+                color: '#FFFFFF',
+                // fontSize: '1.3vw',
+            }
+        },
+        plotOptions: {
+            pie: {
+                depth: 50 // 3D效果的深度
+            }
+        },
+        series: [
+            {
+                name: "Category",
+                data: <?php echo $jsonData_piechart; ?>,
+                dataLabels: {
+                    enabled: true,
+                    format: "{point.name} : {point.y:.0f} <b>({point.percentage:.1f}%)</b>",
+                    style: {
+                        color: "white", // 設置數據標籤顏色為
+                        // fontSize: '200px',
+                        textOutline: 'none'
+                    }
+                }
+            }
+        ]
+    });
+
+    console.log(<?php echo $jsonData_piechart; ?>);
+</script>

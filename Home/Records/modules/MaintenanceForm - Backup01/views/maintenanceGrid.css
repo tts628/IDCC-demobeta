@@ -1,0 +1,17 @@
+#maintenance-form-grid-container .add-data-pinned-bottom-row {
+    background-color: rgb(3, 195, 67);
+    color: black;
+    font-weight: 600;
+}
+
+#maintenance-form-grid-container .ag-row {
+    cursor: pointer;
+}
+
+#maintenance-form-grid-container .grid-image-container {
+    height: 100px;
+}
+
+#maintenance-form-modal .restricted-image-container {
+    height: 220px;
+}

@@ -1,0 +1,46 @@
+{
+	"html": [
+		{
+			"element": "h4",
+			"class": "text-center mt-5 fw-bold",
+			"text": "警報時間統計"
+		},
+		{
+			"element": "div",
+			"class": "fluid-container",
+			"child": [
+				{
+					"element": "div",
+					"class": "row m-5",
+					"child": {
+						"element": "div",
+						"class": "col-12",
+						"child": {
+							"element": "div",
+							"id": "alarm-time-chart-container"
+						}
+					}
+				},
+				{
+					"element": "div",
+					"class": "row m-5",
+					"child": {
+						"element": "div",
+						"class": "col-12",
+						"child": {
+							"element": "div",
+							"id": "alarm-time-grid-container",
+                            "class": "single-row-grid ag-theme-quartz"
+						}
+					}
+				}
+			]
+		}
+	],
+	"script": [
+		{
+			"moduleDir": "local",
+			"scriptPath": "views/alarmTimeDataVisualizer.js"
+		}
+	]
+}

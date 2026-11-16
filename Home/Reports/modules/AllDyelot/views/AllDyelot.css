@@ -1,0 +1,70 @@
+div:where(.swal2-container) div:where(.swal2-popup) {
+	width: 84rem !important;
+}
+
+#all-dyelot-details th,
+#all-dyelot-details td {
+    font-weight: 700;
+}
+
+th.dyelot-basic-table {
+    background-color: rgb(78, 97, 40) !important;
+    color: rgb(255, 255, 255);
+}
+
+td.dyelot-basic-table {
+    background-color: rgb(236, 242, 223) !important;
+    color: rgb(36, 63, 97);
+}
+
+th.dyelot-process-table {
+    background-color: rgb(96, 73, 122) !important;
+    color: rgb(255, 255, 255);
+}
+
+td.dyelot-process-table {
+    background-color: rgb(203, 191, 217) !important;
+    color: rgb(111, 48, 171);
+}
+
+th.dyelot-track-table {
+    background-color: rgb(22, 53, 92) !important;
+    color: rgb(255, 255, 255);
+}
+
+td.dyelot-track-table {
+    background-color: rgb(220, 231, 242) !important;
+    color: rgb(0, 112, 191);
+}
+
+.close-btn {
+    position: absolute;
+    right: 0px;
+    top: -15px;
+    cursor: pointer;
+    font-size: 30px;
+}
+
+.list-group-item {
+    cursor: pointer;
+}
+
+.sheet-number {
+	color: #ebebeb !important;
+}
+
+.invalid-dyelot {
+	color: #757676 !important;
+}
+
+.normal-dyelot {
+	color: #00c14a !important;
+}
+
+.supplement-dyelot {
+	color: #f20000 !important;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    background-color: #0d6dfd57 !important;
+}

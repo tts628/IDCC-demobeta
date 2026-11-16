@@ -1,0 +1,429 @@
+{
+	"html": [
+		{
+			"id": "machine-list-modal",
+			"modal": {
+				"closePrevention": true,
+				"headerHtml": [
+					{
+						"element": "h5",
+						"class": "fw-bold",
+						"id": "machine-list-modal-header"
+					}
+				],
+				"bodyHtml": [
+					{
+						"element": "div",
+						"id": "machine-list-modal-body",
+						"child": {
+							"element": "div",
+							"class": "row",
+							"child": {
+								"element": "div",
+								"class": "col-12",
+								"child": {
+									"element": "form",
+									"id": "machine-list-form",
+									"child": [
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "machine-name",
+													"class": "col-3 col-form-label form-label required-label",
+													"text": "設備名稱: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"type": "text",
+														"id": "machine-name",
+														"name": "machine-name",
+														"class": "form-control",
+														"placeholder": "設備名稱",
+														"required": true
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "machine-number",
+													"class": "col-3 col-form-label form-label required-label",
+													"text": "編號: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"type": "text",
+														"id": "machine-number",
+														"name": "machine-number",
+														"class": "form-control",
+														"placeholder": "編號",
+														"required": true
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "machine-type",
+													"class": "col-3 col-form-label form-label required-label",
+													"text": "類別: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "select",
+														"id": "machine-type",
+														"name": "machine-type",
+														"class": "form-select"
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "serial-number",
+													"class": "col-3 col-form-label form-label",
+													"text": "序號: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"id": "serial-number",
+														"name": "serial-number",
+														"type": "number",
+														"class": "form-control",
+														"placeholder": "序號",
+														"step": 1
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "time-input",
+													"class": "col-3 col-form-label form-label",
+													"text": "時間: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"id": "time-input",
+														"name": "time-input",
+														"type": "datetime-local",
+														"class": "form-control",
+														"placeholder": "時間"
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "custodian-unit",
+													"class": "col-3 col-form-label form-label",
+													"text": "保管單位: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"id": "custodian-unit",
+														"name": "custodian-unit",
+														"type": "text",
+														"class": "form-control",
+														"placeholder": "保管單位"
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "image-input",
+													"class": "col-3 col-form-label form-label",
+													"text": "照片: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": [
+														{
+															"element": "div",
+															"class": "row",
+															"child": {
+																"element": "div",
+																"class": "col-12",
+																"child": [
+																	{
+																		"element": "input",
+																		"id": "image-input",
+																		"name": "image-input[]",
+																		"type": "file",
+																		"class": "form-control",
+																		"accept": "image/*",
+																		"multiple": true
+																	}
+																]
+															}
+														},
+														{
+															"element": "div",
+															"class": "row",
+															"child": {
+																"element": "div",
+																"class": "col-12",
+																"id": "image-thumbnails-container",
+																"child": [
+																	{
+																		"element": "div",
+																		"id": "uploaded-preview",
+																		"class": "row mt-3"
+																	},
+																	{ "element": "div", "class": "border-top mb-3" },
+																	{
+																		"element": "div",
+																		"id": "existing-preview",
+																		"class": "row"
+																	}
+																]
+															}
+														}
+													]
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "custodian-personnel",
+													"class": "col-3 col-form-label form-label",
+													"text": "保管人: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"id": "custodian-personnel",
+														"name": "custodian-personnel",
+														"type": "text",
+														"class": "form-control",
+														"placeholder": "保管人"
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "activation-date",
+													"class": "col-3 col-form-label form-label",
+													"text": "生效期限: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"id": "activation-date",
+														"name": "activation-date",
+														"type": "datetime-local",
+														"class": "form-control",
+														"placeholder": "生效期限"
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "deactivation-date",
+													"class": "col-3 col-form-label form-label",
+													"text": "截止期限: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"id": "deactivation-date",
+														"name": "deactivation-date",
+														"type": "datetime-local",
+														"class": "form-control",
+														"placeholder": "截止期限"
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "created-date",
+													"class": "col-3 col-form-label form-label",
+													"text": "建立日期: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"id": "created-date",
+														"name": "created-date",
+														"type": "date",
+														"class": "form-control",
+														"placeholder": "建立日期"
+													}
+												}
+											]
+										},
+										{
+											"element": "input",
+											"type": "hidden",
+											"name": "modify-action",
+											"id": "modify-action"
+										},
+										{
+											"element": "input",
+											"type": "hidden",
+											"name": "data-id",
+											"id": "data-id"
+										},
+										{
+											"element": "input",
+											"type": "hidden",
+											"name": "reference-id",
+											"id": "reference-id"
+										}
+									]
+								}
+							}
+						}
+					}
+				],
+				"footerHtml": [
+					{
+						"element": "button",
+						"type": "submit",
+						"class": "btn btn-success",
+						"id": "add-submit-machine-list-modal",
+						"name": "add-submit-machine-list-modal",
+						"value": "add",
+						"form": "machine-list-form",
+						"text": "新增"
+					},
+					{
+						"element": "button",
+						"type": "submit",
+						"class": "btn btn-primary",
+						"id": "edit-submit-machine-list-modal",
+						"name": "edit-submit-machine-list-modal",
+						"value": "edit",
+						"form": "machine-list-form",
+						"text": "更新"
+					},
+					{
+						"element": "button",
+						"type": "submit",
+						"class": "btn btn-danger",
+						"id": "delete-machine-list-record",
+						"name": "delete-submit-machine-list-modal",
+						"value": "delete",
+						"form": "machine-list-form",
+						"text": "刪除"
+					}
+				]
+			}
+		},
+		{
+			"element": "h4",
+			"class": "text-center mt-5 fw-bold",
+			"child": [
+				{
+					"element": "span",
+					"id": "page-title",
+					"text": "全場機台清單"
+				}
+			]
+		},
+		{
+			"element": "div",
+			"class": "fluid-container",
+			"child": [
+				{
+					"element": "div",
+					"class": "row m-5",
+					"child": {
+						"element": "div",
+						"class": "col-12",
+						"child": {
+							"element": "div",
+							"id": "machine-list-grid-container",
+							"class": "full-page-grid ag-theme-quartz"
+						}
+					}
+				}
+			]
+		}
+	],
+	"cssLink": [
+		{
+			"moduleDir": "local",
+			"cssPath": "allMachineList.css"
+		}
+	],
+	"script": [
+		{
+			"moduleDir": "local",
+			"scriptPath": "views/allMachineDataVisualizer.js"
+		}
+	]
+}

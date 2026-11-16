@@ -1,0 +1,108 @@
+html,
+body,
+.modal-content,
+.card-body,
+.card-header,
+.swal2-modal {
+	background-color: white !important;
+	color: #272727 !important;
+}
+
+.nav-link {
+	color: #0d6efd;
+}
+
+.card-header {
+	border-bottom: inherit;
+}
+
+.menu-navigator {
+	background-color: black !important;
+	color: white !important;
+}
+
+.close {
+	color: black;
+}
+
+.close:hover {
+	color: #535353;
+}
+
+.modal-content,
+.swal2-modal {
+	border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.apexcharts-title-text,
+.apexcharts-xaxis-label,
+.apexcharts-yaxis-label,
+.apexcharts-datalabels text,
+.apexcharts-legend-text,
+.apexcharts-text {
+	fill: black !important;
+	color: black !important;
+}
+
+.toggle-off {
+	background-color: black !important;
+	color: white !important;
+}
+
+.apexcharts-tooltip,
+.apexcharts-tooltip-title,
+.apexcharts-menu-item {
+	background-color: white !important;
+}
+
+.apexcharts-menu-item:hover {
+	background-color: #eee !important;
+}
+
+td {
+	background-color: white !important;
+	color: black !important;
+}
+
+.ag-theme-quartz {
+	--ag-foreground-color: black !important;
+	/*字*/
+	--ag-background-color: white !important;
+	--ag-header-foreground-color: black !important;
+	/*上面的字*/
+	--ag-header-background-color: #f0f0f0 !important;
+	--ag-odd-row-background-color: #e9ecf5 !important;
+	--ag-header-column-resize-handle-color: rgba(0, 238, 238, 0.3) !important;
+
+	/* --ag-font-family: monospace; */
+}
+
+::-webkit-scrollbar-track:hover {
+	background-color: rgb(162, 175, 219);
+}
+
+/* This part styles the draggable part of the scrollbar */
+::-webkit-scrollbar-thumb {
+	background-color: #0a1e2f;
+}
+
+/* This part changes the thumb's color on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #1c2f3e;
+}
+
+.sheet-number {
+	color: #000000 !important;
+}
+
+.indicator-text {
+    color: black;
+}
+
+.spinner-container .spinner-border {
+	border-color: black black black transparent;
+}
+
+.progress-circle {
+	background: conic-gradient(#007bff var(--progress), #f3f3f3 0);
+}

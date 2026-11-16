@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<!-- saved from url=(0073)https://logicartidcc.website/Demo/statistics_report/electricity/index.php -->
+<html class="mdl-js"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>
+    流亞戰情室  </title>
+  <!-- 模板預設 -->
+<script type="text/javascript" src="./electricity_demo_files/jquery.js.下載"></script>
+<link rel="icon" type="image/png" href="https://logicartidcc.website/Demo/common/images/Icon.png">
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="../images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+    <!-- <link href='/Demo/common/css/google.css' rel='stylesheet' type='text/css'> -->
+    <link href="./electricity_demo_files/google1.css" rel="stylesheet">
+    <link rel="stylesheet" href="./electricity_demo_files/getmdl-select.min.css">
+    <link rel="stylesheet" href="./electricity_demo_files/nv.d3.min.css">
+    <link rel="stylesheet" href="./electricity_demo_files/application.min.css">
+<!-- 模板預設 -->
+<!-- <script src="/Demo/common/js/bootstrap.js"></script>
+<link rel="stylesheet" href="/Demo/common/css/bootstrap.css" crossorigin="anonymous"> -->
+  <style>
+    .mdl-card__title-text {
+      color: #ffffff;
+    }
+
+    .mdl-data-table {
+      background-color: rgba(0, 0, 0, 0);
+    }
+  </style>
+
+
+  <style>
+    #myForm {
+      position: absolute;
+      top: 100px;
+      right: 50px;
+    }
+
+    .input-wrapper {
+      display: flex;
+      align-items: center;
+    }
+
+    .input-label {
+      margin-right: 10px;
+      font-weight: bold;
+
+      font-size: 20px;
+      width: 100px;
+
+    }
+
+    .input-field {
+      padding: 5px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+      outline: none;
+      width: 150px;
+      color: black;
+    }
+
+    .highcharts-button-box {
+      display: none;
+    }
+
+    body {
+      background-image: url(images/bg1.png);
+      background-size: cover;
+      width: 100%;
+      height: 100%;
+      font-weight: bold;
+    }
+
+    .main {
+      width: 100%;
+      height: auto;
+      max-width: 100%;
+      max-height: 100%;
+      margin: auto;
+    }
+
+    .layer {
+      position: relative;
+      width: 100%;
+    }
+
+    .layer2 {
+      position: relative;
+      width: 50%;
+      height: 25%
+    }
+
+    @media screen and (max-width: 768px) {
+
+
+      .layer2 {
+        position: relative;
+        width: 100%;
+        height: 100%
+      }
+
+      #combochart,
+      #barchart,
+      #piechart {
+        zoom: 0.5;
+      }
+
+      .title_zoom {
+        zoom: 0.6;
+      }
+
+      #myForm {
+        position: absolute;
+        top: 200px;
+        right: 10px;
+        transform: scale(0.7);
+      }
+    }
+
+    #layer01 {}
+
+    #layer01 img {
+      text-align: center;
+      display: block;
+      height: 35px;
+      padding-top: 35px;
+      margin: auto;
+    }
+
+    #layer02>div {
+      height: 100%;
+      float: left;
+      position: relative;
+    }
+
+    .layer02-data {
+      position: absolute;
+      width: auto;
+      height: 100px;
+      color: white;
+      top: -5px;
+      left: 55px;
+    }
+
+    /* @media screen and (max-width: 768px) {
+    .layer02-data {
+    position: relative;
+    top: auto;
+    left: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+} */
+    .cont {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-gap: 20px;
+
+    }
+
+    .wid {
+      grid-column: span 2;
+    }
+
+    @media screen and (max-width: 768px) {
+      .cont {
+        grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
+      }
+
+      .wid {
+        grid-column: span 1;
+      }
+    }
+
+
+    .cont2 {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .item2 {
+      width: calc(50% - 10px);
+      margin-bottom: 20px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .item2 {
+        width: calc(100%);
+      }
+    }
+
+
+    .widwid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+
+    }
+
+    @media screen and (max-width: 768px) {
+      .widwid {
+
+        grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
+
+      }
+    }
+
+
+    .layer03 {
+      display: flex;
+      flex-direction: row;
+      height: 80%;
+    }
+
+    .layer03-panel {
+      height: 100%;
+    }
+
+    @media screen and (max-width: 768px) {
+      .layer03 {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .layer03-panel {
+        width: 100%;
+        height: 50%;
+      }
+    }
+
+    @media screen and (min-width: 1440px) {
+      .addmenu {
+        margin-left: 15vw;
+      }
+    }
+
+    @media screen and (min-width: 1680px) {
+      .addmenu {
+        margin-left: 13vw;
+      }
+    }
+
+    .layer03-left-label {
+      position: absolute;
+    }
+
+    #layer03_left_label01 {
+      top: 10px;
+      left: 10px;
+      color: white;
+      height: 20px;
+      width: 200px;
+      font-weight: bold;
+    }
+
+    #layer03_left_label02 {
+      right: 10px;
+      top: 10px;
+      color: #036769;
+      height: 20px;
+      width: 200px;
+    }
+
+    .layer03-left-chart {
+      position: relative;
+      float: left;
+      height: 100%;
+    }
+
+    #layer03_right_label {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      color: white;
+      height: 20px;
+      width: 100px;
+    }
+
+    .layer03-right-chart {
+      position: relative;
+      float: left;
+      height: 100%;
+      width: 32%;
+    }
+
+    .layer03-right-chart-label {
+      color: white;
+      text-align: center;
+      position: absolute;
+      bottom: 60px;
+      width: 100%;
+    }
+
+    .layer04-panel {
+      position: relative;
+      float: left;
+      height: 100%;
+      width: 48%;
+    }
+
+    .layer04-panel-label {
+      width: 100%;
+      height: 15%;
+      color: white;
+      padding-top: 5px;
+    }
+
+    .layer04-panel-chart {
+      width: 100%;
+      height: 85%;
+    }
+  </style>
+  <!-- 插件引用 -->
+  <!-- <script src="../../common/highcharts/highcharts.js"></script> -->
+  <link rel="stylesheet" href="./electricity_demo_files/bootstrap.min.css">
+  <script src="./electricity_demo_files/bootstrap.min.js.下載"></script>
+  <script src="./electricity_demo_files/jquery.dataTables.js.下載"></script>
+  <link rel="stylesheet" type="text/css" href="./electricity_demo_files/jquery.dataTables.css">
+  <!-- 插件引用 -->
+
+  <script src="./electricity_demo_files/echarts.min.js.下載"></script>
+  <script src="./electricity_demo_files/monitor.js.下載"></script>
+
+  <!-- 外部JS CSS資料 -->
+  <script src="./electricity_demo_files/highcharts.js.下載"></script>
+  <script src="./electricity_demo_files/no-data-to-display.js.下載"></script>
+
+  <script src="./electricity_demo_files/exporting.js.下載"></script>
+  <script src="./electricity_demo_files/jquery-1.10.2.js.下載"></script>
+
+  <link rel="stylesheet" type="Wtext/css" href="./electricity_demo_files/chart.css">
+  <script type="text/javascript" src="./electricity_demo_files/piechart.js.下載"></script>
+  <script type="text/javascript" src="./electricity_demo_files/barchart.js.下載"></script>
+  <script type="text/javascript" src="./electricity_demo_files/combochart.js.下載"></script>
+
+  <!--時間表單 -->
+  <link rel="stylesheet" href="./electricity_demo_files/bootstrap.min(1).css">
+  <link rel="stylesheet" href="./electricity_demo_files/bootstrap-datetimepicker.min.css">
+  <script src="./electricity_demo_files/jquery.min.js.下載"></script>
+  <script src="./electricity_demo_files/bootstrap.min.js(1).下載"></script>
+  <script src="./electricity_demo_files/moment.min.js.下載"></script>
+  <script src="./electricity_demo_files/bootstrap-datetimepicker.min.js.下載"></script>
+
+
+  <!-- ajax -->
+  <link rel="stylesheet" href="./electricity_demo_files/bootstrap.min(2).css">
+  <script src="./electricity_demo_files/jquery.min.js.下載"></script>
+  <script src="./electricity_demo_files/popper.min.js.下載"></script>
+  <script src="./electricity_demo_files/bootstrap.min.js(2).下載"></script>
+  <script src="./electricity_demo_files/highcharts.js.下載"></script>
+  <style>
+    .form-container {
+      width: 150px;
+      /* 设置输入框的宽度 */
+      height: 34px;
+      /* 设置输入框的高度 */
+      font-size: 14px;
+      /* 设置输入框的字体大小 */
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+
+  <script type="text/javascript">
+    $(function () {
+      drawLayer02Label($("#layer02_01 canvas").get(0), "實際使用功率(kWh)", 80, 800);
+      drawLayer02Label($("#layer02_02 canvas").get(0), "機器總數量", 80, 800);
+      drawLayer02Label($("#layer02_03 canvas").get(0), "連接數量", 80, 400);
+      drawLayer02Label($("#layer02_04 canvas").get(0), "未連接數量", 80, 400);
+      drawLayer02Label($("#layer02_05 canvas").get(0), "連接但未傳值數量", 80, 300);
+      // drawLayer02Label($("#layer02_06 canvas").get(0),"連接但未傳值數量",80,300);
+
+      // drawLayer02Label($("#layer02_06 canvas").get(0),"",50,200);
+
+      // renderLegend();
+
+      drawpiechart([["\u5316\u9a57\u5ba4",8.177999999999999],["\u5305\u88dd",0],["\u81ea\u52d5\u79e4\u6599",8.589],["\u5b9a\u578b",159.38799999999998],["\u7a7a\u58d3\u6a5f",45.46],["\u67d3\u6a5f",44.989000000000004],["\u8d77\u6bdb",36.324],["\u812b\u6c34",0],["\u8edf\u6c34",24.66],["\u6e96\u5099\u5340",6.928],["\u7cbe\u7149",0],["\u5ee2\u6c34",41.576],["\u934b\u7210",63.351]],
+        '各區域用電量占比',
+        '用電量占比',
+        '當日無資料上傳', '',
+        '各區域碳足跡');
+
+      drawbarchart([["",0],["\u5316\u9a57\u5ba4",8.177999999999999],["\u5305\u88dd",0],["\u81ea\u52d5\u79e4\u6599",8.589],["\u5b9a\u578b",159.38799999999998],["\u7a7a\u58d3\u6a5f",45.46],["\u67d3\u6a5f",44.989000000000004],["\u8d77\u6bdb",36.324],["\u812b\u6c34",0],["\u8edf\u6c34",24.66],["\u6e96\u5099\u5340",6.928],["\u7cbe\u7149",0],["\u5ee2\u6c34",41.576],["\u934b\u7210",63.351]],
+        '各區域用電量',
+        '當日無資料上傳');
+
+      drawcombochart([["06\/05"],["06\/06"],["06\/07"],["06\/08"],["06\/09"],["06\/10"],["06\/11"],["06\/12"],["06\/13"],["06\/14"],["06\/15"],["06\/16"],["06\/17"],["06\/18"],["06\/19"],["06\/20"],["06\/21"],["06\/22"],["06\/23"],["06\/24"],["06\/25"]],
+        [[275.73],[273.31],[251.82],[459.88],[436.87],[415.4],[490.21],[155.29],[339.79],[430.11],[341.33],[559.1],[490.45],[447.38],[180.61],[419.71],[389.57],[530.52],[393.65],[541.86],[439.44]],
+        [],
+        [[275.73],[273.31],[251.82],[459.88],[436.87],[415.4],[490.21],[155.29],[339.79],[430.11],[341.33],[559.1],[490.45],[447.38],[180.61],[419.71],[389.57],[530.52],[393.65],[541.86],[439.44]],
+        '每日用電量(近二十天)',
+        '用電量',
+        '當日無資料上傳', '',
+        '碳足跡');
+    });
+  </script>
+
+  <title>用電量表</title>
+</head>
+
+<body cz-shortcut-listen="true">
+  <div class="mdl-layout__container"><div class="mdl-js-layout mdl-layout--fixed-drawer mdl-layout--fixed-header has-drawer is-upgraded" data-upgraded=",MaterialLayout">
+     <header class="mdl-layout__header is-casting-shadow"><div aria-expanded="false" role="button" tabindex="0" class="mdl-layout__drawer-button"><i class="material-icons"></i></div>
+        <div class="mdl-layout__header-row">
+            <div class="mdl-layout-spacer"></div>
+            <div class="avatar-dropdown" id="icon">
+                <span>，您好</span>
+                <!-- <img src="/Demo/common/images/logo_header.png"> -->
+            </div>
+            <a href="https://logicartidcc.website/Demo/statistics_report/electricity/index.php?lang=zh-TW">中文</a>&nbsp;|&nbsp;<a href="https://logicartidcc.website/Demo/statistics_report/electricity/index.php?lang=en-US">English</a>
+            <!-- Account dropdawn-->
+            <div class="mdl-menu__container is-upgraded"><div class="mdl-menu__outline mdl-menu--bottom-right"></div><ul class="mdl-menu mdl-list mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect mdl-shadow--2dp account-dropdown mdl-js-ripple-effect--ignore-events" for="icon" data-upgraded=",MaterialMenu,MaterialRipple">
+                <li class="mdl-list__item mdl-list__item--one-line">
+                    <span class="mdl-list__item-primary-content">
+                        <span></span>
+                    </span>
+                </li>
+                <li class="list__item--border-top"></li>
+                                                                <li class="list__item--border-top"></li>
+                <a href="https://logicartidcc.website/logic_art/member/personal/index.php">
+                    <li class="mdl-menu__item mdl-list__item mdl-js-ripple-effect" tabindex="-1" data-upgraded=",MaterialRipple">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-icon">settings</i>
+                            個人資料                        </span>
+                    <span class="mdl-menu__item-ripple-container"><span class="mdl-ripple"></span></span></li>
+                </a>
+                <a href="https://logicartidcc.website/logic_art/common/logout.php">
+                    <li class="mdl-menu__item mdl-list__item mdl-js-ripple-effect" tabindex="-1" data-upgraded=",MaterialRipple">
+                        <span class="mdl-list__item-primary-content">
+                            <i class="material-icons mdl-list__item-icon text-color--secondary">exit_to_app</i>
+                            登出                        </span>
+                    <span class="mdl-menu__item-ripple-container"><span class="mdl-ripple"></span></span></li>
+                </a>
+            </ul></div>
+        </div>
+    </header>    
+     <div class="mdl-layout__drawer" aria-hidden="true">
+        <header><a href="https://logicartidcc.website/Demo/index.php"><img src="./electricity_demo_files/logo_header.png" width="70"></a></header>
+        <div class="scroll__wrapper" id="scroll__wrapper">
+            <div class="scroller" id="scroller" style="width: calc(100% + 17px);">
+                <div class="scroll__container" id="scroll__container">
+                    <nav class="mdl-navigation">
+                        <div class="sub-navigation" id="manufacture_order_show">
+                            <a class="mdl-navigation__link" id="manufacture_order_show_list">
+                                <i class="material-icons">schedule</i>
+                                 生產排程                                <i class="material-icons">keyboard_arrow_down</i>
+                            </a>
+                            <div class="mdl-navigation">
+                                <a class="mdl-navigation__link" href="https://logicartidcc.website/Demo/manufacture_order/order/index.php" id="manufacture_order_order">
+                                    工單排程                                </a>
+                                <a class="mdl-navigation__link" href="https://logicartidcc.website/Demo/manufacture_order/manufacture/index.php" id="manufacture_order_manufacture">
+                                    生產運行                                </a>
+                                <a class="mdl-navigation__link" href="https://logicartidcc.website/Demo/statistics_report/styling_machine/index.php" id="Styling machine">
+                                    定型機
+                                </a>
+                            </div>
+                        </div>
+<!-- Menu項目-->                        
+                        <div class="sub-navigation" id="equipment_show">
+                            <a class="mdl-navigation__link" id="equipment_show_list">
+                                <i class="material-icons">dashboard</i>
+                                機具設備                                <i class="material-icons">keyboard_arrow_down</i>
+                            </a>
+                            <div class="mdl-navigation">
+                                <a class="mdl-navigation__link" href="https://logicartidcc.website/Demo/equipment/coloring/index.php" id="equipment_coloring">
+                                    染色                                </a>
+                                <a class="mdl-navigation__link" href="https://logicartidcc.website/Demo/equipment/calculate/index.php" id="equipment_calculate">
+                                    供料                                </a>
+                            </div>
+                        </div>
+<!-- Menu項目-->                        
+                        <div class="sub-navigation" id="factory_show">
+                            <a class="mdl-navigation__link" id="factory_show_list">
+                                <i class="material-icons">pages</i>
+                                廠區環境                                <i class="material-icons">keyboard_arrow_down</i>
+                            </a>
+                            <div class="mdl-navigation">
+                                <a class="mdl-navigation__link" href="https://logicartidcc.website/Demo/factory/energy/index.php" id="factory_energy">
+                                    能源管理                                </a>
+                            </div>
+                        </div>                        
+                        <div class="sub-navigation" id="statistics_report_show">
+                            <a class="mdl-navigation__link" id="statistics_report_show_list">
+                                <i class="material-icons">poll</i>
+                                統計與報告                                <i class="material-icons">keyboard_arrow_down</i>
+                            </a>
+                            <div class="mdl-navigation">
+                                <a class="mdl-navigation__link" href="https://logicartidcc.website/Demo/statistics_report/calendar/index.php" id="statistics_report_calendar">
+                                                                    </a>
+                                <a class="mdl-navigation__link" href="https://logicartidcc.website/Demo/statistics_report/maintenance/index.php" id="statistics_report_maintenance">
+                                    預維保養                                </a>
+                                <a class="mdl-navigation__link" href="https://logicartidcc.website/Demo/statistics_report/capacity/index.php" id="statistics_report_capacity">
+                                    產量統計                                </a>
+                                <a class="mdl-navigation__link" href="https://logicartidcc.website/Demo/statistics_report/alarm/index.php" id="statistics_report_alarm">
+                                    警報資訊                                </a>
+                                <a class="mdl-navigation__link" href="https://logicartidcc.website/Demo/statistics_report/delay/index.php" id="statistics_report_delay">
+                                    延遲資訊                                </a>
+                                <a class="mdl-navigation__link" href="https://logicartidcc.website/Demo/statistics_report/shotdown/index.php" id="statistics_report_shotdown">
+                                    停機資訊                                </a>
+                                 <a class="mdl-navigation__link" href="https://logicartidcc.website/Demo/statistics_report/electricity/index.php" id="statistics_report_electricity">
+                                    用電量表                                </a>
+
+                            </div>
+                        </div> 
+                        <div class="mdl-layout-spacer"></div>
+                    </nav>
+                </div>
+            </div>
+            <div class="scroller__bar" id="scroller__bar" style="height: 0px;"></div>
+        </div>
+    </div>
+
+<script src="./electricity_demo_files/d3.min.js.下載"></script>
+<script src="./electricity_demo_files/getmdl-select.min.js.下載"></script>
+<script src="./electricity_demo_files/material.min.js.下載"></script>
+<script src="./electricity_demo_files/nv.d3.min.js.下載"></script>
+<script src="./electricity_demo_files/layout.min.js.下載"></script>
+<script src="./electricity_demo_files/scroll.min.js.下載"></script>        <main class="addmenu">
+
+      <div class="mdl-grid ui-tables">
+        <div class="mdl-cell mdl-cell--12-col-desktop mdl-cell--12-col-tablet mdl-cell--4-col-phone">
+          <!-- <div class="mdl-card mdl-shadow--2dp"> -->
+          <div class="mdl-card__title title_zoom">
+            <h1 class="mdl-card__title-text">
+              電量統計            </h1>
+            <h5 class="mdl-card__title-text">&nbsp;&nbsp;&nbsp;
+              (資料最後更新時間:2023-06-25)            </h5>
+            <!-- <a href='index.php?lang=zh-TW' style="float: right; margin-left: 10px;">中文</a>&nbsp;|&nbsp;<a href='index.php?lang=en-US'>English</a> -->
+
+            <form id="myForm">
+              <div class="input-wrapper">
+                <label for="inputValue" class="input-label">係數值：</label>
+                <input type="text" id="inputValue" name="inputValue" class="input-field">
+              </div>
+              <!-- <button type="button" onclick="submitForm()">提交</button> -->
+            </form>
+            <script>
+              // 监听键盘按下事件
+              document.getElementById('inputValue').addEventListener('keydown', function (event) {
+                // 按下 Enter 键时阻止表单提交
+                if (event.keyCode === 13) {
+                  event.preventDefault();
+                  return false;
+                }
+              });
+            </script>
+          </div>
+
+          <div class="mdl-cell mdl-cell--12-col-desktop mdl-cell--12-col-tablet mdl-cell--12-col-phone">
+
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div id="layer02" class="layer" style="height:15%;">
+          <div class="cont">
+            <div id="layer02_01" style="width:20%;">
+              <div class="layer02-data">
+                <span style="font-size:45px;font-weight: bold;text-shadow: 1px 1px 2px rgba(0, 0, 0, 3.5);">&nbsp;&nbsp;
+                  439                </span>
+                <!-- <span style="font-size:16px;"></span> -->
+              </div>
+              <canvas width="290" height="80"></canvas>
+            </div>
+          </div>
+          <div class="cont">
+            <div id="layer02_02" style="width:20%;">
+              <div class="layer02-data">
+                <span style="font-size:45px;font-weight: bold;text-shadow: 1px 1px 2px rgba(0, 0, 0, 3.5);">&nbsp;&nbsp;
+                  32                </span>
+                <!-- <span style="font-size:16px;"></span> -->
+              </div>
+              <canvas width="220" height="80"></canvas>
+            </div>
+          </div>
+          <div class="cont">
+            <div id="layer02_03" style="width:20%;">
+              <div class="layer02-data">
+                <span style="font-size:45px;font-weight: bold;text-shadow: 1px 1px 2px rgba(0, 0, 0, 3.5);">&nbsp;&nbsp;
+                  32                </span>
+                <!-- <span style="font-size:16px;"></span> -->
+              </div>
+              <canvas width="220" height="80"></canvas>
+            </div>
+          </div>
+          <div class="cont">
+            <div id="layer02_04" style="width:20%;">
+              <div class="layer02-data">
+                <span style="font-size:45px;font-weight: bold;text-shadow: 1px 1px 2px rgba(0, 0, 0, 3.5);">&nbsp;&nbsp;
+                  0                </span>
+                <!-- <span style="font-size:16px;"></span> -->
+              </div>
+              <canvas width="220" height="80"></canvas>
+            </div>
+          </div>
+          <div class="cont">
+            <div id="layer02_05" style="width:20%;">
+              <div class="layer02-data">
+                <span style="font-size:45px;font-weight: bold;text-shadow: 1px 1px 2px rgba(0, 0, 0, 3.5);">&nbsp;&nbsp;
+                  0                </span>
+                <!-- <span style="font-size:16px;"></span> -->
+              </div>
+              <canvas width="280" height="80"></canvas>
+            </div>
+          </div>
+
+
+
+
+          <div id="piechart" class="layer2" style="height: 40vh; overflow: hidden;" data-highcharts-chart="40"><div id="highcharts-mpn8hua-1700" dir="ltr" style="position: relative; overflow: hidden; width: 694px; height: 268px; text-align: left; line-height: normal; z-index: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); user-select: none; touch-action: manipulation; outline: none;" class="highcharts-container "><svg version="1.1" class="highcharts-root" style="font-family: Helvetica, Arial, sans-serif; font-size: 1rem;" xmlns="http://www.w3.org/2000/svg" width="694" height="268" viewBox="0 0 694 268" role="img" aria-label="各區域碳足跡"><desc>Created with Highcharts 11.1.0</desc><defs><filter id="highcharts-drop-shadow-40"><fedropshadow dx="1" dy="1" flood-color="#000000" flood-opacity="0.75" stdDeviation="2.5"></fedropshadow></filter><clippath id="highcharts-mpn8hua-1714-"><rect x="0" y="0" width="674" height="200" fill="none"></rect></clippath></defs><rect fill="none" class="highcharts-background" filter="none" x="0" y="0" width="694" height="268" rx="0" ry="0"></rect><rect fill="none" class="highcharts-plot-background" x="10" y="53" width="674" height="200" filter="none"></rect><rect fill="none" class="highcharts-plot-border" data-z-index="1" stroke="#cccccc" stroke-width="0" x="10" y="53" width="674" height="200"></rect><g class="highcharts-series-group" data-z-index="3" filter="none"><g class="highcharts-series highcharts-series-0 highcharts-pie-series highcharts-tracker" data-z-index="0.1" opacity="1" transform="translate(10,53) scale(1 1)" filter="none" style="cursor: pointer;" clip-path="none"><path fill="#00e272" d="M 300.42217537226543 71.29350691040969 A 0.5 0.5 0 0 1 300.3408744899764 70.58727287651934 A 47 47 0 0 1 336.42934586040207 53.00346444839833 A 0.5 0.5 0 0 1 336.93541616680466 53.502733102595265 L 336.93541616680466 53.502733102595265 A 0.5 0.5 0 0 1 336.44148743784035 54.00339073673028 A 46 46 0 0 0 301.12085588380666 71.21307558127425 A 0.5 0.5 0 0 1 300.42217537226543 71.29350691040969 Z" class="highcharts-halo highcharts-color-2" data-z-index="-1" fill-opacity="0.25" visibility="hidden"></path><path fill="#2caffe" d="M 336.99097159522097 55.672103998232636 A 2.5961441972809007 2.5961441972809007 0 0 1 339.7383757000063 53.079841235076636 A 47 47 0 0 1 339.6914541798737 53.07712631991045 A 2.5961441972809007 2.5961441972809007 0 0 1 342.12154409001636 55.968962860391144 L 337 100 A 0 0 0 0 1 337 100 A 0 0 0 0 0 337 100 A 0 0 0 0 1 337 100 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-0"></path><path fill="#544fc5" d="M 342.47695530665 53.32020822059123 A 0 0 0 0 1 342.47695530665 53.32020822059123 A 47 47 0 0 1 342.43027278417316 53.314754606091356 A 0 0 0 0 1 342.43027278417316 53.314754606091356 L 337 100 A 0 0 0 0 1 337 100 A 0 0 0 0 0 337 100 A 0 0 0 0 1 337 100 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-1"></path><path fill="#00e272" d="M 342.15007120513457 56.106223614255875 A 2.7214166083014386 2.7214166083014386 0 0 1 345.3355988152741 53.7450781819837 A 47 47 0 0 1 345.28933973336626 53.73676571201668 A 2.7214166083014386 2.7214166083014386 0 0 1 347.45355842024503 57.059227357042246 L 337 100 A 0 0 0 0 1 337 100 A 0 0 0 0 0 337 100 A 0 0 0 0 1 337 100 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-2"></path><path fill="#fe6a35" d="M 347.42589202519173 57.35846185373886 A 3 3 0 0 1 351.24960007097394 55.212179135201275 A 47 47 0 0 1 366.99080963064154 136.18772357718316 A 3 3 0 0 1 362.64150223962645 135.63023102500506 L 337 100 A 0 0 0 0 1 337 100 A 0 0 0 0 0 337 100 A 0 0 0 0 1 337 100 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-3"></path><path fill="#6b8abc" d="M 362.60585919378974 135.65585470785706 A 3 3 0 0 1 361.74881954176783 139.95617513337595 A 47 47 0 0 1 338.9748792888779 146.95849073164896 A 3 3 0 0 1 335.8498530538584 143.88253823563858 L 337 100 A 0 0 0 0 1 337 100 A 0 0 0 0 0 337 100 A 0 0 0 0 1 337 100 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-4"></path><path fill="#d568fb" d="M 335.80597109800993 143.88136614761683 A 3 3 0 0 1 332.5212002544881 146.78611282036158 A 47 47 0 0 1 310.42423115818605 138.7650423766887 A 3 3 0 0 1 309.7676090536869 134.42959313362798 L 337 100 A 0 0 0 0 1 337 100 A 0 0 0 0 0 337 100 A 0 0 0 0 1 337 100 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-5"></path><path fill="#2ee0ca" d="M 309.73319308248585 134.40234353242528 A 3 3 0 0 1 305.3627058115208 134.75746849860647 A 47 47 0 0 1 294.6959157191999 120.47838990650777 A 3 3 0 0 1 296.2761956406311 116.38815909429265 L 337 100 A 0 0 0 0 1 337 100 A 0 0 0 0 0 337 100 A 0 0 0 0 1 337 100 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-6"></path><path fill="#fa4b42" d="M 293.38058262016136 117.50275485297762 A 0 0 0 0 1 293.38058262016136 117.50275485297762 A 47 47 0 0 1 293.3981071818041 117.54636551171086 A 0 0 0 0 1 293.3981071818041 117.54636551171086 L 337 100 A 0 0 0 0 1 337 100 A 0 0 0 0 0 337 100 A 0 0 0 0 1 337 100 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-7"></path><path fill="#feb56a" d="M 296.25982784616866 116.34742710264172 A 3 3 0 0 1 292.2887191866135 114.48797322010557 A 47 47 0 0 1 290.2247204436259 104.59055796424047 A 3 3 0 0 1 293.12161158170085 101.29885711795818 L 337 100 A 0 0 0 0 1 337 100 A 0 0 0 0 0 337 100 A 0 0 0 0 1 337 100 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-8"></path><path fill="#91e8e1" d="M 292.28904503424314 101.27875334326674 A 2.2159074035866437 2.2159074035866437 0 0 1 290.01027187847103 99.0174263056705 A 47 47 0 0 1 290.00931279980256 99.06441651724721 A 2.2159074035866437 2.2159074035866437 0 0 1 292.37845792994386 96.89795432769507 L 337 100 A 0 0 0 0 1 337 100 A 0 0 0 0 0 337 100 A 0 0 0 0 1 337 100 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-9"></path><path fill="#2caffe" d="M 290.1164459533758 96.6935880539072 A 0 0 0 0 1 290.1164459533758 96.6935880539072 A 47 47 0 0 1 290.11316298375584 96.74047325334573 A 0 0 0 0 1 290.11316298375584 96.74047325334573 L 337 100 A 0 0 0 0 1 337 100 A 0 0 0 0 0 337 100 A 0 0 0 0 1 337 100 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-0"></path><path fill="#544fc5" d="M 293.21115141428345 96.91183880971398 A 3 3 0 0 1 290.45098527976364 93.50467640719738 A 47 47 0 0 1 298.1079379290542 73.61046594064808 A 3 3 0 0 1 302.44018794212707 72.93305723720351 L 337 100 A 0 0 0 0 1 337 100 A 0 0 0 0 0 337 100 A 0 0 0 0 1 337 100 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-1"></path><path fill="rgb(0,226,114)" d="M 302.4672721602833 72.89851096437587 A 3 3 0 0 1 302.0911890740424 68.52977725315975 A 47 47 0 0 1 333.7303274966566 53.11386940980435 A 3 3 0 0 1 336.9390271029707 56.102434209789855 L 337 100 A 0 0 0 0 1 337 100 A 0 0 0 0 0 337 100 A 0 0 0 0 1 337 100 Z" transform="translate(0,0)" stroke="#ffffff" stroke-width="1" opacity="1" stroke-linejoin="round" class="highcharts-point highcharts-color-2"></path></g><g class="highcharts-markers highcharts-series-0 highcharts-pie-series" data-z-index="0.1" opacity="1" transform="translate(10,53) scale(1 1)" clip-path="none"></g></g><g class="highcharts-exporting-group" data-z-index="3"><g class="highcharts-no-tooltip highcharts-button highcharts-contextbutton" stroke-linecap="round" style="cursor: pointer;" transform="translate(656,10)"><title>Chart context menu</title><rect fill="#ffffff" class="highcharts-button-box" x="0.5" y="0.5" width="28" height="28" rx="2" ry="2" stroke="none" stroke-width="1"></rect><path fill="#666666" d="M 8 9.5 L 22 9.5 M 8 14.5 L 22 14.5 M 8 19.5 L 22 19.5" class="highcharts-button-symbol" data-z-index="1" stroke="#666666" stroke-width="3"></path><text x="0" data-z-index="1" y="18.5" style="color: rgb(51, 51, 51); font-size: 0.8em; font-weight: normal; fill: rgb(51, 51, 51);"></text></g></g><text x="20" text-anchor="start" class="highcharts-title" data-z-index="4" style="font-size: 3.5vh; color: rgb(255, 255, 255); font-weight: bold; text-shadow: rgb(0, 0, 0) 1px 1px 2px; fill: rgb(255, 255, 255);" y="28">各區域碳足跡</text><text x="347" text-anchor="middle" class="highcharts-subtitle" data-z-index="4" style="color: rgb(102, 102, 102); font-size: 0.8em; fill: rgb(102, 102, 102);" y="52"></text><text x="10" text-anchor="start" class="highcharts-caption" data-z-index="4" style="color: rgb(102, 102, 102); font-size: 0.8em; fill: rgb(102, 102, 102);" y="265"></text><g class="highcharts-data-labels highcharts-series-0 highcharts-pie-series highcharts-tracker" data-z-index="6" opacity="1" transform="translate(10,53) scale(1 1)" style="cursor: pointer;"><path fill="none" class="highcharts-data-label-connector highcharts-color-0" stroke-width="1" stroke="#2caffe" d="M 346.4992250018805 23 L 341.506925441576 23 L 340.09686915713854 47.090554705009765 L 339.74628019595303 53.08030322897093" opacity="1"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-1" stroke-width="1" stroke="#544fc5" d="M 350.9830754379943 23.52579287318302 L 345.9830754379942 23.52579287318302 L 343.18315582095704 47.36190938024286 L 342.48317591669775 53.32093850700782" visibility="hidden" opacity="1"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-2" stroke-width="1" stroke="#00e272" d="M 412.56372847501797 69.18181991577148 L 346.40161170945487 47.8405358802006 L 345.3372783083845 53.74538087489487" opacity="1"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-3" stroke-width="1" stroke="#fe6a35" d="M 417.45169694000674 115.36363983154297 L 389.030238304714 89.90771076738903 L 383.14002264757653 91.05023407674122" opacity="1"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-4" stroke-width="1" stroke="#6b8abc" d="M 364.6021227352843 173.60804336388208 L 359.6021227352843 173.60804336388208 L 352.55730525935155 150.66527660111365 L 350.79610089036834 144.92958491042154" opacity="1"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-5" stroke-width="1" stroke="#d568fb" d="M 305.690831882991 177 L 309.00608111626997 177 L 318.8910920753055 149.81031473274322 L 320.94115712338413 144.17141117809305" opacity="1"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-6" stroke-width="1" stroke="#2ee0ca" d="M 261.43627152498203 130.81818008422852 L 294.5138073721295 131.68475084307093 L 299.32356502811484 128.09779791744026" opacity="1"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-7" stroke-width="1" stroke="#fa4b42" d="M 260.52440480562393 128.63982003451983 L 265.5244048056239 128.63982003451983 L 287.80251239867624 119.71312288090324 L 293.3720392969393 117.4814485924991" visibility="hidden" opacity="1"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-8" stroke-width="1" stroke="#feb56a" d="M 256.60931297889243 115.66027811009128 L 261.60931297889243 115.66027811009128 L 285.1077089335234 110.77915246538751 L 290.9823079221811 109.55887105421156" visibility="hidden" opacity="1"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-9" stroke-width="1" stroke="#91e8e1" d="M 255.0170014639786 98.38199616720901 L 260.01700146397843 98.38199616720901 L 284.0117023063749 98.88630905015685 L 290.01037751697396 99.01238727089381" visibility="hidden" opacity="1"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-0" stroke-width="1" stroke="#2caffe" d="M 255.19150915345574 94.57268631122821 L 260.1915091534558 94.57268631122821 L 284.1318179887423 96.26431655188435 L 290.1168951975639 96.68722411204838" visibility="hidden" opacity="1"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-1" stroke-width="1" stroke="#544fc5" d="M 259.2994211173774 74.63021816941327 L 271.1560069295623 74.63021816941327 L 287.54405895201313 80.94455733765166 L 293.1428447310305 83.1017772616911" opacity="1"></path><path fill="none" class="highcharts-data-label-connector highcharts-color-2" stroke-width="1" stroke="#00e272" d="M 303.55060127998223 28.448398253641784 L 313.80860085609316 52.343321498996616 L 316.43404226861094 57.73841717835549" opacity="1"></path><g class="highcharts-label highcharts-data-label highcharts-data-label-color-0" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(351,0)" opacity="1"><text x="5" data-z-index="1" y="19" style="color: white; font-size: 2.2vh; font-weight: bold; fill: white;">化驗室: 8 <tspan class="highcharts-br" dy="17" x="5">​</tspan><tspan style="font-weight: bold;">(1.9%)</tspan></text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-1" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(356,0)" visibility="hidden" opacity="1"><text x="5" data-z-index="1" y="19" style="color: white; font-size: 2.2vh; font-weight: bold; fill: white;">包裝: 0 <tspan class="highcharts-br" dy="17" x="5">​</tspan><tspan style="font-weight: bold;">(0.0%)</tspan></text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-2" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(418,46)" opacity="1"><text x="5" data-z-index="1" y="19" style="color: white; font-size: 2.2vh; font-weight: bold; fill: white;">自動秤料: 9 <tspan class="highcharts-br" dy="17" x="5">​</tspan><tspan style="font-weight: bold;">(2.0%)</tspan></text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-3" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(422,92)" opacity="1"><text x="5" data-z-index="1" y="19" style="color: white; font-size: 2.2vh; font-weight: bold; fill: white;">定型: 159 <tspan class="highcharts-br" dy="17" x="5">​</tspan><tspan style="font-weight: bold;">(36.3%)</tspan></text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-4" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(370,151)" opacity="1"><text x="5" data-z-index="1" y="19" style="color: white; font-size: 2.2vh; font-weight: bold; fill: white;">空壓機: 45 <tspan class="highcharts-br" dy="17" x="5">​</tspan><tspan style="font-weight: bold;">(10.3%)</tspan></text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-5" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(227,154)" opacity="1"><text x="5" data-z-index="1" y="19" style="color: white; font-size: 2.2vh; font-weight: bold; fill: white;">染機: 45 <tspan class="highcharts-br" dy="17" x="5">​</tspan><tspan style="font-weight: bold;">(10.2%)</tspan></text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-6" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(183,108)" opacity="1"><text x="5" data-z-index="1" y="19" style="color: white; font-size: 2.2vh; font-weight: bold; fill: white;">起毛: 36 <tspan class="highcharts-br" dy="17" x="5">​</tspan><tspan style="font-weight: bold;">(8.3%)</tspan></text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-7" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(191,106)" visibility="hidden" opacity="1"><text x="5" data-z-index="1" y="19" style="color: white; font-size: 2.2vh; font-weight: bold; fill: white;">脫水: 0 <tspan class="highcharts-br" dy="17" x="5">​</tspan><tspan style="font-weight: bold;">(0.0%)</tspan></text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-8" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(178,93)" visibility="hidden" opacity="1"><text x="5" data-z-index="1" y="19" style="color: white; font-size: 2.2vh; font-weight: bold; fill: white;">軟水: 25 <tspan class="highcharts-br" dy="17" x="5">​</tspan><tspan style="font-weight: bold;">(5.6%)</tspan></text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-9" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(170,75)" visibility="hidden" opacity="1"><text x="5" data-z-index="1" y="19" style="color: white; font-size: 2.2vh; font-weight: bold; fill: white;">準備區: 7 <tspan class="highcharts-br" dy="17" x="5">​</tspan><tspan style="font-weight: bold;">(1.6%)</tspan></text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-0" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(186,71)" visibility="hidden" opacity="1"><text x="5" data-z-index="1" y="19" style="color: white; font-size: 2.2vh; font-weight: bold; fill: white;">精煉: 0 <tspan class="highcharts-br" dy="17" x="5">​</tspan><tspan style="font-weight: bold;">(0.0%)</tspan></text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-1" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(181,52)" opacity="1"><text x="5" data-z-index="1" y="19" style="color: white; font-size: 2.2vh; font-weight: bold; fill: white;">廢水: 42 <tspan class="highcharts-br" dy="17" x="5">​</tspan><tspan style="font-weight: bold;">(9.5%)</tspan></text></g><g class="highcharts-label highcharts-data-label highcharts-data-label-color-2" data-z-index="1" filter="none" style="cursor: pointer;" transform="translate(225,5)" opacity="1"><text x="5" data-z-index="1" y="19" style="color: white; font-size: 2.2vh; font-weight: bold; fill: white;">鍋爐: 63 <tspan class="highcharts-br" dy="17" x="5">​</tspan><tspan style="font-weight: bold;">(14.4%)</tspan></text></g></g><g class="highcharts-legend highcharts-no-tooltip" data-z-index="7" visibility="hidden"><rect fill="none" class="highcharts-legend-box" rx="0" ry="0" stroke="#999999" stroke-width="0" filter="none" x="0" y="0" width="8" height="8"></rect><g data-z-index="1"><g></g></g></g><g class="highcharts-label highcharts-tooltip highcharts-color-2" data-z-index="8" filter="url(#highcharts-drop-shadow-40)" style="cursor: default; pointer-events: none;" transform="translate(200,7)" opacity="0" visibility="hidden"><path fill="#ffffff" class="highcharts-label-box highcharts-tooltip-box" d="M 3 0 L 77 0 A 3 3 0 0 1 80 3 L 80 37 A 3 3 0 0 1 77 40 L 3 40 A 3 3 0 0 1 0 37 L 0 3 A 3 3 0 0 1 3 0 Z" stroke-width="0" stroke="#00e272"></path><text x="8" data-z-index="1" y="20" style="color: rgb(51, 51, 51); font-size: 1.5vh; fill: rgb(51, 51, 51);"><tspan style="font-size: 0.8em;">鍋爐</tspan><tspan class="highcharts-br" dy="15" x="8">​</tspan>碳足跡: <tspan style="font-weight: bold;">14.4%</tspan></text></g></svg></div></div>
+          <div id="barchart" class="layer2" style="height: 40vh; overflow: hidden;" data-highcharts-chart="3"><div id="highcharts-mpn8hua-99" dir="ltr" style="position: relative; overflow: hidden; width: 694px; height: 268px; text-align: left; line-height: normal; z-index: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); user-select: none; touch-action: manipulation; outline: none;" class="highcharts-container "><svg version="1.1" class="highcharts-root" style="font-family: Helvetica, Arial, sans-serif; font-size: 1rem;" xmlns="http://www.w3.org/2000/svg" width="694" height="268" viewBox="0 0 694 268" role="img" aria-label="各區域用電量"><desc>Created with Highcharts 11.1.0</desc><defs><filter id="highcharts-drop-shadow-3"><fedropshadow dx="1" dy="1" flood-color="#000000" flood-opacity="0.75" stdDeviation="2.5"></fedropshadow></filter><clippath id="highcharts-mpn8hua-100-"><rect x="0" y="0" width="618" height="139" fill="none"></rect></clippath><clippath id="highcharts-mpn8hua-115-"><rect x="0" y="0" width="618" height="139" fill="none"></rect></clippath></defs><rect fill="none" class="highcharts-background" filter="none" x="0" y="0" width="694" height="268" rx="0" ry="0"></rect><rect fill="none" class="highcharts-plot-background" x="66" y="53" width="618" height="139" filter="none"></rect><g class="highcharts-grid highcharts-xaxis-grid" data-z-index="1"><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 109.5 53 L 109.5 192" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 153.5 53 L 153.5 192" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 197.5 53 L 197.5 192" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 242.5 53 L 242.5 192" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 286.5 53 L 286.5 192" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 330.5 53 L 330.5 192" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 374.5 53 L 374.5 192" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 418.5 53 L 418.5 192" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 462.5 53 L 462.5 192" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 506.5 53 L 506.5 192" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 551.5 53 L 551.5 192" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 595.5 53 L 595.5 192" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 639.5 53 L 639.5 192" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 683.5 53 L 683.5 192" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 65.5 53 L 65.5 192" opacity="1"></path></g><g class="highcharts-grid highcharts-yaxis-grid" data-z-index="1"><path fill="none" stroke="#e6e6e6" stroke-width="1" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 66 192.5 L 684 192.5" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="1" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 66 123.5 L 684 123.5" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="1" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 66 52.5 L 684 52.5" opacity="1"></path></g><rect fill="none" class="highcharts-plot-border" data-z-index="1" stroke="#cccccc" stroke-width="0" x="66" y="53" width="618" height="139"></rect><g class="highcharts-axis highcharts-xaxis" data-z-index="2"><path fill="none" class="highcharts-axis-line" stroke="#333333" stroke-width="1" data-z-index="7" d="M 66 192.5 L 684 192.5"></path></g><g class="highcharts-axis highcharts-yaxis" data-z-index="2"><text x="21.174999237060547" data-z-index="7" text-anchor="middle" transform="translate(0,0) rotate(270 21.174999237060547 122.5)" class="highcharts-axis-title" style="color: white; font-size: 1.5vh; fill: white;" y="122.5">(kWh)</text><path fill="none" class="highcharts-axis-line" stroke="#333333" stroke-width="0" data-z-index="7" d="M 66 53 L 66 192"></path></g><g class="highcharts-series-group" data-z-index="3" filter="none"><g class="highcharts-series highcharts-series-0 highcharts-column-series highcharts-tracker" data-z-index="0.1" opacity="1" transform="translate(66,53) scale(1 1)" clip-path="url(#highcharts-mpn8hua-115-)"><path fill="#00BCD4" d="M 9.5 139.5 L 33.5 139.5 A 3 3 0 0 1 33.5 139.5 L 33.5 139.5 A 0 0 0 0 1 33.5 139.5 L 33.5 139.5 A 0 0 0 0 1 9.5 139.5 L 9.5 139.5 A 3 3 0 0 1 9.5 139.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#00BCD4" d="M 53.5 133.5 L 77.5 133.5 A 3 3 0 0 1 80.5 136.5 L 80.5 139.5 A 0 0 0 0 1 80.5 139.5 L 50.5 139.5 A 0 0 0 0 1 50.5 139.5 L 50.5 136.5 A 3 3 0 0 1 53.5 133.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#00BCD4" d="M 97.5 139.5 L 121.5 139.5 A 3 3 0 0 1 121.5 139.5 L 121.5 139.5 A 0 0 0 0 1 121.5 139.5 L 121.5 139.5 A 0 0 0 0 1 97.5 139.5 L 97.5 139.5 A 3 3 0 0 1 97.5 139.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#00BCD4" d="M 142.5 133.5 L 166.5 133.5 A 3 3 0 0 1 169.5 136.5 L 169.5 139.5 A 0 0 0 0 1 169.5 139.5 L 139.5 139.5 A 0 0 0 0 1 139.5 139.5 L 139.5 136.5 A 3 3 0 0 1 142.5 133.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#00BCD4" d="M 186.5 28.5 L 210.5 28.5 A 3 3 0 0 1 213.5 31.5 L 213.5 139.5 A 0 0 0 0 1 213.5 139.5 L 183.5 139.5 A 0 0 0 0 1 183.5 139.5 L 183.5 31.5 A 3 3 0 0 1 186.5 28.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#00BCD4" d="M 230.5 107.5 L 254.5 107.5 A 3 3 0 0 1 257.5 110.5 L 257.5 139.5 A 0 0 0 0 1 257.5 139.5 L 227.5 139.5 A 0 0 0 0 1 227.5 139.5 L 227.5 110.5 A 3 3 0 0 1 230.5 107.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#00BCD4" d="M 274.5 108.5 L 298.5 108.5 A 3 3 0 0 1 301.5 111.5 L 301.5 139.5 A 0 0 0 0 1 301.5 139.5 L 271.5 139.5 A 0 0 0 0 1 271.5 139.5 L 271.5 111.5 A 3 3 0 0 1 274.5 108.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#00BCD4" d="M 318.5 114.5 L 342.5 114.5 A 3 3 0 0 1 345.5 117.5 L 345.5 139.5 A 0 0 0 0 1 345.5 139.5 L 315.5 139.5 A 0 0 0 0 1 315.5 139.5 L 315.5 117.5 A 3 3 0 0 1 318.5 114.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#00BCD4" d="M 362.5 139.5 L 386.5 139.5 A 3 3 0 0 1 386.5 139.5 L 386.5 139.5 A 0 0 0 0 1 386.5 139.5 L 386.5 139.5 A 0 0 0 0 1 362.5 139.5 L 362.5 139.5 A 3 3 0 0 1 362.5 139.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#00BCD4" d="M 406.5 122.5 L 430.5 122.5 A 3 3 0 0 1 433.5 125.5 L 433.5 139.5 A 0 0 0 0 1 433.5 139.5 L 403.5 139.5 A 0 0 0 0 1 403.5 139.5 L 403.5 125.5 A 3 3 0 0 1 406.5 122.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#00BCD4" d="M 451.5 134.5 L 475.5 134.5 A 3 3 0 0 1 478.5 137.5 L 478.5 139.5 A 0 0 0 0 1 478.5 139.5 L 448.5 139.5 A 0 0 0 0 1 448.5 139.5 L 448.5 137.5 A 3 3 0 0 1 451.5 134.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#00BCD4" d="M 495.5 139.5 L 519.5 139.5 A 3 3 0 0 1 519.5 139.5 L 519.5 139.5 A 0 0 0 0 1 519.5 139.5 L 519.5 139.5 A 0 0 0 0 1 495.5 139.5 L 495.5 139.5 A 3 3 0 0 1 495.5 139.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#00BCD4" d="M 539.5 110.5 L 563.5 110.5 A 3 3 0 0 1 566.5 113.5 L 566.5 139.5 A 0 0 0 0 1 566.5 139.5 L 536.5 139.5 A 0 0 0 0 1 536.5 139.5 L 536.5 113.5 A 3 3 0 0 1 539.5 110.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#00BCD4" d="M 583.5 95.5 L 607.5 95.5 A 3 3 0 0 1 610.5 98.5 L 610.5 139.5 A 0 0 0 0 1 610.5 139.5 L 580.5 139.5 A 0 0 0 0 1 580.5 139.5 L 580.5 98.5 A 3 3 0 0 1 583.5 95.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path></g><g class="highcharts-markers highcharts-series-0 highcharts-column-series" data-z-index="0.1" opacity="1" transform="translate(66,53) scale(1 1)" clip-path="none"></g></g><g class="highcharts-exporting-group" data-z-index="3"><g class="highcharts-no-tooltip highcharts-button highcharts-contextbutton" stroke-linecap="round" style="cursor: pointer;" transform="translate(656,10)"><title>Chart context menu</title><rect fill="#ffffff" class="highcharts-button-box" x="0.5" y="0.5" width="28" height="28" rx="2" ry="2" stroke="none" stroke-width="1"></rect><path fill="#666666" d="M 8 9.5 L 22 9.5 M 8 14.5 L 22 14.5 M 8 19.5 L 22 19.5" class="highcharts-button-symbol" data-z-index="1" stroke="#666666" stroke-width="3"></path><text x="0" data-z-index="1" y="18.5" style="color: rgb(51, 51, 51); font-size: 0.8em; font-weight: normal; fill: rgb(51, 51, 51);"></text></g></g><text x="20" text-anchor="start" class="highcharts-title" data-z-index="4" style="font-size: 3.5vh; color: rgb(255, 255, 255); font-weight: bold; text-shadow: rgb(0, 0, 0) 1px 1px 2px; fill: rgb(255, 255, 255);" y="28">各區域用電量</text><text x="347" text-anchor="middle" class="highcharts-subtitle" data-z-index="4" style="color: rgb(102, 102, 102); font-size: 0.8em; fill: rgb(102, 102, 102);" y="52"></text><text x="10" text-anchor="start" class="highcharts-caption" data-z-index="4" style="color: rgb(102, 102, 102); font-size: 0.8em; fill: rgb(102, 102, 102);" y="265"></text><g class="highcharts-axis-labels highcharts-xaxis-labels" data-z-index="7"><text x="100.07142857143143" text-anchor="end" transform="translate(0,0) rotate(-30 100.07142857143143 217)" style="color: white; cursor: default; font-size: 1.9vh; font-family: Verdana, sans-serif; fill: white;" y="217" opacity="1"></text><text x="144.2142857142814" text-anchor="end" transform="translate(0,0) rotate(-30 144.2142857142814 217)" style="color: white; cursor: default; font-size: 1.9vh; font-family: Verdana, sans-serif; fill: white;" y="217" opacity="1">化驗室</text><text x="188.3571428571414" text-anchor="end" transform="translate(0,0) rotate(-30 188.3571428571414 217)" style="color: white; cursor: default; font-size: 1.9vh; font-family: Verdana, sans-serif; fill: white;" y="217" opacity="1">包裝</text><text x="232.50000000000142" text-anchor="end" transform="translate(0,0) rotate(-30 232.50000000000142 217)" style="color: white; cursor: default; font-size: 1.9vh; font-family: Verdana, sans-serif; fill: white;" y="217" opacity="1">自動秤料</text><text x="276.64285714286143" text-anchor="end" transform="translate(0,0) rotate(-30 276.64285714286143 217)" style="color: white; cursor: default; font-size: 1.9vh; font-family: Verdana, sans-serif; fill: white;" y="217" opacity="1">定型</text><text x="320.78571428571144" text-anchor="end" transform="translate(0,0) rotate(-30 320.78571428571144 217)" style="color: white; cursor: default; font-size: 1.9vh; font-family: Verdana, sans-serif; fill: white;" y="217" opacity="1">空壓機</text><text x="364.92857142857144" text-anchor="end" transform="translate(0,0) rotate(-30 364.92857142857144 217)" style="color: white; cursor: default; font-size: 1.9vh; font-family: Verdana, sans-serif; fill: white;" y="217" opacity="1">染機</text><text x="409.07142857143145" text-anchor="end" transform="translate(0,0) rotate(-30 409.07142857143145 217)" style="color: white; cursor: default; font-size: 1.9vh; font-family: Verdana, sans-serif; fill: white;" y="217" opacity="1">起毛</text><text x="453.21428571429146" text-anchor="end" transform="translate(0,0) rotate(-30 453.21428571429146 217)" style="color: white; cursor: default; font-size: 1.9vh; font-family: Verdana, sans-serif; fill: white;" y="217" opacity="1">脫水</text><text x="497.3571428571414" text-anchor="end" transform="translate(0,0) rotate(-30 497.3571428571414 217)" style="color: white; cursor: default; font-size: 1.9vh; font-family: Verdana, sans-serif; fill: white;" y="217" opacity="1">軟水</text><text x="541.5000000000015" text-anchor="end" transform="translate(0,0) rotate(-30 541.5000000000015 217)" style="color: white; cursor: default; font-size: 1.9vh; font-family: Verdana, sans-serif; fill: white;" y="217" opacity="1">準備區</text><text x="585.6428571428614" text-anchor="end" transform="translate(0,0) rotate(-30 585.6428571428614 217)" style="color: white; cursor: default; font-size: 1.9vh; font-family: Verdana, sans-serif; fill: white;" y="217" opacity="1">精煉</text><text x="629.7857142857115" text-anchor="end" transform="translate(0,0) rotate(-30 629.7857142857115 217)" style="color: white; cursor: default; font-size: 1.9vh; font-family: Verdana, sans-serif; fill: white;" y="217" opacity="1">廢水</text><text x="673.9285714285714" text-anchor="end" transform="translate(0,0) rotate(-30 673.9285714285714 217)" style="color: white; cursor: default; font-size: 1.9vh; font-family: Verdana, sans-serif; fill: white;" y="217" opacity="1">鍋爐</text></g><g class="highcharts-axis-labels highcharts-yaxis-labels" data-z-index="7"><text x="51" text-anchor="end" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="198" opacity="1">0</text><text x="51" text-anchor="end" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="128" opacity="1">100</text><text x="51" text-anchor="end" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="59" opacity="1">200</text></g></svg></div></div>
+
+
+          <div id="combochart" class="layer" style="height: 40vh; overflow: hidden;" data-highcharts-chart="39"><div id="highcharts-mpn8hua-1631" dir="ltr" style="position: relative; overflow: hidden; width: 1388px; height: 268px; text-align: left; line-height: normal; z-index: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0); user-select: none; touch-action: manipulation; outline: none;" class="highcharts-container "><svg version="1.1" class="highcharts-root" style="font-family: Helvetica, Arial, sans-serif; font-size: 1rem;" xmlns="http://www.w3.org/2000/svg" width="1388" height="268" viewBox="0 0 1388 268" role="img" aria-label="每日用電量(近二十天)"><desc>Created with Highcharts 11.1.0</desc><defs><filter id="highcharts-drop-shadow-39"><fedropshadow dx="1" dy="1" flood-color="#000000" flood-opacity="0.75" stdDeviation="2.5"></fedropshadow></filter><clippath id="highcharts-mpn8hua-1632-"><rect x="0" y="0" width="1260" height="131" fill="none"></rect></clippath><clippath id="highcharts-mpn8hua-1654-"><rect x="0" y="0" width="1260" height="131" fill="none"></rect></clippath><clippath id="highcharts-mpn8hua-1676-"><rect x="0" y="0" width="1260" height="131" fill="none"></rect></clippath></defs><rect fill="none" class="highcharts-background" filter="none" x="0" y="0" width="1388" height="268" rx="0" ry="0"></rect><rect fill="none" class="highcharts-plot-background" x="64" y="53" width="1260" height="131" filter="none"></rect><g class="highcharts-grid highcharts-xaxis-grid" data-z-index="1"><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 123.5 53 L 123.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 183.5 53 L 183.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 243.5 53 L 243.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 303.5 53 L 303.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 363.5 53 L 363.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 423.5 53 L 423.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 483.5 53 L 483.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 543.5 53 L 543.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 603.5 53 L 603.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 663.5 53 L 663.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 723.5 53 L 723.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 783.5 53 L 783.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 843.5 53 L 843.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 903.5 53 L 903.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 963.5 53 L 963.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 1023.5 53 L 1023.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 1083.5 53 L 1083.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 1143.5 53 L 1143.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 1203.5 53 L 1203.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 1263.5 53 L 1263.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 1323.5 53 L 1323.5 184" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="0" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 63.5 53 L 63.5 184" opacity="1"></path></g><g class="highcharts-grid highcharts-yaxis-grid" data-z-index="1"><path fill="none" stroke="#e6e6e6" stroke-width="1" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 64 184.5 L 1324 184.5" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="1" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 64 52.5 L 1324 52.5" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="1" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 64 119.5 L 1324 119.5" opacity="1"></path></g><g class="highcharts-grid highcharts-yaxis-grid" data-z-index="1"><path fill="none" stroke="#e6e6e6" stroke-width="1" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 64 184.5 L 1324 184.5" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="1" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 64 52.5 L 1324 52.5" opacity="1"></path><path fill="none" stroke="#e6e6e6" stroke-width="1" stroke-dasharray="none" data-z-index="1" class="highcharts-grid-line" d="M 64 119.5 L 1324 119.5" opacity="1"></path></g><rect fill="none" class="highcharts-plot-border" data-z-index="1" stroke="#cccccc" stroke-width="0" x="64" y="53" width="1260" height="131"></rect><g class="highcharts-axis highcharts-xaxis" data-z-index="2"><path fill="none" class="highcharts-axis-line" stroke="#333333" stroke-width="1" data-z-index="7" d="M 64 184.5 L 1324 184.5"></path></g><g class="highcharts-axis highcharts-yaxis" data-z-index="2"><text x="20.977272033691406" data-z-index="7" text-anchor="middle" transform="translate(0,0) rotate(270 20.977272033691406 118.5)" class="highcharts-axis-title" style="color: white; font-size: 1.5vh; fill: white;" y="118.5">(kWh)</text><path fill="none" class="highcharts-axis-line" stroke="#333333" stroke-width="0" data-z-index="7" d="M 64 53 L 64 184"></path></g><g class="highcharts-axis highcharts-yaxis" data-z-index="2"><text x="1367.0227279663086" data-z-index="7" text-anchor="middle" transform="translate(0,0) rotate(90 1367.0227279663086 118.5)" class="highcharts-axis-title" style="color: white; font-size: 1.5vh; fill: white;" y="118.5">(Carbon Footprint)</text><path fill="none" class="highcharts-axis-line" stroke="#333333" stroke-width="0" data-z-index="7" d="M 1324 53 L 1324 184"></path></g><g class="highcharts-series-group" data-z-index="3" filter="none"><g class="highcharts-series highcharts-series-0 highcharts-column-series highcharts-tracker" data-z-index="0.1" opacity="1" transform="translate(64,53) scale(1 1)" clip-path="url(#highcharts-mpn8hua-1654-)"><path fill="#0294A5" d="M 17.5 71.5 L 23.5 71.5 A 3 3 0 0 1 26.5 74.5 L 26.5 131.5 A 0 0 0 0 1 26.5 131.5 L 14.5 131.5 A 0 0 0 0 1 14.5 131.5 L 14.5 74.5 A 3 3 0 0 1 17.5 71.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 77.5 71.5 L 83.5 71.5 A 3 3 0 0 1 86.5 74.5 L 86.5 131.5 A 0 0 0 0 1 86.5 131.5 L 74.5 131.5 A 0 0 0 0 1 74.5 131.5 L 74.5 74.5 A 3 3 0 0 1 77.5 71.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 137.5 76.5 L 143.5 76.5 A 3 3 0 0 1 146.5 79.5 L 146.5 131.5 A 0 0 0 0 1 146.5 131.5 L 134.5 131.5 A 0 0 0 0 1 134.5 131.5 L 134.5 79.5 A 3 3 0 0 1 137.5 76.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 197.5 31.5 L 203.5 31.5 A 3 3 0 0 1 206.5 34.5 L 206.5 131.5 A 0 0 0 0 1 206.5 131.5 L 194.5 131.5 A 0 0 0 0 1 194.5 131.5 L 194.5 34.5 A 3 3 0 0 1 197.5 31.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 257.5 36.5 L 263.5 36.5 A 3 3 0 0 1 266.5 39.5 L 266.5 131.5 A 0 0 0 0 1 266.5 131.5 L 254.5 131.5 A 0 0 0 0 1 254.5 131.5 L 254.5 39.5 A 3 3 0 0 1 257.5 36.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 317.5 40.5 L 323.5 40.5 A 3 3 0 0 1 326.5 43.5 L 326.5 131.5 A 0 0 0 0 1 326.5 131.5 L 314.5 131.5 A 0 0 0 0 1 314.5 131.5 L 314.5 43.5 A 3 3 0 0 1 317.5 40.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 377.5 24.5 L 383.5 24.5 A 3 3 0 0 1 386.5 27.5 L 386.5 131.5 A 0 0 0 0 1 386.5 131.5 L 374.5 131.5 A 0 0 0 0 1 374.5 131.5 L 374.5 27.5 A 3 3 0 0 1 377.5 24.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 437.5 97.5 L 443.5 97.5 A 3 3 0 0 1 446.5 100.5 L 446.5 131.5 A 0 0 0 0 1 446.5 131.5 L 434.5 131.5 A 0 0 0 0 1 434.5 131.5 L 434.5 100.5 A 3 3 0 0 1 437.5 97.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 497.5 57.5 L 503.5 57.5 A 3 3 0 0 1 506.5 60.5 L 506.5 131.5 A 0 0 0 0 1 506.5 131.5 L 494.5 131.5 A 0 0 0 0 1 494.5 131.5 L 494.5 60.5 A 3 3 0 0 1 497.5 57.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 557.5 37.5 L 563.5 37.5 A 3 3 0 0 1 566.5 40.5 L 566.5 131.5 A 0 0 0 0 1 566.5 131.5 L 554.5 131.5 A 0 0 0 0 1 554.5 131.5 L 554.5 40.5 A 3 3 0 0 1 557.5 37.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 617.5 56.5 L 623.5 56.5 A 3 3 0 0 1 626.5 59.5 L 626.5 131.5 A 0 0 0 0 1 626.5 131.5 L 614.5 131.5 A 0 0 0 0 1 614.5 131.5 L 614.5 59.5 A 3 3 0 0 1 617.5 56.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 677.5 9.5 L 683.5 9.5 A 3 3 0 0 1 686.5 12.5 L 686.5 131.5 A 0 0 0 0 1 686.5 131.5 L 674.5 131.5 A 0 0 0 0 1 674.5 131.5 L 674.5 12.5 A 3 3 0 0 1 677.5 9.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 737.5 24.5 L 743.5 24.5 A 3 3 0 0 1 746.5 27.5 L 746.5 131.5 A 0 0 0 0 1 746.5 131.5 L 734.5 131.5 A 0 0 0 0 1 734.5 131.5 L 734.5 27.5 A 3 3 0 0 1 737.5 24.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 797.5 33.5 L 803.5 33.5 A 3 3 0 0 1 806.5 36.5 L 806.5 131.5 A 0 0 0 0 1 806.5 131.5 L 794.5 131.5 A 0 0 0 0 1 794.5 131.5 L 794.5 36.5 A 3 3 0 0 1 797.5 33.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 857.5 92.5 L 863.5 92.5 A 3 3 0 0 1 866.5 95.5 L 866.5 131.5 A 0 0 0 0 1 866.5 131.5 L 854.5 131.5 A 0 0 0 0 1 854.5 131.5 L 854.5 95.5 A 3 3 0 0 1 857.5 92.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 917.5 39.5 L 923.5 39.5 A 3 3 0 0 1 926.5 42.5 L 926.5 131.5 A 0 0 0 0 1 926.5 131.5 L 914.5 131.5 A 0 0 0 0 1 914.5 131.5 L 914.5 42.5 A 3 3 0 0 1 917.5 39.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 977.5 46.5 L 983.5 46.5 A 3 3 0 0 1 986.5 49.5 L 986.5 131.5 A 0 0 0 0 1 986.5 131.5 L 974.5 131.5 A 0 0 0 0 1 974.5 131.5 L 974.5 49.5 A 3 3 0 0 1 977.5 46.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 1037.5 15.5 L 1043.5 15.5 A 3 3 0 0 1 1046.5 18.5 L 1046.5 131.5 A 0 0 0 0 1 1046.5 131.5 L 1034.5 131.5 A 0 0 0 0 1 1034.5 131.5 L 1034.5 18.5 A 3 3 0 0 1 1037.5 15.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 1097.5 45.5 L 1103.5 45.5 A 3 3 0 0 1 1106.5 48.5 L 1106.5 131.5 A 0 0 0 0 1 1106.5 131.5 L 1094.5 131.5 A 0 0 0 0 1 1094.5 131.5 L 1094.5 48.5 A 3 3 0 0 1 1097.5 45.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 1157.5 13.5 L 1163.5 13.5 A 3 3 0 0 1 1166.5 16.5 L 1166.5 131.5 A 0 0 0 0 1 1166.5 131.5 L 1154.5 131.5 A 0 0 0 0 1 1154.5 131.5 L 1154.5 16.5 A 3 3 0 0 1 1157.5 13.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#0294A5" d="M 1217.5 35.5 L 1223.5 35.5 A 3 3 0 0 1 1226.5 38.5 L 1226.5 131.5 A 0 0 0 0 1 1226.5 131.5 L 1214.5 131.5 A 0 0 0 0 1 1214.5 131.5 L 1214.5 38.5 A 3 3 0 0 1 1217.5 35.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path></g><g class="highcharts-markers highcharts-series-0 highcharts-column-series" data-z-index="0.1" opacity="1" transform="translate(64,53) scale(1 1)" clip-path="none"></g><g class="highcharts-series highcharts-series-1 highcharts-column-series highcharts-tracker" data-z-index="0.1" opacity="1" transform="translate(64,53) scale(1 1)" clip-path="url(#highcharts-mpn8hua-1676-)"><path fill="#ff961d" d="M 35.5 71.5 L 41.5 71.5 A 3 3 0 0 1 44.5 74.5 L 44.5 131.5 A 0 0 0 0 1 44.5 131.5 L 32.5 131.5 A 0 0 0 0 1 32.5 131.5 L 32.5 74.5 A 3 3 0 0 1 35.5 71.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 95.5 71.5 L 101.5 71.5 A 3 3 0 0 1 104.5 74.5 L 104.5 131.5 A 0 0 0 0 1 104.5 131.5 L 92.5 131.5 A 0 0 0 0 1 92.5 131.5 L 92.5 74.5 A 3 3 0 0 1 95.5 71.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 155.5 76.5 L 161.5 76.5 A 3 3 0 0 1 164.5 79.5 L 164.5 131.5 A 0 0 0 0 1 164.5 131.5 L 152.5 131.5 A 0 0 0 0 1 152.5 131.5 L 152.5 79.5 A 3 3 0 0 1 155.5 76.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 215.5 31.5 L 221.5 31.5 A 3 3 0 0 1 224.5 34.5 L 224.5 131.5 A 0 0 0 0 1 224.5 131.5 L 212.5 131.5 A 0 0 0 0 1 212.5 131.5 L 212.5 34.5 A 3 3 0 0 1 215.5 31.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 275.5 36.5 L 281.5 36.5 A 3 3 0 0 1 284.5 39.5 L 284.5 131.5 A 0 0 0 0 1 284.5 131.5 L 272.5 131.5 A 0 0 0 0 1 272.5 131.5 L 272.5 39.5 A 3 3 0 0 1 275.5 36.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 335.5 40.5 L 341.5 40.5 A 3 3 0 0 1 344.5 43.5 L 344.5 131.5 A 0 0 0 0 1 344.5 131.5 L 332.5 131.5 A 0 0 0 0 1 332.5 131.5 L 332.5 43.5 A 3 3 0 0 1 335.5 40.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 395.5 24.5 L 401.5 24.5 A 3 3 0 0 1 404.5 27.5 L 404.5 131.5 A 0 0 0 0 1 404.5 131.5 L 392.5 131.5 A 0 0 0 0 1 392.5 131.5 L 392.5 27.5 A 3 3 0 0 1 395.5 24.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 455.5 97.5 L 461.5 97.5 A 3 3 0 0 1 464.5 100.5 L 464.5 131.5 A 0 0 0 0 1 464.5 131.5 L 452.5 131.5 A 0 0 0 0 1 452.5 131.5 L 452.5 100.5 A 3 3 0 0 1 455.5 97.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 515.5 57.5 L 521.5 57.5 A 3 3 0 0 1 524.5 60.5 L 524.5 131.5 A 0 0 0 0 1 524.5 131.5 L 512.5 131.5 A 0 0 0 0 1 512.5 131.5 L 512.5 60.5 A 3 3 0 0 1 515.5 57.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 575.5 37.5 L 581.5 37.5 A 3 3 0 0 1 584.5 40.5 L 584.5 131.5 A 0 0 0 0 1 584.5 131.5 L 572.5 131.5 A 0 0 0 0 1 572.5 131.5 L 572.5 40.5 A 3 3 0 0 1 575.5 37.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 635.5 56.5 L 641.5 56.5 A 3 3 0 0 1 644.5 59.5 L 644.5 131.5 A 0 0 0 0 1 644.5 131.5 L 632.5 131.5 A 0 0 0 0 1 632.5 131.5 L 632.5 59.5 A 3 3 0 0 1 635.5 56.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 695.5 9.5 L 701.5 9.5 A 3 3 0 0 1 704.5 12.5 L 704.5 131.5 A 0 0 0 0 1 704.5 131.5 L 692.5 131.5 A 0 0 0 0 1 692.5 131.5 L 692.5 12.5 A 3 3 0 0 1 695.5 9.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 755.5 24.5 L 761.5 24.5 A 3 3 0 0 1 764.5 27.5 L 764.5 131.5 A 0 0 0 0 1 764.5 131.5 L 752.5 131.5 A 0 0 0 0 1 752.5 131.5 L 752.5 27.5 A 3 3 0 0 1 755.5 24.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 815.5 33.5 L 821.5 33.5 A 3 3 0 0 1 824.5 36.5 L 824.5 131.5 A 0 0 0 0 1 824.5 131.5 L 812.5 131.5 A 0 0 0 0 1 812.5 131.5 L 812.5 36.5 A 3 3 0 0 1 815.5 33.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 875.5 92.5 L 881.5 92.5 A 3 3 0 0 1 884.5 95.5 L 884.5 131.5 A 0 0 0 0 1 884.5 131.5 L 872.5 131.5 A 0 0 0 0 1 872.5 131.5 L 872.5 95.5 A 3 3 0 0 1 875.5 92.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 935.5 39.5 L 941.5 39.5 A 3 3 0 0 1 944.5 42.5 L 944.5 131.5 A 0 0 0 0 1 944.5 131.5 L 932.5 131.5 A 0 0 0 0 1 932.5 131.5 L 932.5 42.5 A 3 3 0 0 1 935.5 39.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 995.5 46.5 L 1001.5 46.5 A 3 3 0 0 1 1004.5 49.5 L 1004.5 131.5 A 0 0 0 0 1 1004.5 131.5 L 992.5 131.5 A 0 0 0 0 1 992.5 131.5 L 992.5 49.5 A 3 3 0 0 1 995.5 46.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 1055.5 15.5 L 1061.5 15.5 A 3 3 0 0 1 1064.5 18.5 L 1064.5 131.5 A 0 0 0 0 1 1064.5 131.5 L 1052.5 131.5 A 0 0 0 0 1 1052.5 131.5 L 1052.5 18.5 A 3 3 0 0 1 1055.5 15.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 1115.5 45.5 L 1121.5 45.5 A 3 3 0 0 1 1124.5 48.5 L 1124.5 131.5 A 0 0 0 0 1 1124.5 131.5 L 1112.5 131.5 A 0 0 0 0 1 1112.5 131.5 L 1112.5 48.5 A 3 3 0 0 1 1115.5 45.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 1175.5 13.5 L 1181.5 13.5 A 3 3 0 0 1 1184.5 16.5 L 1184.5 131.5 A 0 0 0 0 1 1184.5 131.5 L 1172.5 131.5 A 0 0 0 0 1 1172.5 131.5 L 1172.5 16.5 A 3 3 0 0 1 1175.5 13.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path><path fill="#ff961d" d="M 1235.5 35.5 L 1241.5 35.5 A 3 3 0 0 1 1244.5 38.5 L 1244.5 131.5 A 0 0 0 0 1 1244.5 131.5 L 1232.5 131.5 A 0 0 0 0 1 1232.5 131.5 L 1232.5 38.5 A 3 3 0 0 1 1235.5 35.5 Z" stroke="#ffffff" stroke-width="0.5" opacity="1" filter="none" class="highcharts-point"></path></g><g class="highcharts-markers highcharts-series-1 highcharts-column-series" data-z-index="0.1" opacity="1" transform="translate(64,53) scale(1 1)" clip-path="none"></g><g class="highcharts-series highcharts-series-2 highcharts-spline-series" data-z-index="0.1" opacity="1" transform="translate(64,53) scale(1 1)" clip-path="url(#highcharts-mpn8hua-1654-)"><path fill="none" d="M 30 70.79894999999999 C 30 70.79894999999999 66 70.79894999999999 90 71.327316666667 C 114 71.85568333333401 126 76.0193 150 76.0193 C 174 76.0193 186 30.592866666670005 210 30.592866666670005 C 234 30.592866666670005 246 33.6744233333344 270 35.616716666667 C 294 37.5590099999996 306 40.304333333333005 330 40.304333333333005 C 354 40.304333333333005 366 23.970816666670004 390 23.970816666670004 C 414 23.970816666670004 426 97.095016666667 450 97.095016666667 C 474 97.095016666667 486 68.81299000000038 510 56.812516666666994 C 534 44.8120433333336 546 37.092650000000006 570 37.092650000000006 C 594 37.092650000000006 606 56.476283333333 630 56.476283333333 C 654 56.476283333333 666 8.929833333329995 690 8.929833333329995 C 714 8.929833333329995 726 19.039976666669396 750 23.918416666669998 C 774 28.7968566666706 786 23.918416666669998 810 33.322033333332996 C 834 42.725649999995994 846 91.566816666667 870 91.566816666667 C 894 91.566816666667 906 39.363316666667004 930 39.363316666667004 C 954 39.363316666667004 966 45.943883333333005 990 45.943883333333005 C 1014 45.943883333333005 1026 15.169799999999995 1050 15.169799999999995 C 1074 15.169799999999995 1086 45.05308333333301 1110 45.05308333333301 C 1134 45.05308333333301 1146 12.6939 1170 12.6939 C 1194 12.6939 1230 35.0556 1230 35.0556" class="highcharts-graph" data-z-index="1" stroke="#fadb71" stroke-width="1" stroke-linejoin="round" stroke-linecap="round" filter="none"></path><path fill="none" d="M 30 70.79894999999999 C 30 70.79894999999999 66 70.79894999999999 90 71.327316666667 C 114 71.85568333333401 126 76.0193 150 76.0193 C 174 76.0193 186 30.592866666670005 210 30.592866666670005 C 234 30.592866666670005 246 33.6744233333344 270 35.616716666667 C 294 37.5590099999996 306 40.304333333333005 330 40.304333333333005 C 354 40.304333333333005 366 23.970816666670004 390 23.970816666670004 C 414 23.970816666670004 426 97.095016666667 450 97.095016666667 C 474 97.095016666667 486 68.81299000000038 510 56.812516666666994 C 534 44.8120433333336 546 37.092650000000006 570 37.092650000000006 C 594 37.092650000000006 606 56.476283333333 630 56.476283333333 C 654 56.476283333333 666 8.929833333329995 690 8.929833333329995 C 714 8.929833333329995 726 19.039976666669396 750 23.918416666669998 C 774 28.7968566666706 786 23.918416666669998 810 33.322033333332996 C 834 42.725649999995994 846 91.566816666667 870 91.566816666667 C 894 91.566816666667 906 39.363316666667004 930 39.363316666667004 C 954 39.363316666667004 966 45.943883333333005 990 45.943883333333005 C 1014 45.943883333333005 1026 15.169799999999995 1050 15.169799999999995 C 1074 15.169799999999995 1086 45.05308333333301 1110 45.05308333333301 C 1134 45.05308333333301 1146 12.6939 1170 12.6939 C 1194 12.6939 1230 35.0556 1230 35.0556" data-z-index="2" class="highcharts-tracker-line" stroke-linecap="round" stroke-linejoin="round" stroke="rgba(192,192,192,0.0001)" stroke-width="21"></path></g><g class="highcharts-markers highcharts-series-2 highcharts-spline-series highcharts-tracker" data-z-index="0.1" opacity="1" transform="translate(64,53) scale(1 1)" clip-path="none"><path fill="#fadb71" d="M 30 74.79894999999999 A 4 4 0 1 1 30.003999999333335 74.79894800000015 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 90 75.327316666667 A 4 4 0 1 1 90.00399999933333 75.32731466666716 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 150 80.0193 A 4 4 0 1 1 150.00399999933333 80.01929800000016 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 210 34.592866666670005 A 4 4 0 1 1 210.00399999933333 34.592864666670174 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 270 39.616716666667 A 4 4 0 1 1 270.00399999933336 39.61671466666717 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 330 44.304333333333005 A 4 4 0 1 1 330.00399999933336 44.304331333333174 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 390 27.970816666670004 A 4 4 0 1 1 390.00399999933336 27.970814666670172 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 450 101.095016666667 A 4 4 0 1 1 450.00399999933336 101.09501466666715 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 510 60.812516666666994 A 4 4 0 1 1 510.00399999933336 60.81251466666716 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 570 41.092650000000006 A 4 4 0 1 1 570.0039999993334 41.092648000000175 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 630 60.476283333333 A 4 4 0 1 1 630.0039999993334 60.47628133333317 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 690 12.929833333329995 A 4 4 0 1 1 690.0039999993334 12.929831333330162 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 750 27.918416666669998 A 4 4 0 1 1 750.0039999993334 27.918414666670166 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 810 37.322033333332996 A 4 4 0 1 1 810.0039999993334 37.322031333333165 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 870 95.566816666667 A 4 4 0 1 1 870.0039999993334 95.56681466666716 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 930 43.363316666667004 A 4 4 0 1 1 930.0039999993334 43.36331466666717 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 990 49.943883333333005 A 4 4 0 1 1 990.0039999993334 49.943881333333174 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 1050 19.169799999999995 A 4 4 0 1 1 1050.0039999993332 19.169798000000164 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 1110 49.05308333333301 A 4 4 0 1 1 1110.0039999993332 49.053081333333175 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 1170 16.6939 A 4 4 0 1 1 1170.0039999993332 16.693898000000168 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path><path fill="#fadb71" d="M 1230 39.0556 A 4 4 0 1 1 1230.0039999993332 39.05559800000017 Z" stroke="#fadb71" stroke-width="3" opacity="1" class="highcharts-point"></path></g></g><g class="highcharts-exporting-group" data-z-index="3"><g class="highcharts-no-tooltip highcharts-button highcharts-contextbutton" stroke-linecap="round" style="cursor: pointer;" transform="translate(1350,10)"><title>Chart context menu</title><rect fill="#ffffff" class="highcharts-button-box" x="0.5" y="0.5" width="28" height="28" rx="2" ry="2" stroke="none" stroke-width="1"></rect><path fill="#666666" d="M 8 9.5 L 22 9.5 M 8 14.5 L 22 14.5 M 8 19.5 L 22 19.5" class="highcharts-button-symbol" data-z-index="1" stroke="#666666" stroke-width="3"></path><text x="0" data-z-index="1" y="18.5" style="color: rgb(51, 51, 51); font-size: 0.8em; font-weight: normal; fill: rgb(51, 51, 51);"></text></g></g><text x="694" text-anchor="middle" class="highcharts-title" data-z-index="4" style="font-size: 3.5vh; color: rgb(255, 255, 255); font-weight: bold; text-shadow: rgb(0, 0, 0) 1px 1px 2px; fill: rgb(255, 255, 255);" y="28">每日用電量(近二十天)</text><text x="694" text-anchor="middle" class="highcharts-subtitle" data-z-index="4" style="color: rgb(102, 102, 102); font-size: 0.8em; fill: rgb(102, 102, 102);" y="52"></text><text x="10" text-anchor="start" class="highcharts-caption" data-z-index="4" style="color: rgb(102, 102, 102); font-size: 0.8em; fill: rgb(102, 102, 102);" y="265"></text><g class="highcharts-legend highcharts-no-tooltip" data-z-index="7" transform="translate(586,223)"><rect fill="none" class="highcharts-legend-box" rx="0" ry="0" stroke="#999999" stroke-width="0" filter="none" x="0" y="0" width="216" height="30"></rect><g data-z-index="1"><g><g class="highcharts-legend-item highcharts-column-series highcharts-color-undefined highcharts-series-0" data-z-index="1" transform="translate(8,3)"><text x="21" text-anchor="start" data-z-index="2" style="color: white; cursor: pointer; font-size: 1.5vh; text-decoration: none; fill: white;" y="17">用電量</text><rect x="2" y="6" rx="6" ry="6" width="12" height="12" fill="#0294A5" class="highcharts-point" data-z-index="3"></rect></g><g class="highcharts-legend-item highcharts-column-series highcharts-color-undefined highcharts-series-1" data-z-index="1" transform="translate(81.50907897949219,3)"><text x="21" y="17" text-anchor="start" data-z-index="2" style="color: white; cursor: pointer; font-size: 1.5vh; text-decoration: none; fill: white;">碳足跡</text><rect x="2" y="6" rx="6" ry="6" width="12" height="12" fill="#ff961d" class="highcharts-point" data-z-index="3"></rect></g><g class="highcharts-legend-item highcharts-spline-series highcharts-color-undefined highcharts-series-2" data-z-index="1" transform="translate(155.01815795898438,3)"><path fill="none" class="highcharts-graph" stroke-width="1" stroke-linecap="round" d="M 0.5 13 L 15.5 13" stroke="#fadb71"></path><path fill="#fadb71" d="M 8 17 A 4 4 0 1 1 8.003999999333336 16.99999800000017 Z" class="highcharts-point" stroke="#fadb71" stroke-width="3" opacity="1"></path><text x="21" y="17" text-anchor="start" data-z-index="2" style="color: white; cursor: pointer; font-size: 1.5vh; text-decoration: none; fill: white;">用電量</text></g></g></g></g><g class="highcharts-axis-labels highcharts-xaxis-labels" data-z-index="7"><text x="94" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/05</text><text x="154" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/06</text><text x="214" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/07</text><text x="274" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/08</text><text x="334" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/09</text><text x="394" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/10</text><text x="454" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/11</text><text x="514" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/12</text><text x="574" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/13</text><text x="634" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/14</text><text x="694" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/15</text><text x="754" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/16</text><text x="814" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/17</text><text x="874" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/18</text><text x="934" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/19</text><text x="994" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/20</text><text x="1054" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/21</text><text x="1114" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/22</text><text x="1174" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/23</text><text x="1234" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/24</text><text x="1294" text-anchor="middle" transform="translate(0,0)" style="color: white; cursor: default; font-size: 1.5vh; fill: white;" y="211" opacity="1">06/25</text></g><g class="highcharts-axis-labels highcharts-yaxis-labels" data-z-index="7"><text x="49" text-anchor="end" transform="translate(0,0)" style="color: rgb(2, 148, 165); cursor: default; font-size: 1.5vh; fill: rgb(2, 148, 165);" y="190" opacity="1">0</text><text x="49" text-anchor="end" transform="translate(0,0)" style="color: rgb(2, 148, 165); cursor: default; font-size: 1.5vh; fill: rgb(2, 148, 165);" y="59" opacity="1">600</text><text x="49" text-anchor="end" transform="translate(0,0)" style="color: rgb(2, 148, 165); cursor: default; font-size: 1.5vh; fill: rgb(2, 148, 165);" y="125" opacity="1">300</text></g><g class="highcharts-axis-labels highcharts-yaxis-labels" data-z-index="7"><text x="1339" text-anchor="start" transform="translate(0,0)" style="color: rgb(255, 150, 29); cursor: default; font-size: 1.5vh; fill: rgb(255, 150, 29);" y="190" opacity="1">0</text><text x="1339" text-anchor="start" transform="translate(0,0)" style="color: rgb(255, 150, 29); cursor: default; font-size: 1.5vh; fill: rgb(255, 150, 29);" y="59" opacity="1">600</text><text x="1339" text-anchor="start" transform="translate(0,0)" style="color: rgb(255, 150, 29); cursor: default; font-size: 1.5vh; fill: rgb(255, 150, 29);" y="125" opacity="1">300</text></g></svg></div></div>
+        </div>
+      </div>
+    </main>
+  <div class="mdl-layout__obfuscator"></div></div></div>
+
+
+
+
+
+
+
+
+<script>
+
+  function submitForm() {
+    // 获取表单元素的值
+    var inputElement = document.getElementById("inputValue");
+    var inputValue = inputElement.value;
+
+    // 执行需要的操作，例如显示结果
+    // var resultElement = document.getElementById("result");
+    // resultElement.innerHTML = "您输入的值是：" + inputValue;
+
+    // 清空输入框
+    // inputElement.value = "";
+    // console.log(inputValue.value);
+  }
+
+
+
+  function autoRefresh() {
+    console.log("更新");
+
+    $.ajax({
+      type: 'POST',
+      url: "./piechart.js",
+      data: {
+
+
+      },
+      success: function (result) {
+
+        drawpiechart([["\u5316\u9a57\u5ba4",8.177999999999999],["\u5305\u88dd",0],["\u81ea\u52d5\u79e4\u6599",8.589],["\u5b9a\u578b",159.38799999999998],["\u7a7a\u58d3\u6a5f",45.46],["\u67d3\u6a5f",44.989000000000004],["\u8d77\u6bdb",36.324],["\u812b\u6c34",0],["\u8edf\u6c34",24.66],["\u6e96\u5099\u5340",6.928],["\u7cbe\u7149",0],["\u5ee2\u6c34",41.576],["\u934b\u7210",63.351]],
+          '各區域用電量占比',
+          '用電量占比',
+          '當日無資料上傳',
+          inputValue.value,
+          '各區域碳足跡');
+
+
+
+
+      }
+
+
+
+
+    });
+
+
+    $.ajax({
+      type: 'POST',
+      url: "./combochart.js",
+      data: {
+
+
+      },
+      success: function (result) {
+
+
+
+
+        drawcombochart([["06\/05"],["06\/06"],["06\/07"],["06\/08"],["06\/09"],["06\/10"],["06\/11"],["06\/12"],["06\/13"],["06\/14"],["06\/15"],["06\/16"],["06\/17"],["06\/18"],["06\/19"],["06\/20"],["06\/21"],["06\/22"],["06\/23"],["06\/24"],["06\/25"]],
+          [[275.73],[273.31],[251.82],[459.88],[436.87],[415.4],[490.21],[155.29],[339.79],[430.11],[341.33],[559.1],[490.45],[447.38],[180.61],[419.71],[389.57],[530.52],[393.65],[541.86],[439.44]],
+          [],
+          [[275.73],[273.31],[251.82],[459.88],[436.87],[415.4],[490.21],[155.29],[339.79],[430.11],[341.33],[559.1],[490.45],[447.38],[180.61],[419.71],[389.57],[530.52],[393.65],[541.86],[439.44]],
+          '每日用電量(近二十天)',
+          '用電量',
+          '當日無資料上傳',
+          inputValue.value,
+        '碳足跡');
+
+      }
+
+
+    });
+    setTimeout(function () {
+      autoRefresh();
+      // clearInterval(timerId);
+
+      // clearAll();
+
+
+    }, 10000);
+  }
+  autoRefresh();
+</script></body></html>

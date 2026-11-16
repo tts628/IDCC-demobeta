@@ -1,0 +1,22 @@
+.single-row-grid {
+	height: 110px;
+}
+
+/* Optionally, center the header text */
+.header-text-center .ag-header-cell-label {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.full-page-grid {
+	height: 80vh;
+}
+
+.three-quarters-grid {
+	height: 60vh;
+}
+
+.half-page-grid {
+	height: 25vh;
+}

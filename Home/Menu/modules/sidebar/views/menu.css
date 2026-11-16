@@ -1,0 +1,338 @@
+.menu-navigator {
+	opacity: 0;
+	z-index: 10;
+	transition: opacity 0.2s ease-in-out;
+	-webkit-transition: opacity 0.2s ease-in-out;
+	-moz-transition: opacity 0.2s ease-in-out;
+	-ms-transition: opacity 0.2s ease-in-out;
+	-o-transition: opacity 0.2s ease-in-out;
+}
+
+.main-title-text {
+	padding-left: 10px;
+}
+
+.menu-navigator:not(.sidebar-show-toggler) {
+	border-radius: 7px;
+	-webkit-border-radius: 7px;
+	-moz-border-radius: 7px;
+	-ms-border-radius: 7px;
+	-o-border-radius: 7px;
+}
+
+.sidebar-show-toggler {
+	border-radius: 20px;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	-ms-border-radius: 20px;
+	-o-border-radius: 20px;
+}
+
+.carousel-toggler-container {
+	top: 7rem;
+	right: 1rem;
+}
+
+.sidebar-show-toggler {
+	top: 1.2rem;
+	left: 1.2rem;
+}
+
+.client-settings-toggler {
+	top: 4.2rem;
+	right: 1rem;
+}
+
+.carousel-settings-toggler {
+	top: 1.2rem;
+	right: 7rem;
+}
+
+.language-settings-toggler {
+	top: 1.2rem;
+	right: 1rem;
+}
+
+.web-theme-toggler {
+	bottom: 6rem;
+	right: 1rem;
+}
+
+.upload-db-btn {
+	bottom: 6rem;
+	right: 10rem;
+}
+
+.ai-chart {
+	bottom: 10rem;
+	right: 1rem;
+}
+
+@media (min-width: 600px) {
+	/* make chat bubble fixed in corner */
+	#chat-frame {
+		position: fixed;
+		bottom: 220px;
+		right: 0;
+		width: 800px;
+		height: 650px;
+		border: none;
+		border-radius: 16px;
+		box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+		z-index: 9999;
+		background: transparent;
+		overflow: hidden;
+		transform: translateX(110%); /* start offscreen to the right */
+		transition: transform 0.3s ease-in-out;
+	}
+}
+
+@media (max-width: 600px) {
+	/* make chat bubble fixed in corner */
+	#chat-frame {
+		position: fixed;
+		bottom: 220px;
+		right: 0;
+		width: 800px;
+		height: 650px;
+		border: none;
+		border-radius: 16px;
+		box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+		z-index: 9999;
+		background: transparent;
+		overflow: hidden;
+		transform: translateX(110%); /* start offscreen to the right */
+		transition: transform 0.3s ease-in-out;
+	}
+}
+/* make chat bubble fixed in corner */
+/* #chat-frame {
+	position: fixed;
+	bottom: 20px;
+	left: 0;
+	width: 50vw;
+	height: 60vh;
+	border: none;
+	border-radius: 16px;
+	box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+	z-index: 9999;
+	background: transparent;
+	overflow: hidden;
+	transform: translateX(110%);
+	transition: transform 0.3s ease-in-out;
+} */
+
+@media (min-width: 600px) {
+	.carousel-toggler-container {
+		top: 4.2rem;
+		right: 3rem;
+	}
+
+	.sidebar-show-toggler {
+		top: 1.2rem;
+		left: 1.2rem;
+	}
+
+	.client-settings-toggler {
+		top: 1.2rem;
+		right: 17rem;
+	}
+
+	.carousel-settings-toggler {
+		top: 1.2rem;
+		right: 9rem;
+	}
+
+	.language-settings-toggler {
+		top: 1.2rem;
+		right: 3rem;
+	}
+
+	.web-theme-toggler {
+		bottom: 1.2rem;
+		right: 3rem;
+	}
+
+	.upload-db-btn {
+		bottom: 1.2rem;
+		right: 11rem;
+	}
+
+	.ai-chart {
+		bottom: 4rem;
+		right: 3rem;
+	}
+}
+
+.btn-group-toggle .btn input[type="radio"] {
+	display: none;
+}
+
+.btn-group-toggle .btn {
+	background-color: #f8f9fa; /* Equivalent to bg-light */
+	color: black;
+	border: 1px solid #007bff; /* Border to show button boundaries */
+}
+.btn-group-toggle .btn.active {
+	background-color: #007bff; /* Equivalent to bg-primary */
+	color: white;
+}
+
+.left-150 {
+	left: 10px !important;
+}
+
+.pad-left-50 {
+	padding-left: 50px;
+}
+
+.clickable {
+	cursor: pointer;
+}
+
+.drill-toggle i {
+	transition: transform ease-in-out 0.3s;
+	-webkit-transition: transform ease-in-out 0.3s;
+	-moz-transition: transform ease-in-out 0.3s;
+	-ms-transition: transform ease-in-out 0.3s;
+	-o-transition: transform ease-in-out 0.3s;
+}
+
+.rotated-arrow {
+	transform: rotate(180deg);
+}
+
+@media screen and (max-width: 768px) {
+	/* Media query for screens smaller than or equal to 768px */
+	.menu-toggle {
+		opacity: 0.6;
+		/* Opacity for small screens */
+	}
+}
+
+.right-0 {
+	right: 0 !important;
+}
+
+.menu-toggle:hover {
+	cursor: pointer;
+}
+
+.sidebar-content {
+	border-radius: 20px;
+	border-style: solid;
+	border-color: white;
+	border-width: 1px;
+	position: absolute;
+	display: none;
+	top: 20px;
+	left: 20px;
+	width: 300px;
+	/* Set the width of .sidebar-content */
+	height: 95%;
+	background-color: #000510;
+	/* Background color of .sidebar-content */
+	box-sizing: border-box;
+	z-index: 10;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.settings-text {
+	position: absolute;
+	bottom: 10px;
+	/* Adjust the distance from the bottom as needed */
+	right: 10px;
+	/* Adjust the distance from the right as needed */
+	font-size: 14px;
+	/* Adjust the font size as needed */
+	color: #333;
+	/* Text color */
+}
+
+.justify-content-between {
+	justify-content: space-between !important;
+}
+
+.icon-rotated {
+	transform: rotate(180deg);
+	transform-origin: center;
+}
+
+#orderedListContainer ul {
+	list-style: none;
+	/* Removes bullet points */
+}
+
+#orderedListContainer {
+	list-style-type: none;
+	/* Removes numbering */
+	padding: 0;
+	margin: 0;
+	/* Remove any padding */
+	transition: all ease-in-out 0.3s;
+}
+
+#orderedListContainer li {
+	user-select: none;
+}
+
+.drill-toggle {
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 20px;
+}
+
+.drill-toggle i {
+	transition: transform ease-in-out 0.3s;
+	display: inline-block;
+}
+
+#orderedListContainer ul {
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.drill-toggle,
+#orderedListContainer ul {
+	transition: background ease-in-out 0.3s, color ease-in-out 0.3s;
+}
+
+#orderedListContainer ul:hover,
+.drill-toggle:hover {
+	background-color: #ddd;
+	color: black;
+	cursor: pointer;
+}
+
+#orderedListContainer a {
+	text-decoration: none;
+	/* Remove underline */
+	color: inherit;
+	/* Use the inherit value to inherit the color from the parent element */
+}
+
+#orderedListContainer a:hover {
+	cursor: pointer;
+	color: inherit;
+	/* Use the inherit value to inherit the color from the parent element */
+}
+
+#orderedListContainer ul:not(.single-layer-navigator) {
+	display: none;
+}
+
+#LA-logo {
+	height: 50px;
+	margin: 20px;
+	user-select: none;
+}
+
+.inline-block {
+	display: inline-block !important;
+}
+
+/* When visible */
+#chat-frame.visible {
+	transform: translateX(0);
+}

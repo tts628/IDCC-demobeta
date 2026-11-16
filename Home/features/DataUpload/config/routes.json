@@ -1,0 +1,7 @@
+{
+	"localPaths": {
+		"validation": "./pages/uploads/file_validation.php",
+		"upload": "./pages/uploads/data_upload.php",
+		"localCSS": "./features/DataUpload/css/DataUpload.css"
+	}
+}

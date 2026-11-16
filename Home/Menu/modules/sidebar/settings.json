@@ -1,0 +1,1714 @@
+{
+	"html": [
+		{
+			"modal": {
+				"sidebar": "true",
+				"headerHtml": [
+					{
+						"element": "h5",
+						"class": "fw-bold",
+						"text": "輪播畫面設定"
+					}
+				],
+				"bodyHtml": [
+					{
+						"element": "div",
+						"id": "carousel-settings-body"
+					}
+				],
+				"footerHtml": [
+					{
+						"element": "button",
+						"type": "button",
+						"class": "btn btn-primary",
+						"id": "save-carousel-settings",
+						"text": "儲存輪播設定"
+					},
+					{
+						"element": "button",
+						"type": "button",
+						"class": "btn btn-danger",
+						"ariaLabel": "Close",
+						"data": {
+							"bs-dismiss": "modal"
+						},
+						"id": "remove-screen-btn",
+						"text": "取消輪播畫面"
+					}
+				]
+			},
+			"id": "carousel-settings-modal"
+		},
+		{
+			"modal": {
+				"sidebar": "true",
+				"headerHtml": [
+					{
+						"element": "h5",
+						"class": "fw-bold",
+						"text": "客戶設定"
+					}
+				],
+				"bodyHtml": [
+					{
+						"element": "div",
+						"id": "client-settings-body"
+					}
+				]
+			},
+			"id": "client-settings-modal"
+		},
+		{
+			"element": "button",
+			"class": "sidebar-toggler sidebar-show-toggler menu-navigator position-absolute bg-light",
+			"child": {
+				"element": "span",
+				"child": {
+					"element": "i",
+					"class": "fa-solid fa-bars p-2"
+				}
+			}
+		},
+		{
+			"element": "button",
+			"class": "web-theme-toggler menu-navigator position-absolute bg-light",
+			"child": {
+				"element": "span",
+				"child": [
+					{
+						"element": "span",
+						"id": "theme-toggler-text"
+					},
+					{
+						"element": "i",
+						"id": "theme-toggler-icon",
+						"class": "fa-solid fa-lightbulb p-2"
+					}
+				]
+			}
+		},
+		{
+			"element": "button",
+			"class": "ai-chart menu-navigator position-absolute bg-light",
+			"child": [
+				{
+					"element": "span",
+					"id": "ai-chart-btn-text",
+					"html": "&nbsp; AI 報表"
+				},
+				{
+					"element": "i",
+					"class": "fa-solid fa-robot py-2 px-2"
+				}
+			]
+		},
+		{
+			"element": "button",
+			"class": "menu-navigator position-absolute upload-db-btn bg-light",
+			"child": [
+				{
+					"element": "span",
+					"id": "upload-db-btn-text",
+					"html": "&nbsp; 資料上傳"
+				},
+				{
+					"element": "i",
+					"class": "fa-solid fa-arrow-up-from-bracket py-2 px-2"
+				}
+			]
+		},
+		{
+			"element": "form",
+			"id": "data-upload-form",
+			"child": {
+				"element": "input",
+				"type": "file",
+				"id": "upload-db-input",
+				"name": "uploaded-data[]",
+				"hidden": true,
+				"multiple": true
+			}
+		},
+		{
+			"element": "div",
+			"class": "menu-navigator position-absolute carousel-toggler-container",
+			"child": {
+				"element": "input",
+				"type": "checkbox",
+				"id": "bs-carousel-toggler"
+			}
+		},
+		{
+			"element": "button",
+			"class": "client-settings-toggler menu-navigator position-absolute bg-light",
+			"data": {
+				"bs-toggle": "modal",
+				"bs-target": "#client-settings-modal"
+			},
+			"hidden": true,
+			"child": [
+				{
+					"element": "span",
+					"html": "&nbsp; 客戶設定"
+				},
+				{
+					"element": "span",
+					"child": [
+						{
+							"element": "i",
+							"class": "fa-solid fa-user-gear py-2 px-2"
+						}
+					]
+				}
+			]
+		},
+		{
+			"element": "fluid-container",
+			"class": "language-settings-toggler menu-navigator position-absolute btn-group btn-group-toggle",
+			"data": {
+				"toggle": "buttons"
+			},
+			"child": [
+				{
+					"element": "label",
+					"class": "btn",
+					"text": "中",
+					"child": {
+						"element": "input",
+						"type": "radio",
+						"name": "language-option",
+						"id": "zh-language-btn"
+					}
+				},
+				{
+					"element": "label",
+					"class": "btn",
+					"text": "EN",
+					"child": {
+						"element": "input",
+						"type": "radio",
+						"name": "language-option",
+						"id": "en-language-btn"
+					}
+				}
+			]
+		},
+		{
+			"element": "button",
+			"class": "carousel-settings-toggler menu-navigator position-absolute bg-light",
+			"data": {
+				"bs-toggle": "modal",
+				"bs-target": "#carousel-settings-modal"
+			},
+			"child": [
+				{
+					"element": "span",
+					"id": "carousel-settings-toggler",
+					"html": "&nbsp; 輪播設定"
+				},
+				{
+					"element": "span",
+					"child": [
+						{
+							"element": "i",
+							"class": "fa-solid fa-image py-2 px-2"
+						}
+					]
+				}
+			]
+		},
+		{
+			"element": "div",
+			"class": "sidebar-content text-white",
+			"child": [
+				{
+					"element": "div",
+					"class": "position-absolute",
+					"child": {
+						"element": "div",
+						"class": "clickable d-flex sidebar-toggler",
+						"child": {
+							"element": "div",
+							"class": "ms-auto",
+							"child": {
+								"element": "i",
+								"class": "fa-solid fa-bars-staggered p-3"
+							}
+						}
+					}
+				},
+				{
+					"element": "div",
+					"class": "w-100 text-center",
+					"child": {
+						"element": "a",
+						"href": "#",
+						"child": {
+							"element": "img",
+							"src": "/common/images/logo_header.png",
+							"id": "LA-logo"
+						}
+					}
+				},
+				{
+					"element": "ol",
+					"id": "orderedListContainer",
+					"child": [
+						{
+							"element": "li",
+							"child": [
+								{
+									"element": "div",
+									"class": "d-flex drill-toggle align-items-center justify-content-between",
+									"child": [
+										{
+											"element": "div",
+											"child": [
+												{
+													"element": "i",
+													"class": "fa-solid fa-vial"
+												},
+												{
+													"element": "span",
+													"id": "smart-dyeing-drill-top",
+													"class": "main-title-text",
+													"text": " 智慧染色解決方案"
+												}
+											]
+										},
+										{
+											"element": "i",
+											"class": "fa-solid fa-angle-down px-4"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/UpcomingDyeingList/UrgentEvent.php",
+									"navMethod": "ajax",
+									"ajaxHash": "UpcomingDyeingList",
+									"remark": "即將投染清單",
+									"child": [
+										{
+											"element": "a",
+											"href": "#UpcomingDyeingList",
+											"class": "px-2",
+											"text": "即將投染清單",
+											"id": "UpcomingDyeingList"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/DyeMachineSummary/M1F1D1.php",
+									"navMethod": "ajax",
+									"ajaxHash": "DyeMachineSummary",
+									"remark": "染色機台運行狀態",
+									"child": [
+										{
+											"element": "a",
+											"href": "#DyeMachineSummary",
+											"class": "px-2",
+											"text": "染色機台運行狀態",
+											"id": "DyeMachineSummary"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/ProductionStatus/",
+									"navMethod": "ajax",
+									"ajaxHash": "ProductionStatus",
+									"remark": "染機生產概況",
+									"query": {
+										"machines": "DyeMachines"
+									},
+									"child": [
+										{
+											"element": "a",
+											"href": "#ProductionStatus",
+											"class": "px-2",
+											"text": "染機生產概況",
+											"id": "ProductionStatus"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/TemperatureCurve/Dye_dashboard.php",
+									"navMethod": "ajax",
+									"ajaxHash": "TemperatureCurve",
+									"remark": "染機生產概況(電視牆)",
+									"child": [
+										{
+											"element": "a",
+											"href": "#TemperatureCurve",
+											"class": "px-2",
+											"text": "染機生產概況(電視牆)",
+											"id": "TemperatureCurve"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/DyeMachineRealTime/Dyeing_machine_visualization_v4.php",
+									"navMethod": "ajax",
+									"ajaxHash": "DyeMachineRealTime",
+									"remark": "染機即時監視",
+									"query": { "machine1": "M01", "machine2": "M05" },
+									"child": [
+										{
+											"element": "a",
+											"href": "#DyeMachineRealTime",
+											"class": "px-2",
+											"text": "染機即時監視",
+											"id": "DyeMachineRealTime"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/KPIVisualization/DyeMachineStartUpReport/DyeAlarmReport-new.php",
+									"navMethod": "ajax",
+									"ajaxHash": "DyeMachineStartUpReport",
+									"remark": "染機運行狀況",
+									"child": [
+										{
+											"element": "a",
+											"href": "#DyeMachineStartUpReport",
+											"class": "px-2",
+											"text": "染機運行狀況",
+											"id": "DyeMachineStartUpReport"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/BleachingDyeVat/Bleaching_dye_vat.php",
+									"navMethod": "ajax",
+									"ajaxHash": "BleachingDyeVat",
+									"remark": "漂缸運行資訊",
+									"child": [
+										{
+											"element": "a",
+											"href": "#BleachingDyeVat",
+											"class": "px-2",
+											"text": "漂缸運行資訊",
+											"id": "BleachingDyeVat"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DyelotSchedule/DyelotScheduleChart/",
+									"navMethod": "ajax",
+									"ajaxHash": "DyelotScheduleChart",
+									"remark": "染機工單排程查詢",
+									"child": [
+										{
+											"element": "a",
+											"href": "#DyelotScheduleChart",
+											"class": "px-2",
+											"text": "染機工單排程查詢",
+											"id": "DyelotScheduleChart"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/DyelotOperationChart/DyelotOverview.php",
+									"navMethod": "ajax",
+									"ajaxHash": "DyelotOperationChart",
+									"remark": "染色工單運行監視",
+									"child": [
+										{
+											"element": "a",
+											"href": "#DyelotOperationChart",
+											"class": "px-2",
+											"text": "染色工單運行監視",
+											"id": "DyelotOperationChart"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DyelotSchedule/ScheduleTable/v2.0.0/NW_DyeScheduleManual1.php",
+									"navMethod": "ajax",
+									"ajaxHash": "ScheduleTable",
+									"remark": "染機工單排程圖",
+									"child": [
+										{
+											"element": "a",
+											"href": "#ScheduleTable",
+											"class": "px-2",
+											"text": "染機工單排程圖",
+											"id": "ScheduleTable"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/OverdueDyelotReport/OvertimeDyelot.php",
+									"navMethod": "ajax",
+									"ajaxHash": "OverdueDyelotReport",
+									"remark": "本日top20染色超時工單報告",
+									"child": [
+										{
+											"element": "a",
+											"href": "#OverdueDyelotReport",
+											"class": "px-2",
+											"text": "本日top20染色超時工單報告",
+											"id": "OverdueDyelotReport"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/CapacityStatistics/MachineProductionQuery/",
+									"navMethod": "ajax",
+									"ajaxHash": "MachineProductionQuery",
+									"remark": "染色產量查詢",
+									"child": [
+										{
+											"element": "a",
+											"href": "#MachineProductionQuery",
+											"class": "px-2",
+											"text": "染色產量查詢",
+											"id": "MachineProductionQuery"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/CapacityStatistics/MachineProductionStats/MachineProduction.php",
+									"navMethod": "ajax",
+									"ajaxHash": "MachineProductionStats",
+									"remark": "染色各機台產量統計",
+									"child": [
+										{
+											"element": "a",
+											"href": "#MachineProductionStats",
+											"class": "px-2",
+											"text": "染色各機台產量統計",
+											"id": "MachineProductionStats"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/KPIVisualization/DyeingKPIQuery/",
+									"navMethod": "ajax",
+									"ajaxHash": "DyeingKPIQuery",
+									"remark": "染色課關鍵指標查詢",
+									"child": [
+										{
+											"element": "a",
+											"href": "#DyeingKPIQuery",
+											"class": "px-2",
+											"text": "染色課關鍵指標查詢",
+											"id": "DyeingKPIQuery"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/KPIVisualization/DyeKeyIndicator/Indicators_Dyeing.php",
+									"navMethod": "ajax",
+									"ajaxHash": "DyeKeyIndicator",
+									"remark": "染機系統關鍵指標報表",
+									"child": [
+										{
+											"element": "a",
+											"href": "#DyeKeyIndicator",
+											"class": "px-2",
+											"text": "染機系統關鍵指標報表",
+											"id": "DyeKeyIndicator"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/KPIVisualization/DyeKPIReport/Uptime_Analysis_enquiry.php",
+									"navMethod": "ajax",
+									"ajaxHash": "DyeKPIReport",
+									"remark": "染機稼動率報表",
+									"child": [
+										{
+											"element": "a",
+											"href": "#DyeKPIReport",
+											"class": "px-2",
+											"text": "染機稼動率報表",
+											"id": "DyeKPIReport"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/HistoricalEvent/Equip_DelayQuery/",
+									"navMethod": "ajax",
+									"ajaxHash": "Equip_DelayQuery",
+									"remark": "染色延遲查詢",
+									"child": [
+										{
+											"element": "a",
+											"href": "#Equip_DelayQuery",
+											"class": "px-2",
+											"text": "染色延遲查詢",
+											"id": "Equip_DelayQuery"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/HistoricalEvent/Equip_IdleQuery/",
+									"navMethod": "ajax",
+									"ajaxHash": "Equip_IdleQuery",
+									"remark": "染色停機查詢",
+									"child": [
+										{
+											"element": "a",
+											"href": "#Equip_IdleQuery",
+											"class": "px-2",
+											"text": "染色停機查詢",
+											"id": "Equip_IdleQuery"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/HistoricalEvent/Equip_AlarmQuery/",
+									"navMethod": "ajax",
+									"ajaxHash": "Equip_AlarmQuery",
+									"remark": "染機警報查詢",
+									"child": [
+										{
+											"element": "a",
+											"href": "#Equip_AlarmQuery",
+											"class": "px-2",
+											"text": "染機警報查詢",
+											"id": "Equip_AlarmQuery"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/RealTimeDelay/RealTimeDelay.php",
+									"navMethod": "ajax",
+									"ajaxHash": "RealTimeDelay",
+									"remark": "染色即時延遲報告",
+									"child": [
+										{
+											"element": "a",
+											"href": "#RealTimeDelay",
+											"class": "px-2",
+											"text": "染色即時延遲報告",
+											"id": "RealTimeDelay"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/RealTimeAlarm/RealTimeAlarm.php",
+									"navMethod": "ajax",
+									"ajaxHash": "RealTimeAlarm",
+									"remark": "染色即時警報報告",
+									"child": [
+										{
+											"element": "a",
+											"href": "#RealTimeAlarm",
+											"class": "px-2",
+											"text": "染色即時警報報告",
+											"id": "RealTimeAlarm"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/AlarmDelayAnalysis/MonthlyInterruptions.php",
+									"navMethod": "ajax",
+									"ajaxHash": "AlarmDelayAnalysis",
+									"remark": "染色警報與延遲TOP 10 分析",
+									"child": [
+										{
+											"element": "a",
+											"href": "#AlarmDelayAnalysis",
+											"class": "px-2",
+											"text": "染色警報與延遲TOP 10 分析",
+											"id": "AlarmDelayAnalysis"
+										}
+									]
+								}
+							]
+						},
+						{
+							"element": "li",
+							"child": [
+								{
+									"element": "div",
+									"class": "d-flex drill-toggle align-items-center justify-content-between",
+									"child": [
+										{
+											"element": "div",
+											"child": [
+												{
+													"element": "i",
+													"class": "fa-solid fa-truck-loading"
+												},
+												{
+													"element": "span",
+													"id": "smart-supply-drill-top",
+													"class": "main-title-text",
+													"text": " 智慧供料解決方案"
+												}
+											]
+										},
+										{
+											"element": "i",
+											"class": "fa-solid fa-angle-down px-4"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/MachineScreenshot/",
+									"navMethod": "ajax",
+									"ajaxHash": "MachineScreenshot",
+									"remark": "供料設備畫面",
+									"child": [
+										{
+											"element": "a",
+											"href": "#MachineScreenshot",
+											"class": "px-2",
+											"text": "供料設備畫面",
+											"id": "MachineScreenshot"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/302RealTime/NEW_LA302F_ReslTime.php",
+									"navMethod": "ajax",
+									"ajaxHash": "302RealTime",
+									"remark": "302 F 即時畫面",
+									"child": [
+										{
+											"element": "a",
+											"href": "#302RealTime",
+											"class": "px-2",
+											"text": "302 F 即時畫面",
+											"id": "302RealTime"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/DyeAdditiveUsageStats/DispenseErrorReport-new.php",
+									"navMethod": "ajax",
+									"ajaxHash": "DyeAdditiveUsageStats",
+									"remark": "染/助劑計劑量異常統計",
+									"child": [
+										{
+											"element": "a",
+											"href": "#DyeAdditiveUsageStats",
+											"class": "px-2",
+											"text": "染/助劑計劑量異常統計",
+											"id": "DyeAdditiveUsageStats"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/DyeAdditiveTimeUsageStats/Feeding_Analysis_enquiry.php",
+									"navMethod": "ajax",
+									"ajaxHash": "DyeAdditiveTimeUsageStats",
+									"remark": "染助劑耗時與用量統計",
+									"child": [
+										{
+											"element": "a",
+											"href": "#DyeAdditiveTimeUsageStats",
+											"class": "px-2",
+											"text": "染助劑耗時與用量統計",
+											"id": "DyeAdditiveTimeUsageStats"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/NNWTimeUsageStats/NNW_Analysis_enquiry.php",
+									"navMethod": "ajax",
+									"ajaxHash": "NNWTimeUsageStats",
+									"remark": "NNY/NBK/WHT耗時與用量統計分析",
+									"child": [
+										{
+											"element": "a",
+											"href": "#NNWTimeUsageStats",
+											"class": "px-2",
+											"text": "NNY/NBK/WHT耗時與用量統計分析",
+											"id": "NNWTimeUsageStats"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/KPIVisualization/DispenserKPIReport/Indicators_Dispenser_V1.0.0.php",
+									"navMethod": "ajax",
+									"ajaxHash": "DispenserKPIReport",
+									"remark": "供料系統關鍵指標報表",
+									"child": [
+										{
+											"element": "a",
+											"href": "#DispenserKPIReport",
+											"class": "px-2",
+											"text": "供料系統關鍵指標報表",
+											"id": "DispenserKPIReport"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/KPIVisualization/DyeAuxWarehouseStats/D02_Analysis_enquiry.php",
+									"navMethod": "ajax",
+									"ajaxHash": "DyeAuxWarehouseStats",
+									"remark": "染助劑倉庫扣帳統計",
+									"child": [
+										{
+											"element": "a",
+											"href": "#DyeAuxWarehouseStats",
+											"class": "px-2",
+											"text": "染助劑倉庫扣帳統計",
+											"id": "DyeAuxWarehouseStats"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/HistoricalEvent/Equip_AlarmQuery/",
+									"navMethod": "ajax",
+									"ajaxHash": "Equip_AlarmQuery_Dispenser",
+									"remark": "供料警報查詢",
+									"query": {
+										"factory": "DispenserMachines"
+									},
+									"child": [
+										{
+											"element": "a",
+											"href": "#Equip_AlarmQuery_Dispenser",
+											"class": "px-2",
+											"text": "供料警報查詢",
+											"id": "Equip_AlarmQuery_Dispenser"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/HistoricalEvent/Equip_IdleQuery/",
+									"navMethod": "ajax",
+									"ajaxHash": "Equip_IdleQuery_Dispenser",
+									"remark": "供料停機查詢",
+									"query": {
+										"factory": "DispenserMachines"
+									},
+									"child": [
+										{
+											"element": "a",
+											"href": "#Equip_IdleQuery_Dispenser",
+											"class": "px-2",
+											"text": "供料停機查詢",
+											"id": "Equip_IdleQuery_Dispenser"
+										}
+									]
+								}
+							]
+						},
+						{
+							"element": "li",
+							"child": [
+								{
+									"element": "div",
+									"class": "d-flex drill-toggle align-items-center justify-content-between",
+									"child": [
+										{
+											"element": "div",
+											"child": [
+												{
+													"element": "i",
+													"class": "fa-solid fa-ruler-combined"
+												},
+												{
+													"element": "span",
+													"id": "smart-finish-drill-top",
+													"class": "main-title-text",
+													"text": " 智慧整理解決方案"
+												}
+											]
+										},
+										{
+											"element": "i",
+											"class": "fa-solid fa-angle-down px-4"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/StenterStatus/",
+									"navMethod": "ajax",
+									"ajaxHash": "StenterStatus",
+									"remark": "Stenter Operation Status 1",
+									"hidden": true,
+									"child": [
+										{
+											"element": "a",
+											"href": "#StenterStatus",
+											"class": "px-2",
+											"text": "Stenter Operation Status 1",
+											"id": "StenterStatus"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/EquipmentMonitoring/FinishingMachines_index.php",
+									"navMethod": "ajax",
+									"ajaxHash": "EquipmentMonitoring",
+									"remark": "後整理設備監視",
+									"child": [
+										{
+											"element": "a",
+											"href": "#EquipmentMonitoring",
+											"class": "px-2",
+											"text": "後整理設備監視",
+											"id": "EquipmentMonitoring"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/EquipmentStats_History/History_Information_index.php",
+									"navMethod": "ajax",
+									"ajaxHash": "EquipmentStats_History",
+									"remark": "後整理設備歷史資料查詢",
+									"child": [
+										{
+											"element": "a",
+											"href": "#EquipmentStats_History",
+											"class": "px-2",
+											"text": "後整理設備歷史資料查詢",
+											"id": "EquipmentStats_History"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/ProductionStatus/",
+									"navMethod": "ajax",
+									"ajaxHash": "FinishingProductionStatus",
+									"remark": "後整理設備生產概況",
+									"query": {
+										"machines": "FinishMachines"
+									},
+									"child": [
+										{
+											"element": "a",
+											"href": "#FinishingProductionStatus",
+											"class": "px-2",
+											"text": "後整理設備生產概況",
+											"id": "FinishingProductionStatus"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DyelotSchedule/ScheduleTable/v1.0.0/FinishScheduleManual1.php",
+									"navMethod": "ajax",
+									"ajaxHash": "WorkOrderGantt",
+									"remark": "各工段工單排程圖",
+									"child": [
+										{
+											"element": "a",
+											"href": "#WorkOrderGantt",
+											"class": "px-2",
+											"text": "各工段工單排程圖",
+											"id": "WorkOrderGantt"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/CapacityStatistics/MachineProductionQuery/",
+									"navMethod": "ajax",
+									"ajaxHash": "FinishingProductionQuery",
+									"remark": "後整理產量查詢",
+									"query": {
+										"factory": "FinishMachines"
+									},
+									"child": [
+										{
+											"element": "a",
+											"href": "#FinishingProductionQuery",
+											"class": "px-2",
+											"text": "後整理產量查詢",
+											"id": "FinishingProductionQuery"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/KPIVisualization/FinishingKPIQuery/",
+									"navMethod": "ajax",
+									"ajaxHash": "FinishingKPIQuery",
+									"remark": "後整理關鍵指標查詢",
+									"child": [
+										{
+											"element": "a",
+											"href": "#FinishingKPIQuery",
+											"class": "px-2",
+											"text": "後整理關鍵指標查詢",
+											"id": "FinishingKPIQuery"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/KPIVisualization/FinishingKPIReport/Indicators_Finishing.php",
+									"navMethod": "ajax",
+									"query": {
+										"stage": "finishing"
+									},
+									"ajaxHash": "FinishingKPIReport",
+									"remark": "定型機關鍵指標可視化",
+									"child": [
+										{
+											"element": "a",
+											"href": "#FinishingKPIReport",
+											"class": "px-2",
+											"text": "定型機關鍵指標可視化",
+											"id": "FinishingKPIReport"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/KPIVisualization/FinishingUtilizationReport/FinishingMachines_Activation_index.php",
+									"navMethod": "ajax",
+									"ajaxHash": "FinishingUtilizationReport",
+									"remark": "後整理設備稼動率報表",
+									"child": [
+										{
+											"element": "a",
+											"href": "#FinishingUtilizationReport",
+											"class": "px-2",
+											"text": "後整理設備稼動率報表",
+											"id": "FinishingUtilizationReport"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/HistoricalEvent/Equip_AlarmQuery/",
+									"navMethod": "ajax",
+									"ajaxHash": "Equip_AlarmQuery_Finishing",
+									"remark": "後整理警報查詢",
+									"query": {
+										"factory": "FinishMachines"
+									},
+									"child": [
+										{
+											"element": "a",
+											"href": "#Equip_AlarmQuery_Finishing",
+											"class": "px-2",
+											"text": "後整理警報查詢",
+											"id": "Equip_AlarmQuery_Finishing"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/HistoricalEvent/Equip_IdleQuery/",
+									"navMethod": "ajax",
+									"ajaxHash": "Equip_IdleQuery_Finishing",
+									"remark": "後整理停機查詢",
+									"query": {
+										"factory": "FinishMachines"
+									},
+									"child": [
+										{
+											"element": "a",
+											"href": "#Equip_IdleQuery_Finishing",
+											"class": "px-2",
+											"text": "後整理停機查詢",
+											"id": "Equip_IdleQuery_Finishing"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/ShrinkingStats/contraction_enquiry.php",
+									"navMethod": "ajax",
+									"ajaxHash": "ShrinkingStats",
+									"remark": "縮鍊機異常報表查詢",
+									"child": [
+										{
+											"element": "a",
+											"href": "#ShrinkingStats",
+											"class": "px-2",
+											"text": "縮鍊機異常報表查詢",
+											"id": "ShrinkingStats"
+										}
+									]
+								}
+							]
+						},
+						{
+							"element": "li",
+							"child": [
+								{
+									"element": "div",
+									"class": "d-flex drill-toggle align-items-center justify-content-between",
+									"child": [
+										{
+											"element": "div",
+											"child": [
+												{
+													"element": "i",
+													"class": "fa-solid fa-eye"
+												},
+												{
+													"element": "span",
+													"id": "smart-supervision-drill-top",
+													"class": "main-title-text",
+													"text": " 智慧監控解決方案"
+												}
+											]
+										},
+										{
+											"element": "i",
+											"class": "fa-solid fa-angle-down px-4"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/EnergyManagement/EnergyUsageStats/V2/ResourceUsageV3.php",
+									"navMethod": "ajax",
+									"ajaxHash": "EnergyUsageStats",
+									"remark": "各機台用水/用電/用蒸氣統計",
+									"child": [
+										{
+											"element": "a",
+											"href": "#EnergyUsageStats",
+											"class": "px-2",
+											"text": "各機台用水/用電/用蒸氣統計",
+											"id": "EnergyUsageStats"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/EnergyManagement/ResourceUtilization/energy.php",
+									"navMethod": "ajax",
+									"ajaxHash": "ResourceUtilization",
+									"remark": "全廠當日用水/用電/用蒸氣/碳排量統計圖",
+									"child": [
+										{
+											"element": "a",
+											"href": "#ResourceUtilization",
+											"class": "px-2",
+											"text": "全廠當日用水/用電/用蒸氣/碳排量統計圖",
+											"id": "ResourceUtilization"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/EnergyManagement/FactoryPowerReport/",
+									"navMethod": "ajax",
+									"ajaxHash": "FactoryPowerReport",
+									"remark": "各工段用電統計",
+									"child": [
+										{
+											"element": "a",
+											"href": "#FactoryPowerReport",
+											"class": "px-2",
+											"text": "各工段用電統計",
+											"id": "FactoryPowerReport"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/EnergyManagement/WaterConsumptionQuery/",
+									"navMethod": "ajax",
+									"ajaxHash": "WaterConsumptionQuery",
+									"remark": "水資源消耗查詢",
+									"child": [
+										{
+											"element": "a",
+											"href": "#WaterConsumptionQuery",
+											"class": "px-2",
+											"text": "水資源消耗查詢",
+											"id": "WaterConsumptionQuery"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/EnergyManagement/EnergyConsumptionCalendar/",
+									"navMethod": "ajax",
+									"ajaxHash": "EnergyConsumptionCalendar",
+									"remark": "機台能源可視化",
+									"child": [
+										{
+											"element": "a",
+											"href": "#EnergyConsumptionCalendar",
+											"class": "px-2",
+											"text": "機台能源可視化",
+											"id": "EnergyConsumptionCalendar"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/EnergyManagement/DyelotResourceUsage/DyelotResourceUsage.php",
+									"navMethod": "ajax",
+									"ajaxHash": "DyelotResourceUsage",
+									"remark": "工單能源可視化",
+									"child": [
+										{
+											"element": "a",
+											"href": "#DyelotResourceUsage",
+											"class": "px-2",
+											"text": "工單能源可視化",
+											"id": "DyelotResourceUsage"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/EnergyManagement/EnergyConsumptionQuery/",
+									"navMethod": "ajax",
+									"ajaxHash": "EnergyConsumptionQuery",
+									"remark": "能源消耗查詢",
+									"child": [
+										{
+											"element": "a",
+											"href": "#EnergyConsumptionQuery",
+											"class": "px-2",
+											"text": "能源消耗查詢",
+											"id": "EnergyConsumptionQuery"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/EnergyManagement/EnergyUsageBar/EnergyUsageBarChar.php",
+									"navMethod": "ajax",
+									"ajaxHash": "EnergyUsageBar",
+									"remark": "全廠當日用水/用電/用蒸氣/碳排量統計長條圖",
+									"child": [
+										{
+											"element": "a",
+											"href": "#EnergyUsageBar",
+											"class": "px-2",
+											"text": "全廠當日用水/用電/用蒸氣/碳排量統計長條圖",
+											"id": "EnergyUsageBar"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "https://logicartidcc.website/ihouseBA/index.html?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMb2dpY2FydC1JRENDIn0._P5eXSjWQLe_1OGkWeCdYf9hDdR88CMtalbZTE_iDB4&em=Edit&uid=ea4f5ab8-2a6e-846c-a40e-c2766680b4c1&title=%E6%B5%81%E4%BA%9E%E8%83%BD%E8%80%97%E7%AE%A1%E7%90%86&language=en",
+									"navMethod": "ajax",
+									"ajaxHash": "EnergyManagement",
+									"remark": "流亞能耗管理",
+									"child": [
+										{
+											"element": "a",
+											"href": "#EnergyManagement",
+											"class": "px-2",
+											"text": "流亞能耗管理",
+											"id": "EnergyManagement"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/Empty_LoomUsageAnalysis/Empty_LoomUsageAnalysis.php",
+									"navMethod": "ajax",
+									"ajaxHash": "Empty_LoomUsageAnalysis",
+									"remark": "布車追蹤",
+									"child": [
+										{
+											"element": "a",
+											"href": "#Empty_LoomUsageAnalysis",
+											"class": "px-2",
+											"text": "布車追蹤",
+											"id": "Empty_LoomUsageAnalysis"
+										}
+									]
+								}
+							]
+						},
+						{
+							"element": "li",
+							"child": [
+								{
+									"element": "div",
+									"class": "d-flex drill-toggle align-items-center justify-content-between",
+									"child": [
+										{
+											"element": "div",
+											"child": [
+												{
+													"element": "i",
+													"class": "fa-solid fa-project-diagram"
+												},
+												{
+													"element": "span",
+													"id": "smart-center-drill-top",
+													"class": "main-title-text",
+													"text": " 智慧中心解決方案"
+												}
+											]
+										},
+										{
+											"element": "i",
+											"class": "fa-solid fa-angle-down px-4"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/SectionCapacityReport/DyeCapacityReport_Analysis_enquiry.php",
+									"navMethod": "ajax",
+									"ajaxHash": "SectionCapacityReport",
+									"remark": "工段產能分析報表",
+									"child": [
+										{
+											"element": "a",
+											"href": "#SectionCapacityReport",
+											"class": "px-2",
+											"text": "工段產能分析報表",
+											"id": "SectionCapacityReport"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DyelotSchedule/ScheduleTable/v2.0.0/NW_DyeScheduleManual1.php",
+									"navMethod": "ajax",
+									"ajaxHash": "CentralScheduleTable",
+									"remark": "工單排程圖",
+									"child": [
+										{
+											"element": "a",
+											"href": "#CentralScheduleTable",
+											"class": "px-2",
+											"text": "工單排程圖",
+											"id": "CentralScheduleTable"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/WarehouseShipping/WG_Analysis_enquiry.php",
+									"navMethod": "ajax",
+									"ajaxHash": "WarehouseShipping",
+									"remark": "倉庫出貨量",
+									"child": [
+										{
+											"element": "a",
+											"href": "#WarehouseShipping",
+											"class": "px-2",
+											"text": "倉庫出貨量",
+											"id": "WarehouseShipping"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/WarehouseIncoming/WO_Analysis_enquiry.php",
+									"navMethod": "ajax",
+									"ajaxHash": "WarehouseIncoming",
+									"remark": "倉庫入庫量",
+									"child": [
+										{
+											"element": "a",
+											"href": "#WarehouseIncoming",
+											"class": "px-2",
+											"text": "倉庫入庫量",
+											"id": "WarehouseIncoming"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/WarehouseReturns/WR_Analysis_enquiry.php",
+									"navMethod": "ajax",
+									"ajaxHash": "WarehouseReturns",
+									"remark": "倉庫退貨量",
+									"child": [
+										{
+											"element": "a",
+											"href": "#WarehouseReturns",
+											"class": "px-2",
+											"text": "倉庫退貨量",
+											"id": "WarehouseReturns"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/WarehouseInventory/WMS_Analysis_enquiry.php",
+									"navMethod": "ajax",
+									"ajaxHash": "WarehouseInventory",
+									"remark": "倉庫庫存量",
+									"child": [
+										{
+											"element": "a",
+											"href": "#WarehouseInventory",
+											"class": "px-2",
+											"text": "倉庫庫存量",
+											"id": "WarehouseInventory"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/RawFabricStockStats/V4/InventoryQcReport3.php",
+									"navMethod": "ajax",
+									"ajaxHash": "RawFabricStockStats",
+									"remark": "胚布庫存統計表",
+									"child": [
+										{
+											"element": "a",
+											"href": "#RawFabricStockStats",
+											"class": "px-2",
+											"text": "胚布庫存統計表",
+											"id": "RawFabricStockStats"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/AnnualTrendChart/Chart_of_each_year.php",
+									"navMethod": "ajax",
+									"ajaxHash": "AnnualTrendChart",
+									"remark": "各年趨勢圖",
+									"child": [
+										{
+											"element": "a",
+											"href": "#AnnualTrendChart",
+											"class": "px-2",
+											"text": "各年趨勢圖",
+											"id": "AnnualTrendChart"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/Top10DeptAnomaliesDetails/myData_6_detail_abnormalities.php",
+									"navMethod": "ajax",
+									"ajaxHash": "Top10DeptAnomaliesDetails",
+									"remark": "前十大部門異常-細項",
+									"child": [
+										{
+											"element": "a",
+											"href": "#Top10DeptAnomaliesDetails",
+											"class": "px-2",
+											"text": "前十大部門異常-細項",
+											"id": "Top10DeptAnomaliesDetails"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/Top10DefectAnomalies/myData_2_defective_abnormalities.php",
+									"navMethod": "ajax",
+									"ajaxHash": "Top10DefectAnomalies",
+									"remark": "前十大瑕疵異常",
+									"child": [
+										{
+											"element": "a",
+											"href": "#Top10DefectAnomalies",
+											"class": "px-2",
+											"text": "前十大瑕疵異常",
+											"id": "Top10DefectAnomalies"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/Top10ProductAnomalies/myData_4_name_abnormalities.php",
+									"navMethod": "ajax",
+									"ajaxHash": "Top10ProductAnomalies",
+									"remark": "前十大品名異常",
+									"child": [
+										{
+											"element": "a",
+											"href": "#Top10ProductAnomalies",
+											"class": "px-2",
+											"text": "前十大品名異常",
+											"id": "Top10ProductAnomalies"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/Top20ColorNG_ProductCustomerDetails/no5.php",
+									"navMethod": "ajax",
+									"ajaxHash": "Top20ColorNG_ProductCustomerDetails",
+									"remark": "20大顏色NG-品名與客戶細項",
+									"child": [
+										{
+											"element": "a",
+											"href": "#Top20ColorNG_ProductCustomerDetails",
+											"class": "px-2",
+											"text": "20大顏色NG-品名與客戶細項",
+											"id": "Top20ColorNG_ProductCustomerDetails"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/OrderBacklogAnalysis/no1.php",
+									"navMethod": "ajax",
+									"ajaxHash": "OrderBacklogAnalysis",
+									"remark": "總訂單卡量分析",
+									"child": [
+										{
+											"element": "a",
+											"href": "#OrderBacklogAnalysis",
+											"class": "px-2",
+											"text": "總訂單卡量分析",
+											"id": "OrderBacklogAnalysis"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/BrandBacklogAnalysis/no5.php",
+									"navMethod": "ajax",
+									"ajaxHash": "BrandBacklogAnalysis",
+									"remark": "品牌總卡量分析",
+									"child": [
+										{
+											"element": "a",
+											"href": "#BrandBacklogAnalysis",
+											"class": "px-2",
+											"text": "品牌總卡量分析",
+											"id": "BrandBacklogAnalysis"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/AnnualBacklogSizeAnalysis/no9.php",
+									"navMethod": "ajax",
+									"ajaxHash": "AnnualBacklogSizeAnalysis",
+									"remark": "年份卡量大小分析",
+									"child": [
+										{
+											"element": "a",
+											"href": "#AnnualBacklogSizeAnalysis",
+											"class": "px-2",
+											"text": "年份卡量大小分析",
+											"id": "AnnualBacklogSizeAnalysis"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "https://logicartidcc.website/Daluen/Reports/Stenter/3D/3D_for_exhibition.php",
+									"navMethod": "ajax",
+									"ajaxHash": "ext-resourceReports",
+									"remark": "能源資訊即時看板",
+									"child": [
+										{
+											"element": "a",
+											"href": "#ext-resourceReports",
+											"class": "px-2",
+											"text": "能源資訊即時看板",
+											"id": "ext-resourceReports"
+										}
+									]
+								}
+							]
+						},
+						{
+							"element": "li",
+							"child": [
+								{
+									"element": "div",
+									"class": "d-flex drill-toggle align-items-center justify-content-between",
+									"child": [
+										{
+											"element": "div",
+											"child": [
+												{
+													"element": "i",
+													"class": "fa-solid fa-broadcast-tower"
+												},
+												{
+													"element": "span",
+													"id": "smart-streaming-drill-top",
+													"class": "main-title-text",
+													"text": " 智慧串流解決方案"
+												}
+											]
+										},
+										{
+											"element": "i",
+											"class": "fa-solid fa-angle-down px-4"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/KPIVisualization/LabKPIReports/Indicators_Laboratory.php",
+									"navMethod": "ajax",
+									"ajaxHash": "LabKPIReports",
+									"remark": "化驗室關鍵指標報表",
+									"child": [
+										{
+											"element": "a",
+											"href": "#LabKPIReports",
+											"class": "px-2",
+											"text": "化驗室關鍵指標報表",
+											"id": "LabKPIReports"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/KPIVisualization/FinishingUtilizationReport/FinishingMachines_Activation_index.php",
+									"navMethod": "ajax",
+									"ajaxHash": "IoTFinishingUtilizationReport",
+									"remark": "SMBIoT機聯網設備稼動率報表",
+									"child": [
+										{
+											"element": "a",
+											"href": "#IoTFinishingUtilizationReport",
+											"class": "px-2",
+											"text": "SMBIoT機聯網設備稼動率報表",
+											"id": "IoTFinishingUtilizationReport"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/BoilerOperatingStatus/",
+									"navMethod": "ajax",
+									"ajaxHash": "BoilerOperatingStatus",
+									"remark": "鍋爐運行狀態",
+									"child": [
+										{
+											"element": "a",
+											"href": "#BoilerOperatingStatus",
+											"class": "px-2",
+											"text": "鍋爐運行狀態",
+											"id": "BoilerOperatingStatus"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/EquipmentMonitoring/FinishingMachines_index.php",
+									"navMethod": "ajax",
+									"ajaxHash": "IoTEquipmentMonitoring",
+									"remark": "SMBIoT機聯網設備即時資訊",
+									"child": [
+										{
+											"element": "a",
+											"href": "#IoTEquipmentMonitoring",
+											"class": "px-2",
+											"text": "SMBIoT機聯網設備即時資訊",
+											"id": "IoTEquipmentMonitoring"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/EquipmentStats_History/History_Information_index.php",
+									"navMethod": "ajax",
+									"ajaxHash": "IoTEquipmentStatsHistory",
+									"remark": "SMBIoT 機聯網設備歷史資料查詢",
+									"child": [
+										{
+											"element": "a",
+											"href": "#IoTEquipmentStatsHistory",
+											"class": "px-2",
+											"text": "SMBIoT 機聯網設備歷史資料查詢",
+											"id": "IoTEquipmentStatsHistory"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/RealTimeMonitoring/ShrinkingStats/contraction_enquiry.php",
+									"navMethod": "ajax",
+									"ajaxHash": "IoTShrinkingStats",
+									"remark": "SMBIoT機聯網設備異常報表查詢",
+									"child": [
+										{
+											"element": "a",
+											"href": "#IoTShrinkingStats",
+											"class": "px-2",
+											"text": "SMBIoT機聯網設備異常報表查詢",
+											"id": "IoTShrinkingStats"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/HistoricalEvent/Equip_IdleQuery/",
+									"navMethod": "ajax",
+									"ajaxHash": "IoTEquipIdleQueryDispenser",
+									"remark": "SMBIoT機聯網停機查詢",
+									"query": {
+										"factory": "LabMachines"
+									},
+									"child": [
+										{
+											"element": "a",
+											"href": "#IoTEquipIdleQueryDispenser",
+											"class": "px-2",
+											"text": "SMBIoT機聯網停機查詢",
+											"id": "IoTEquipIdleQueryDispenser"
+										}
+									]
+								},
+								{
+									"element": "ul",
+									"url": "./Legacy/DataStats_Analysis/ProductionLoads/page4.php",
+									"navMethod": "ajax",
+									"ajaxHash": "ProductionLoads",
+									"remark": "產能統計地圖",
+									"child": [
+										{
+											"element": "a",
+											"href": "#ProductionLoads",
+											"class": "px-2",
+											"text": "產能統計地圖"
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"cssLink": [
+		{
+			"moduleDir": "local",
+			"cssPath": "menu.css"
+		}
+	],
+	"script": [
+		{
+			"moduleDir": "local",
+			"scriptPath": "views/sidebarToggler.js"
+		}
+	]
+}

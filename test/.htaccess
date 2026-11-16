@@ -1,0 +1,4 @@
+Options -Indexes +FollowSymLinks
+RewriteEngine On
+RewriteRule ^DemoBeta/test$ DemoBeta/test/test-rewrite-success.html
+

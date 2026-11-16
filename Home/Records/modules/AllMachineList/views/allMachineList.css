@@ -1,0 +1,27 @@
+.red-bg {
+    background-color: #bce8fa !important;
+    color: black;
+    pointer-events: none;
+}
+
+.insert-ag-row {
+    background-color: rgb(3, 195, 67);
+    color: black;
+    font-weight: 600;
+}
+
+#machine-list-grid-container .ag-row {
+    cursor: pointer;
+}
+
+.delete-button {
+    color: red;
+    cursor: pointer;
+    user-select: none;
+    font-size: x-large;
+    transform: translateY(-8px);
+    -webkit-transform: translateY(-8px);
+    -moz-transform: translateY(-8px);
+    -ms-transform: translateY(-8px);
+    -o-transform: translateY(-8px);
+}

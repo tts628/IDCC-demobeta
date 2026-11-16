@@ -1,0 +1,42 @@
+{
+	"html": [
+		{
+			"element": "div",
+			"class": "row",
+			"child": [
+				{
+					"element": "div",
+                    "class": "col-8",
+                    "child": [{
+                        "element": "input",
+                        "class": "form-control",
+                        "type": "text",
+                        "id": "client-settings-input"
+                    }]
+				},
+                {
+                    "element": "div",
+                    "class": "col ms-4",
+                    "child": [{
+                        "element": "button",
+                        "type": "button",
+                        "class": "btn btn-outline-info",
+                        "text": "儲存客戶設定",
+                        "id": "save-client-settings-btn"
+                    }]
+                },
+                {
+                    "element": "div",
+                    "class": "col ms-5",
+                    "child": [{
+                        "element": "button",
+                        "type": "button",
+                        "class": "btn btn-danger",
+                        "text": "Clear",
+                        "id": "clear-client-settings-btn"
+                    }]
+                }
+			]
+		}
+	]
+}

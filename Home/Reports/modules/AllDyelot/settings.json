@@ -1,0 +1,190 @@
+{
+	"html": [
+		{
+			"element": "h4",
+			"class": "text-center mt-5 fw-bold",
+			"text": "所有工單"
+		},
+		{
+			"element": "div",
+			"class": "fluid-container",
+            "id": "all-dyelot-main-container",
+			"child": [
+				{
+					"element": "div",
+					"class": "row mx-5",
+					"child": {
+						"element": "div",
+						"class": "col-12",
+						"child": {
+							"element": "form",
+							"id": "all-dyelot-selector-form",
+							"child": {
+								"element": "div",
+								"class": "row",
+								"child": [
+									{
+										"element": "div",
+										"class": "col-10",
+										"child": [
+											{
+												"element": "div",
+												"class": "row",
+												"child": [
+													{
+														"element": "label",
+														"forAttr": "start-time-selector",
+														"class": "col text-nowrap mt-5",
+														"html": "開始: &nbsp;",
+														"child": {
+															"element": "input",
+															"type": "date",
+															"class": "form-control inline-block w-75 dyelot-date-input",
+															"id": "start-time-selector",
+															"name": "start-time-selector"
+														}
+													},
+													{
+														"element": "label",
+														"forAttr": "end-time-selector",
+														"class": "col text-nowrap mt-5",
+														"html": "結束: &nbsp;",
+														"child": {
+															"element": "input",
+															"type": "date",
+															"class": "form-control inline-block w-75 dyelot-date-input",
+															"id": "end-time-selector",
+															"name": "end-time-selector"
+														}
+													},
+													{
+														"element": "label",
+														"forAttr": "dyelot-selector",
+														"class": "col text-nowrap mt-5",
+														"html": "工卡號: &nbsp;",
+														"child": {
+															"element": "input",
+															"type": "text",
+															"placeholder": "工卡號",
+															"class": "form-control inline-block w-75",
+															"id": "dyelot-selector",
+															"name": "dyelot-selector"
+														}
+													},
+													{
+														"element": "div",
+														"class": "col text-nowrap mt-5 mx-5",
+														"child": {
+															"element": "button",
+															"type": "submit",
+															"text": "查詢",
+															"class": "btn btn-primary",
+															"id": "query-btn",
+															"value": "query"
+														}
+													}
+												]
+											},
+											{
+												"element": "div",
+												"class": "row",
+												"child": [
+													{
+														"element": "div",
+														"class": "form-check col-lg-3 col-md-6 col-xs-12 col-12 mt-5 ms-3",
+														"child": [
+															{
+																"element": "input",
+																"class": "form-check-input machine-type-input",
+																"type": "radio",
+																"id": "all-machine-checkbox",
+                                                                "value": "all",
+                                                                "name": "machine-type-checkbox",
+                                                                "checked": true
+															},
+															{
+																"element": "label",
+																"class": "form-check-label",
+																"forAttr": "all-machine-checkbox",
+																"text": "All Dyeing Machine"
+															}
+														]
+													},
+													{
+														"element": "div",
+														"class": "form-check col-lg-3 col-md-6 col-xs-12 col-12 mt-5 ms-3",
+														"child": [
+															{
+																"element": "input",
+																"class": "form-check-input machine-type-input",
+																"type": "radio",
+																"id": "monitored-machine-checkbox",
+                                                                "value": "monitored",
+                                                                "name": "machine-type-checkbox"
+															},
+															{
+																"element": "label",
+																"class": "form-check-label",
+																"forAttr": "monitored-machine-checkbox",
+																"text": "Detected Dyeing Machine"
+															}
+														]
+													}
+												]
+											}
+										]
+									},
+									{
+										"element": "div",
+										"class": "col-2",
+										"child": {
+											"element": "div",
+											"class": "row",
+											"child": {
+												"element": "div",
+												"class": "col text-nowrap d-flex mt-5",
+												"child": {
+													"element": "button",
+													"type": "submit",
+													"text": "另存CSV",
+													"class": "ms-auto btn btn-secondary",
+													"id": "export-csv",
+													"value": "csv"
+												}
+											}
+										}
+									}
+								]
+							}
+						}
+					}
+				},
+				{
+					"element": "div",
+					"class": "row m-5",
+					"child": {
+						"element": "div",
+						"class": "col-12",
+						"child": {
+							"element": "div",
+							"id": "all-dyelot-grid-container",
+							"class": "three-quarters-grid ag-theme-quartz"
+						}
+					}
+				}
+			]
+		}
+	],
+	"cssLink": [
+		{
+			"moduleDir": "local",
+			"cssPath": "AllDyelot.css"
+		}
+	],
+	"script": [
+		{
+			"moduleDir": "local",
+			"scriptPath": "views/allDyelotDataVisualizer.js"
+		}
+	]
+}

@@ -1,0 +1,71 @@
+div:where(.swal2-container) .swal2-html-container {
+	text-align: left !important;
+}
+
+.dots-container {
+	display: inline-block;
+	width: 20px;
+}
+
+.toggle-container {
+	/* width: 300px; */
+	/* border: 1px solid #ccc; */
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.toggle-container:hover:not(span) {
+	background-color: #f0f0f0; /* Color to indicate hover */
+	color: black;
+}
+
+.toggle-icon {
+	font-size: 24px; /* Make the arrow larger */
+	transition: transform 0.3s ease;
+	text-align: center;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.toggle-content {
+	margin-top: 10px;
+	max-height: 20vh;
+	overflow: auto;
+}
+
+.swal2-confirm-btn {
+	background-color: #28a745 !important; /* Green for OK button */
+	color: white !important;
+}
+
+.swal2-cancel-btn {
+	background-color: #dc3545 !important; /* Red for Cancel button */
+	color: white !important;
+}
+
+.success-text {
+	color: #28a645;
+}
+
+.warning-text {
+	color: #cc7000;
+}
+
+.danger-text {
+	color: red;
+}
+
+.success-content {
+	max-height: 30vh;
+	overflow-y: auto;
+}
+
+.upload-content {
+	max-height: 50vh;
+	overflow-y: auto;
+}
+
+.file-list ul {
+	list-style: none;
+	padding-left: 0;
+}

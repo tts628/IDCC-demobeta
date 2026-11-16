@@ -1,0 +1,136 @@
+{
+	"html": [
+		{
+			"element": "h4",
+			"class": "text-center mt-5 fw-bold",
+			"text": "供料系統資料統計"
+		},
+		{
+			"element": "div",
+			"class": "fluid-container",
+			"child": [
+				{
+					"element": "div",
+					"class": "row m-5",
+					"child": {
+						"element": "div",
+						"class": "col-12",
+						"child": {
+							"element": "form",
+							"id": "dyelot-data-form",
+							"child": [
+								{
+									"element": "div",
+									"class": "row",
+									"child": [
+										{
+											"element": "div",
+											"class": "col-1 col-form-label",
+											"child": {
+												"element": "label",
+												"forAttr": "start-time-selector",
+												"text": "選擇查詢時間: "
+											}
+										},
+										{
+											"element": "div",
+											"class": "col-2 text-center",
+											"child": {
+												"element": "input",
+												"type": "date",
+												"class": "form-control",
+												"id": "start-time-selector",
+                                                "name": "start-time-selector"
+											}
+										},
+										{
+											"element": "div",
+											"class": "col-1 text-center col-form-label",
+											"child": {
+												"element": "span",
+												"text": "~"
+											}
+										},
+										{
+											"element": "div",
+											"class": "col-2 text-center",
+											"child": {
+												"element": "input",
+												"type": "date",
+												"class": "form-control",
+												"id": "end-time-selector",
+                                                "name": "end-time-selector"
+											}
+										}
+									]
+								},
+								{
+									"element": "div",
+									"class": "row mt-4",
+									"child": [
+										{
+											"element": "div",
+											"class": "col-1 col-form-label",
+											"child": {
+												"element": "label",
+												"forAttr": "dyelot-text-input",
+												"text": "領料單號: "
+											}
+										},
+										{
+											"element": "div",
+											"class": "col-2",
+											"child": {
+												"element": "input",
+												"type": "text",
+												"placeholder": "領料單號",
+												"class": "form-control",
+												"id": "dyelot-text-input",
+                                                "name": "dyelot-text-input"
+											}
+										},
+										{
+											"element": "div",
+											"class": "col-1"
+										},
+										{
+											"element": "div",
+											"class": "col-1",
+											"child": {
+												"element": "button",
+												"class": "btn btn-primary",
+												"type": "submit",
+												"text": "查詢",
+												"id": "dyelot-data-form-submitter"
+											}
+										}
+									]
+								}
+							]
+						}
+					}
+				},
+				{
+					"element": "div",
+					"class": "row mx-5",
+					"child": {
+						"element": "div",
+						"class": "col-12",
+						"child": {
+							"element": "div",
+							"id": "dyelot-data-grid-container",
+							"class": "three-quarters-grid ag-theme-quartz"
+						}
+					}
+				}
+			]
+		}
+	],
+	"script": [
+		{
+			"moduleDir": "local",
+			"scriptPath": "js/DyelotDataQuery.js"
+		}
+	],
+	"fwversion": 0.5
+}

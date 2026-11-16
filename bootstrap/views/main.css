@@ -1,0 +1,268 @@
+html,
+body {
+	margin: 0;
+	padding: 0;
+	width: 100vw;
+	height: 100vh;
+	position: fixed;
+}
+
+#content,
+#full-page-content {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	overflow: auto;
+}
+
+html,
+body,
+.modal-content,
+.card-body,
+.card-header,
+.swal2-modal {
+	background-color: #333333;
+	color: white;
+}
+
+.card-header {
+	border-bottom: 1px solid rgb(255, 255, 255);
+}
+
+.menu-navigator {
+	font-weight: 600;
+}
+
+.modal-content,
+.swal2-modal {
+	border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.apexcharts-title-text,
+.apexcharts-xaxis-label,
+.apexcharts-yaxis-label,
+.apexcharts-datalabels text,
+.apexcharts-legend-text,
+.apexcharts-text,
+.toggle-off {
+	fill: white !important;
+	color: white !important;
+}
+
+.apexcharts-tooltip,
+.apexcharts-tooltip-title,
+.apexcharts-menu-item {
+	background-color: black !important;
+}
+
+.apexcharts-menu-item:hover {
+	background-color: #5c5c5c !important;
+}
+
+.ag-theme-quartz {
+	--ag-foreground-color: white;
+	/*字*/
+	--ag-background-color: rgba(26, 46, 57, 0.5);
+	--ag-header-foreground-color: white;
+	/*上面的字*/
+	--ag-header-background-color: rgba(14, 86, 114);
+	--ag-odd-row-background-color: rgba(14, 86, 114, 0.5);
+	--ag-header-column-resize-handle-color: rgba(0, 238, 238, 0.3);
+}
+
+.cell-span {
+	background-color: rgba(14, 86, 114, 1);
+}
+
+.required-label::after {
+	content: " *";
+	color: rgba(255, 100, 100);
+}
+
+.close {
+	color: white;
+}
+
+.close:hover {
+	color: #ddd;
+}
+
+.ag-theme-quartz .ag-root-wrapper {
+	transition: background-color 0.3s ease-in-out;
+	-webkit-transition: background-color 0.3s ease-in-out;
+	-moz-transition: background-color 0.3s ease-in-out;
+	-ms-transition: background-color 0.3s ease-in-out;
+	-o-transition: background-color 0.3s ease-in-out;
+}
+
+.ag-theme-quartz .ag-root-wrapper {
+	background-color: var(--ag-background-color);
+}
+
+/*调整数值以增加或减小字体大小*/ /*font-size: 18px;*/
+.ag-cell,
+.ag-header-cell-label,
+.ag-header-group-cell,
+.ag-theme-quartz {
+	transition: background-color ease-in-out 0.3s, color ease-in-out 0.3s;
+	-webkit-transition: background-color ease-in-out 0.3s, color ease-in-out 0.3s;
+	-moz-transition: background-color ease-in-out 0.3s, color ease-in-out 0.3s;
+	-ms-transition: background-color ease-in-out 0.3s, color ease-in-out 0.3s;
+	-o-transition: background-color ease-in-out 0.3s, color ease-in-out 0.3s;
+}
+
+.notification {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	background-color: rgba(237, 237, 237, 0.8);
+	color: black;
+	padding: 10px;
+	border-radius: 5px;
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	opacity: 0; /* Initially set opacity to 0 */
+	transition: opacity 0.5s ease-in-out; /* Apply transition to opacity */
+}
+
+.restricted-image-container,
+.restricted-image-container img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+.color-red {
+	color: red;
+}
+
+.image-delete-button {
+	position: absolute;
+	right: 20px;
+	top: 10px;
+	cursor: pointer;
+}
+
+.info-text-important {
+	color: blue !important;
+	font-weight: 600;
+}
+
+.inline-block {
+	display: inline-block;
+}
+
+.toggle-off {
+	/* fill: white !important; */
+	background-color: white !important;
+	color: black !important;
+}
+
+/* This part styles the scrollbar track (part the thumb slides within) */
+::-webkit-scrollbar-track {
+	background-color: rgba(232, 9, 9, 0);
+}
+
+::-webkit-scrollbar-track:hover {
+	background-color: rgb(4, 16, 57);
+}
+
+/* This part styles the draggable part of the scrollbar */
+::-webkit-scrollbar-thumb {
+	background-color: #cfe2ea;
+	border-radius: 20px;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	-ms-border-radius: 20px;
+	-o-border-radius: 20px;
+}
+
+/* This part changes the thumb's color on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #b9bde2;
+}
+
+/* This part styles the main scrollbar container */
+::-webkit-scrollbar {
+	width: 10px; /* for vertical scrollbars */
+	height: 10px; /* for horizontal scrollbars */
+}
+
+input:disabled,
+select:disabled {
+	background-color: #f4f4f4;
+	color: #999;
+	cursor: not-allowed;
+}
+
+.break-word {
+	word-wrap: break-word; /* Break long words at word boundaries */
+}
+
+.legacy-iframe-fullscreen {
+	width: 100vw;
+	height: 100vh;
+}
+
+.full-page-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(128, 128, 128, 0.4);
+	/*Grayhalf-transparentbackground*/
+	z-index: 9999;
+	/*Highz-indextobeontopofeverything*/
+	pointer-events: none;
+	/*Allowclickthrough*/
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.indicator-text {
+	color: white;
+}
+
+.text-right {
+	text-align: right;
+}
+
+.text-light-gray {
+	color: lightgray;
+}
+
+.bg-light-gray {
+	background-color: lightgray;
+}
+
+.text-black {
+	color: black;
+}
+
+.bg-black {
+	background-color: black;
+}
+
+.checkmark {
+	background-image: url("/common/images/LA-check.png");
+	filter: brightness(1.5);
+	-webkit-filter: brightness(1.5);
+}
+
+.cross {
+	background-image: url("/common/images/LA-cross.png");
+	filter: brightness(3);
+	/*Increase the value for more brightness*/
+	-webkit-filter: brightness(3);
+}
+
+.checkmark,
+.cross {
+	width: 1rem;
+	height: 1rem;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	display: inline-block;
+}

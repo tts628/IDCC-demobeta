@@ -1,0 +1,490 @@
+{
+	"html": [
+		{
+			"id": "maintenance-form-modal",
+			"modal": {
+				"closePrevention": true,
+				"headerHtml": [
+					{
+						"element": "h5",
+						"class": "fw-bold",
+						"id": "maintenance-modal-header"
+					}
+				],
+				"bodyHtml": [
+					{
+						"element": "div",
+						"id": "maintenance-modal-body",
+						"child": {
+							"element": "div",
+							"class": "row",
+							"child": {
+								"element": "div",
+								"class": "col-12",
+								"child": {
+									"element": "form",
+									"id": "maintenance-form",
+									"child": [
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "machine-type",
+													"class": "col-3 col-form-label form-label required-label",
+													"text": "設備類別: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "select",
+														"id": "machine-type",
+														"name": "machine-type",
+														"class": "form-select"
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "machine-name",
+													"class": "col-3 col-form-label form-label required-label",
+													"text": "設備名稱: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "select",
+														"id": "machine-name",
+														"name": "machine-name",
+														"class": "form-select"
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "maintenance-type",
+													"class": "col-3 col-form-label form-label required-label",
+													"text": "維修類別: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "select",
+														"id": "maintenance-type",
+														"name": "maintenance-type",
+														"class": "form-select",
+														"child": [
+															{
+																"element": "option",
+																"value": "",
+																"text": "Nothing Selected",
+																"selected": true,
+																"hidden": true,
+																"disabled": true
+															},
+															{
+																"element": "option",
+																"value": "1",
+																"text": "一級"
+															},
+															{
+																"element": "option",
+																"value": "2",
+																"text": "二級"
+															},
+															{
+																"element": "option",
+																"value": "3",
+																"text": "三級"
+															}
+														]
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "parts-name",
+													"class": "col-3 col-form-label form-label",
+													"text": "零件名稱: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"id": "parts-name",
+														"name": "parts-name",
+														"type": "text",
+                                                        "maxlength": "100",
+														"class": "form-control",
+														"placeholder": "零件名稱"
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+                                            "id": "parts-description-container",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "parts-description",
+													"class": "col-3 col-form-label form-label required-label",
+													"text": "維修零件詳細說明: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"id": "parts-description",
+														"name": "parts-description",
+														"type": "text",
+                                                        "maxlength": "200",
+														"class": "form-control",
+														"placeholder": "維修零件詳細說明"
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "repair",
+													"class": "col-3 col-form-label form-label",
+													"text": "維修項目: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"id": "repair",
+														"name": "repair",
+														"type": "text",
+                                                        "maxlength": "100",
+														"class": "form-control",
+														"placeholder": "維修項目"
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "reason",
+													"class": "col-3 col-form-label form-label",
+													"text": "原因: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"id": "reason",
+														"name": "reason",
+														"type": "text",
+                                                        "maxlength": "100",
+														"class": "form-control",
+														"placeholder": "原因"
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "description",
+													"class": "col-3 col-form-label form-label required-label",
+													"text": "維修詳細說明: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"id": "description",
+														"name": "description",
+														"type": "text",
+                                                        "maxlength": "200",
+														"class": "form-control",
+														"placeholder": "維修詳細說明",
+														"required": true
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "image-input",
+													"class": "col-3 col-form-label form-label",
+													"text": "照片: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": [
+														{
+															"element": "div",
+															"class": "row",
+															"child": {
+																"element": "div",
+																"class": "col-12",
+																"child": [
+																	{
+																		"element": "input",
+																		"id": "image-input",
+																		"name": "image-input[]",
+																		"type": "file",
+																		"class": "form-control",
+																		"accept": "image/*",
+																		"multiple": true
+																	}
+																]
+															}
+														},
+														{
+															"element": "div",
+															"class": "row",
+															"child": {
+																"element": "div",
+																"class": "col-12",
+																"id": "image-thumbnails-container",
+																"child": [
+																	{
+																		"element": "div",
+																		"id": "uploaded-preview",
+																		"class": "row mt-3"
+																	},
+																	{ "element": "div", "class": "border-top mb-3" },
+																	{
+																		"element": "div",
+																		"id": "existing-preview",
+																		"class": "row"
+																	}
+																]
+															}
+														}
+													]
+												}
+											]
+										},
+										{
+											"element": "div",
+											"id": "image-holder-container",
+											"class": "mb-3 row"
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "technician-name",
+													"class": "col-3 col-form-label form-label",
+													"text": "維修人員: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"id": "technician-name",
+														"name": "technician-name",
+														"type": "text",
+                                                        "maxlength": "50",
+														"class": "form-control",
+														"placeholder": "維修人員"
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "start-time",
+													"class": "col-3 col-form-label form-label required-label",
+													"text": "開始時間: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"id": "start-time",
+														"name": "start-time",
+														"type": "datetime-local",
+														"class": "form-control",
+														"placeholder": "開始時間",
+														"required": true
+													}
+												}
+											]
+										},
+										{
+											"element": "div",
+											"class": "mb-3 row",
+											"child": [
+												{
+													"element": "label",
+													"forAttr": "end-time",
+													"class": "col-3 col-form-label form-label required-label",
+													"text": "結束時間: "
+												},
+												{
+													"element": "div",
+													"class": "col-9",
+													"child": {
+														"element": "input",
+														"id": "end-time",
+														"name": "end-time",
+														"type": "datetime-local",
+														"class": "form-control",
+														"placeholder": "結束時間",
+														"required": true
+													}
+												}
+											]
+										},
+										{
+											"element": "input",
+											"type": "hidden",
+											"name": "modify-action",
+											"id": "modify-action"
+										},
+										{
+											"element": "input",
+											"type": "hidden",
+											"name": "data-id",
+											"id": "data-id"
+										},
+										{
+											"element": "input",
+											"type": "hidden",
+											"name": "maintenance-number",
+											"id": "maintenance-number"
+										}
+									]
+								}
+							}
+						}
+					}
+				],
+				"footerHtml": [
+					{
+						"element": "button",
+						"type": "submit",
+						"class": "btn btn-success",
+						"id": "add-submit-maintenance-modal",
+						"name": "add-submit-maintenance-modal",
+						"value": "add",
+						"form": "maintenance-form",
+						"text": "新增"
+					},
+					{
+						"element": "button",
+						"type": "submit",
+						"class": "btn btn-primary",
+						"id": "edit-submit-maintenance-modal",
+						"name": "edit-submit-maintenance-modal",
+						"value": "edit",
+						"form": "maintenance-form",
+						"text": "更新"
+					},
+					{
+						"element": "button",
+						"type": "submit",
+						"class": "btn btn-danger",
+						"id": "delete-maintenance-record",
+						"name": "delete-submit-maintenance-modal",
+						"value": "delete",
+						"form": "maintenance-form",
+						"text": "刪除"
+					}
+				]
+			}
+		},
+		{
+			"element": "h4",
+			"class": "text-center mt-5 fw-bold",
+			"child": [
+				{
+					"element": "span",
+                    "id": "machine-type-indicator"
+				},
+				{
+					"element": "span",
+                    "id": "page-title",
+					"text": "保養維修紀錄"
+				}
+			]
+		},
+		{
+			"element": "div",
+			"class": "fluid-container",
+			"child": [
+				{
+					"element": "div",
+					"class": "row m-5",
+					"child": {
+						"element": "div",
+						"class": "col-12",
+						"child": {
+							"element": "div",
+							"id": "maintenance-form-grid-container",
+							"class": "full-page-grid ag-theme-quartz"
+						}
+					}
+				}
+			]
+		}
+	],
+	"cssLink": [
+		{
+			"moduleDir": "local",
+			"cssPath": "maintenanceGrid.css"
+		}
+	],
+	"script": [
+		{
+			"moduleDir": "local",
+			"scriptPath": "views/maintenanceFormDataVisualizer.js"
+		}
+	]
+}

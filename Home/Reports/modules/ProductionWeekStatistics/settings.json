@@ -1,0 +1,101 @@
+{
+	"html": [
+		{
+			"element": "h4",
+			"class": "text-center mt-5 fw-bold",
+			"text": "每週產量統計"
+		},
+		{
+			"element": "div",
+			"class": "fluid-container",
+			"child": [
+				{
+					"element": "div",
+					"class": "row m-5",
+					"child": {
+						"element": "div",
+						"class": "col-12",
+						"child": {
+							"element": "div",
+							"id": "production-week-selector-container",
+							"child": {
+								"element": "div",
+								"class": "row",
+								"child": [
+									{
+										"element": "div",
+										"class": "col-2 text-center col-form-label",
+										"child": {
+											"element": "label",
+											"forAttr": "start-time-selector",
+											"text": "選擇查詢時間: "
+										}
+									},
+									{
+										"element": "div",
+										"class": "col-2 text-center",
+										"child": {
+											"element": "input",
+											"type": "date",
+											"class": "form-control",
+											"id": "start-time-selector"
+										}
+									},
+									{
+										"element": "div",
+										"class": "col-1 text-center col-form-label",
+										"child": {
+											"element": "span",
+											"text": "~"
+										}
+									},
+									{
+										"element": "div",
+										"class": "col-2 text-center",
+										"child": {
+											"element": "input",
+											"type": "date",
+											"class": "form-control",
+											"id": "end-time-selector"
+										}
+									}
+								]
+							}
+						}
+					}
+				},
+				{
+					"element": "div",
+					"class": "row m-5",
+					"child": {
+						"element": "div",
+						"class": "col-12",
+						"child": {
+							"element": "div",
+							"id": "production-week-chart-container"
+						}
+					}
+				},
+				{
+					"element": "div",
+					"class": "row m-5",
+					"child": {
+						"element": "div",
+						"class": "col-12",
+						"child": {
+							"element": "div",
+							"id": "production-week-grid-container",
+                            "class": "single-row-grid ag-theme-quartz"
+						}
+					}
+				}
+			]
+		}
+	],
+	"script": [
+		{
+			"moduleDir": "local",
+			"scriptPath": "views/productionWeekDataVisualizer.js"
+		}
+	]
+}
