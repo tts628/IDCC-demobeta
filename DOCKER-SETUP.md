@@ -4,7 +4,7 @@
 
 Windows 主機 → Docker Desktop 的 Linux 容器引擎 → `web` 容器（Apache + PHP 8.3 + PHP 擴充套件 + Microsoft SQL Server ODBC 18）。資料庫仍使用 `env` 指定的既有伺服器，不額外建立 SQL Server 或 MySQL 資料庫容器。
 
-Windows 安裝入口是 `install.cmd`，PowerShell 入口是 `install.ps1`。Linux／macOS 已有 Docker 與 Compose 的使用者可直接執行下方的 Compose 指令；自動安裝 Docker Desktop 的腳本只支援 Windows x64。
+Windows 安裝入口是 `install.cmd`，PowerShell 入口是 `install.ps1`。Ubuntu 在專案根目錄執行 `bash ./install.sh`，會偵測並安裝缺少的 Docker Engine／Compose；詳見 [UBUNTU-SETUP.md](UBUNTU-SETUP.md)。Linux／macOS 已有 Docker 與 Compose 的使用者也可直接執行下方的 Compose 指令。
 
 ## 初次安裝與重複執行
 
@@ -59,7 +59,7 @@ docker compose down
 - `.dockerignore` 把 `env` 和 `.env` 排除於映像建置內容之外，資料庫密碼不會被 COPY 進映像；實際執行仍需要主機上有完整 `env`。
 - 不要安裝完成後移動或刪除專案資料夾；否則先 `docker compose down`，搬移後再從新位置啟動。
 - Apache 阻擋 HTTP 讀取 `env`、`.git`、`vendor`、Docker 設定與安裝腳本。PHP 仍能在伺服器端讀取 `env`。
-- Linux 主機若遇到寫入權限錯誤，需讓容器的 `www-data` 使用者可寫入需要的輸出位置；Windows Docker Desktop 一般透過主機掛載管理存取。
+- Ubuntu 安裝腳本會將 Apache 工作程序的 UID／GID 對應到專案的非 root 擁有者，不修改整份專案的 chmod／chown。直接使用 Compose 時預設仍為 www-data；手動重建請參考 Ubuntu 說明保留 UID／GID 設定。Windows Docker Desktop 維持 www-data。
 
 ## 資料庫位置
 

@@ -1,5 +1,7 @@
 # Windows 安裝入口：Docker
 
+如果目標電腦是 Ubuntu，請在專案根目錄執行 `bash ./install.sh`，詳見 [Ubuntu 安裝說明](UBUNTU-SETUP.md)；以下步驟適用 Windows。
+
 目前預設使用 **Docker 容器執行 Apache、PHP**。Windows 主機只需要 Docker Desktop／WSL 2，不會另外安裝原生 Apache、PHP。
 
 1. 從 GitHub 下載整個儲存庫 ZIP，完整解壓縮到固定位置。

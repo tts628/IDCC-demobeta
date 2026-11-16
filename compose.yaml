@@ -5,6 +5,9 @@ services:
       context: .
       dockerfile: Dockerfile
     image: idcc-demobata-web:local
+    environment:
+      APACHE_RUN_USER: "${IDCC_APACHE_USER:-www-data}"
+      APACHE_RUN_GROUP: "${IDCC_APACHE_GROUP:-www-data}"
     ports:
       - "127.0.0.1:${IDCC_HTTP_PORT:-8080}:80"
     volumes:

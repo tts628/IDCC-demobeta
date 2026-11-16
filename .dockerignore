@@ -14,6 +14,9 @@ Dockerfile
 compose.yaml
 install*.ps1
 install*.cmd
+install*.sh
 setup
 WINDOWS*.md
 DOCKER*.md
+UBUNTU*.md
+INSTALL.md
