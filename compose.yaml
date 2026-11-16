@@ -1,0 +1,27 @@
+name: idcc-demobata
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: idcc-demobata-web:local
+    ports:
+      - "127.0.0.1:${IDCC_HTTP_PORT:-8080}:80"
+    volumes:
+      - type: bind
+        source: .
+        target: /var/www/html/DemoBeta
+        bind:
+          create_host_path: false
+      - type: bind
+        source: ./env
+        target: /var/www/html/DemoBeta/env
+        read_only: true
+        bind:
+          create_host_path: false
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    stop_grace_period: 30s
+    security_opt:
+      - no-new-privileges:true
