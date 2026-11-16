@@ -78,7 +78,9 @@ function idccDiagnose(array $arguments): int
         return 2;
     }
     [$host, $name, $user, $password] = $values;
-    $options = ['Database' => $name, 'UID' => $user, 'PWD' => $password, 'CharacterSet' => 'UTF-8', 'LoginTimeout' => 8];
+    $trustServerCertificate = filter_var(getenv($database . '_DB_TRUST_SERVER_CERTIFICATE') ?: 'false', FILTER_VALIDATE_BOOLEAN);
+    idccReport('tls_settings', true, ['encrypt' => true, 'trust_server_certificate' => $trustServerCertificate]);
+    $options = ['Database' => $name, 'UID' => $user, 'PWD' => $password, 'CharacterSet' => 'UTF-8', 'LoginTimeout' => 8, 'Encrypt' => true, 'TrustServerCertificate' => $trustServerCertificate];
     $connection = @sqlsrv_connect($host, $options);
     if (!$connection) {
         idccReport('sqlsrv_connect', false, ['errors' => idccErrorSummary(sqlsrv_errors(SQLSRV_ERR_ERRORS) ?: [])]);
@@ -86,7 +88,8 @@ function idccDiagnose(array $arguments): int
     }
     idccReport('sqlsrv_connect', true);
     try {
-        $pdo = new PDO("sqlsrv:server=$host;Database=$name;LoginTimeout=8", $user, $password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+        $tlsDsn = ';Encrypt=1;TrustServerCertificate=' . ($trustServerCertificate ? '1' : '0');
+        $pdo = new PDO("sqlsrv:server=$host;Database=$name;LoginTimeout=8" . $tlsDsn, $user, $password, [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
         $pdo->query('SELECT 1')->fetchColumn();
         idccReport('pdo_connect', true);
     } catch (PDOException $error) {

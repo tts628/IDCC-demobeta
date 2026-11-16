@@ -40,3 +40,11 @@ docker compose up -d --force-recreate --wait
 Ubuntu 若原本使用 install.sh 設定 UID／GID，請執行 `bash ./install.sh` 以保留映射設定。
 
 `.env` 已加入 `.gitignore` 和 `.dockerignore`，不要上傳，也不要使用 `git add --force .env`。`docker compose config` 可能顯示解析後的密碼，請勿把完整輸出貼到公開地方。
+
+## TLS 憑證
+
+預設強制加密並驗證伺服器憑證。正式環境請在容器信任 SQL Server 憑證的簽發 CA，並使用與憑證相符的 DNS 名稱連線。
+
+如果是自己控管的展示資料庫，且已確認身分，可以在 `.env` 明確設定 `IDCC_DB_TRUST_SERVER_CERTIFICATE=true`（SPC 對應 `SPC_DB_TRUST_SERVER_CERTIFICATE=true`）。此選項保留連線加密，但略過伺服器憑證驗證，降低伺服器身分驗證保障；不會修改資料庫伺服器。未設定、false 或無法辨識的值維持驗證憑證。
+
+SQLSRV、PDO 和診斷腳本會讀取同一個設定。儲存後需重新建立容器，再執行診斷，輸出中的 tls_settings 會顯示實際選項。

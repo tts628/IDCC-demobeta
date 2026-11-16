@@ -3,11 +3,14 @@ $serverName = getenv('SPC_DB_HOST') ?: getenv('HOST');
 $Database = getenv('SPC_DB_NAME') ?: getenv('MDSVN_SPC_DB');
 $UID = getenv('SPC_DB_UID') ?: getenv('UID');
 $PWD = getenv('SPC_DB_PWD') ?: getenv('PWD');
+$trustServerCertificate = filter_var(getenv('SPC_DB_TRUST_SERVER_CERTIFICATE') ?: 'false', FILTER_VALIDATE_BOOLEAN);
 $connectionInfo = array(
     "Database" => $Database,
     "UID" => $UID,
     "PWD" => $PWD,
-    "CharacterSet" => "UTF-8"
+    "CharacterSet" => "UTF-8",
+    "Encrypt" => true,
+    "TrustServerCertificate" => $trustServerCertificate
 );
 $conn = sqlsrv_connect($serverName, $connectionInfo);
 
@@ -20,6 +23,7 @@ if (!$conn) {
 
 
 $dsn = "sqlsrv:server=$serverName ; Database=$Database";
+$dsn .= ';Encrypt=1;TrustServerCertificate=' . ($trustServerCertificate ? '1' : '0');
 $options = [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
