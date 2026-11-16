@@ -7,7 +7,7 @@ if (!is_array($health) || ($health['ok'] ?? false) !== true) {
     exit(1);
 }
 // Exercise Apache routing as well as filesystem checks, without opening a database.
-foreach (['/common/IDCC_plugin/jquery/jquery.min.js', '/DemoBeta/Home/'] as $path) {
+foreach (['/common/IDCC_plugin/jquery/jquery.min.js', '/DemoBeta/Home/', '/DemoBeta/Home/Legacy/Homepage/'] as $path) {
     $http_response_header = [];
     $body = @file_get_contents('http://127.0.0.1' . $path, false, $context);
     $status = $http_response_header[0] ?? '';

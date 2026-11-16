@@ -1,6 +1,6 @@
 <?php
 ini_set('display_errors', '1');
-require_once realpath($_SERVER['DOCUMENT_ROOT'] . "/common/language/language.php");
+require_once __DIR__ . '/../../../common/language/language.php';
 $lang = new Language();
 $lang->load("header");
 $lang->load("menu");
@@ -15,7 +15,7 @@ $lang->load("home_index");
     </title>
 
     <!-- 插件引用 -->
-    <?php require_once realpath($_SERVER['DOCUMENT_ROOT'] . '/common/legacyTemplate/head.php'); ?>
+    <?php require_once __DIR__ . '/../../../common/legacyTemplate/head.php'; ?>
     <!--    <script src="./common/highcharts/modules/series-label.js"></script>-->
     <script src="/common/IDCC_plugin/deprecated/highcharts/highcharts.js"></script>
     <link rel="stylesheet" href="/common/IDCC_plugin/bootstrap-5.0.0-dist/css/bootstrap.css">

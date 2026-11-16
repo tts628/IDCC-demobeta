@@ -20,6 +20,11 @@ $assets = [
     '/common/language/language.php',
     '/common/language/zh-tw/sidebar.php',
     '/common/language/en-us/sidebar.php',
+    '/common/legacyTemplate/head.php',
+    '/common/IDCC_plugin/legacyPlugins/google1.css',
+    '/common/IDCC_plugin/legacyPlugins/google_icon.woff2',
+    '/common/autoload.php',
+    '/common/Config/DbMapper.php',
 ];
 $missingAssets = array_values(array_filter($assets, static function ($path) use ($root) {
     $handle = @fopen($root . $path, 'rb');
