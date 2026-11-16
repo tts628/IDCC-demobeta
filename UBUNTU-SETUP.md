@@ -14,6 +14,8 @@ bash ./install.sh
 
 不用先執行 `chmod +x`。`install.sh` 會確認目前確實為 Ubuntu；Windows 仍使用 `install.cmd`，兩者啟動相同的 Apache／PHP 容器。
 
+共用前端套件與語系檔已隨專案的 `common` 目錄提供。若從舊版更新，請將新版檔案覆蓋到原本專案資料夾，保留自己的 `env` 和資料檔，再執行 `bash ./install.sh`；腳本會重建映像，套用 `/common` 路徑映射。
+
 ## 支援與行為
 
 - 支援 Ubuntu 22.04、24.04、26.04、26.10，amd64／arm64，需要網路。

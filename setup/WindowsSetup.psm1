@@ -51,6 +51,7 @@ LoadModule php_module "$p/php8apache2_4.dll"
 PHPIniDir "$i"
 DocumentRoot "$w"
 Alias /DemoBeta/ "$r/"
+Alias /common/ "$r/common/"
 RedirectMatch ^/DemoBeta$ /DemoBeta/
 DirectoryIndex index.php index.html
 TypesConfig "$a/conf/mime.types"
@@ -69,6 +70,14 @@ ServerSignature Off
     Require local
 </Directory>
 <Directory "$r">
+    Options FollowSymLinks
+    AllowOverride None
+    Require local
+    <FilesMatch "\.php$">
+        SetHandler application/x-httpd-php
+    </FilesMatch>
+</Directory>
+<Directory "$r/common">
     Options FollowSymLinks
     AllowOverride None
     Require local

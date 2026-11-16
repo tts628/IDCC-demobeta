@@ -42,7 +42,7 @@ if ($Plan) {
     [pscustomobject]@{ Mode='Docker (Linux containers)'; DockerCLI=$dockerExe; DockerDesktop=$desktopExe; MissingDockerAction=$(if($NoInstall){'Stop'}else{'Install Docker Desktop and WSL prerequisites'}); Project=$PSScriptRoot; URL="http://127.0.0.1:$Port/DemoBeta/Home/" }
     return
 }
-foreach ($required in @('compose.yaml','Dockerfile','Home\index.php','Home\vendor\autoload.php','env','docker\health.php')) {
+foreach ($required in @('compose.yaml','Dockerfile','Home\index.php','Home\vendor\autoload.php','env','docker\health.php','common\IDCC_plugin\jquery\jquery.min.js','common\language\language.php')) {
     if (!(Test-Path -LiteralPath (Join-Path $PSScriptRoot $required))) { throw "Missing project file/folder: $required. Extract the entire repository first." }
 }
 $osType = Get-DockerOSType

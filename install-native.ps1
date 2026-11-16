@@ -66,7 +66,7 @@ $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
 if (!(New-Object Security.Principal.WindowsPrincipal($identity)).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
     throw 'Run install-native.cmd, or run PowerShell as Administrator.'
 }
-foreach ($required in @('Home\index.php','Home\vendor\autoload.php','env')) {
+foreach ($required in @('Home\index.php','Home\vendor\autoload.php','env','common\IDCC_plugin\jquery\jquery.min.js','common\language\language.php')) {
     if (!(Test-Path -LiteralPath (Join-Path $appRoot $required))) { throw "Missing project file/folder: $required. Extract the entire repository first." }
 }
 foreach ($explicit in @($ApacheExe,$PhpExe)) { if ($explicit -and !(Test-Path -LiteralPath $explicit -PathType Leaf)) { throw "Executable not found: $explicit" } }
@@ -134,6 +134,12 @@ if (Test-Path -LiteralPath $junction) {
     $item = Get-Item -LiteralPath $junction
     if ($item.LinkType -ne 'Junction' -or [IO.Path]::GetFullPath([string]$item.Target[0]).TrimEnd('\') -ne $appRoot.TrimEnd('\')) { throw 'DemoBeta website directory points to another project. Use the original project location or a different -InstallRoot.' }
 } else { New-Item -ItemType Junction -Path $junction -Target $appRoot | Out-Null }
+$commonLink = Join-Path $webRoot 'common'
+$commonTarget = Join-Path $appRoot 'common'
+if (Test-Path -LiteralPath $commonLink) {
+    $commonItem = Get-Item -LiteralPath $commonLink
+    if ($commonItem.LinkType -ne 'Junction' -or [IO.Path]::GetFullPath([string]$commonItem.Target[0]).TrimEnd('\') -ne $commonTarget.TrimEnd('\')) { throw 'The common website directory points to another project.' }
+} else { New-Item -ItemType Junction -Path $commonLink -Target $commonTarget | Out-Null }
 $configPath = Join-Path $InstallRoot 'httpd.conf'
 $config = New-IdccApacheConfig $apacheRoot $phpRoot $iniRoot $webRoot $appRoot $InstallRoot $Port
 $candidateConfig = Join-Path $InstallRoot 'httpd.candidate.conf'

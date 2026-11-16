@@ -56,7 +56,7 @@ if $plan; then
     "$VERSION_ID" "$arch" "$project_root" "${docker_bin:-not installed}" "$(! $no_install && printf yes || printf no)" "$port"
   exit 0
 fi
-for required in compose.yaml Dockerfile Home/index.php Home/vendor/autoload.php env docker/health.php; do
+for required in compose.yaml Dockerfile Home/index.php Home/vendor/autoload.php env docker/health.php common/IDCC_plugin/jquery/jquery.min.js common/language/language.php; do
   [[ -e $project_root/$required ]] || die "Missing $required. Extract the entire repository first."
 done
 as_root() {

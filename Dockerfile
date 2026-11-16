@@ -29,6 +29,8 @@ COPY --chown=www-data:www-data . /var/www/html/DemoBeta/
 
 RUN a2enconf idcc \
     && mkdir -p /var/www/html/DemoBeta/env \
+    && test -f /var/www/html/DemoBeta/common/IDCC_plugin/jquery/jquery.min.js \
+    && ln -s /var/www/html/DemoBeta/common /var/www/html/common \
     && apache2ctl -t \
     && php -r '$required=["curl","openssl","ctype","dom","fileinfo","gd","iconv","mbstring","SimpleXML","xml","xmlreader","xmlwriter","zip","mysqli","pdo_mysql","sqlsrv","pdo_sqlsrv"]; $missing=array_diff($required,get_loaded_extensions()); if ($missing) {fwrite(STDERR,implode(",",$missing)); exit(1);}'
 
