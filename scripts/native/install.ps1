@@ -9,7 +9,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
-Import-Module (Join-Path $PSScriptRoot 'setup\WindowsSetup.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'WindowsSetup.psm1') -Force
 function Invoke-Native {
     param([string]$File, [string[]]$Arguments)
     & $File @Arguments
@@ -33,7 +33,7 @@ function Install-MicrosoftPackage {
 }
 if (![Environment]::Is64BitOperatingSystem -or $env:PROCESSOR_ARCHITECTURE -eq 'ARM64') { throw 'This installer supports Windows x64 only.' }
 $InstallRoot = [IO.Path]::GetFullPath($InstallRoot)
-$appRoot = [IO.Path]::GetFullPath($PSScriptRoot)
+$appRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
 foreach ($path in @($InstallRoot,$appRoot)) { ConvertTo-ApachePath $path | Out-Null }
 $managedPhp = Join-Path $InstallRoot 'php'
 $managedApache = Join-Path $InstallRoot 'apache\Apache24'
@@ -64,7 +64,7 @@ if ($Plan) {
 }
 $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
 if (!(New-Object Security.Principal.WindowsPrincipal($identity)).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    throw 'Run install-native.cmd, or run PowerShell as Administrator.'
+    throw 'Run scripts/native/install.cmd, or run PowerShell as Administrator.'
 }
 foreach ($required in @('Home\index.php','Home\vendor\autoload.php','env','common\IDCC_plugin\jquery\jquery.min.js','common\language\language.php')) {
     if (!(Test-Path -LiteralPath (Join-Path $appRoot $required))) { throw "Missing project file/folder: $required. Extract the entire repository first." }

@@ -4,6 +4,35 @@
 
 > 安裝完成分成三步：**容器 healthy → 資料庫連線成功 → 確認頁面查詢範圍內有資料**。只有 healthy 不代表真實資料庫已連上。
 
+## 目錄結構
+
+```text
+IDCC-demobeta/
+├─ README.md                 安裝與維護總入口
+├─ compose.yaml              Docker 服務定義
+├─ .env.example              本機連線設定範本
+├─ install.cmd               Windows 雙擊入口
+├─ install.ps1               Windows PowerShell 相容入口
+├─ install.sh                Ubuntu 相容入口
+├─ docs/                     平台、資料庫與 Docker 詳細說明
+├─ scripts/
+│  ├─ windows/               Windows Docker 安裝主程式
+│  ├─ ubuntu/                Ubuntu Docker 安裝主程式
+│  └─ native/                Windows 原生 Apache/PHP 備用安裝
+├─ docker/                   Dockerfile、Apache/PHP 設定、健康檢查及診斷
+├─ Home/                     原有網站與報表
+├─ Login/                    原有登入功能
+├─ bootstrap/                原有頁面載入框架
+├─ chatui/                   原有聊天介面
+├─ common/                   共用套件、語系與連線載入器
+├─ env/                      讀取環境變數的 PHP 連線程式
+└─ test/                     原有測試檔
+```
+
+網站目錄維持原位；常用的 `install.cmd`、`install.ps1`、`bash ./install.sh` 指令也保持可用。Dockerfile 已移到 `docker/Dockerfile`，由 compose.yaml 自動指定。若手動建置，請使用 `docker build -f docker/Dockerfile .`。
+
+從舊版 ZIP 合併更新時，舊根目錄的說明與原生安裝檔可能仍留在本機；新版已使用 docs/ 與 scripts/ 內容，不需操作這些舊副本。確認新版可用並備份後，可手動移除舊副本，勿刪除自己的 .env 或資料。
+
 ## 1. 下載專案
 
 在 [GitHub 儲存庫](https://github.com/tts628/IDCC-demobeta) 按 **Code → Download ZIP**，完整解壓縮到固定位置。
@@ -11,7 +40,7 @@
 - Windows 範例：`C:\IDCC-demobeta-main`
 - Ubuntu 範例：`~/IDCC-demobeta-main`
 
-根目錄應直接看得到 `compose.yaml`、`Dockerfile`、`install.cmd`、`install.sh`、`common`、`env`、`Home`。不要只複製部分資料夾，也不要將解壓縮資料夾刪除；容器會掛載這個目錄。
+根目錄應直接看得到 `compose.yaml`、`docker/Dockerfile`、`install.cmd`、`install.sh`、`common`、`env`、`Home`。不要只複製部分資料夾，也不要將解壓縮資料夾刪除；容器會掛載這個目錄。
 
 ## 2. 設定資料庫
 
@@ -95,7 +124,7 @@ SPC 對應 `SPC_DB_TRUST_SERVER_CERTIFICATE=true`。這會**保留加密，但�
 4. 完成 Docker Desktop 的首次安裝／條款提示，等待 Linux 容器引擎就緒。
 5. 等待映像建置及健康檢查完成，看到 **`Docker environment verified`**。
 
-Windows 主機不需要另裝 Apache、PHP。預設不要執行原生備用入口 `install-native.cmd`。
+Windows 主機不需要另裝 Apache、PHP。預設不要執行原生備用入口 `scripts/native/install.cmd`。
 
 需要換成 8081 時，在系統管理員 PowerShell 執行：
 
@@ -123,7 +152,7 @@ bash ./install.sh --no-install     # 不安裝套件，仍可啟動既有服務�
 bash ./install.sh --port 8081      # 換連接埠
 ```
 
-Ubuntu 有衝突的舊套件時，腳本會停止並列出，不自動刪除。更多細節見 [Ubuntu 說明](UBUNTU-SETUP.md)。
+Ubuntu 有衝突的舊套件時，腳本會停止並列出，不自動刪除。更多細節見 [Ubuntu 說明](docs/UBUNTU-SETUP.md)。
 
 ## 4. 驗證安裝與資料庫
 
@@ -269,9 +298,9 @@ docker compose down
 
 | 文件 | 內容 |
 | --- | --- |
-| [Windows 安裝](WINDOWS-SETUP.md) | Docker Desktop／WSL 流程 |
-| [Ubuntu 安裝](UBUNTU-SETUP.md) | Docker Engine、sudo、UID／GID |
-| [資料庫設定](DATABASE-SETUP.md) | 環境變數與 TLS |
-| [Docker 詳細說明](DOCKER-SETUP.md) | 容器、掛載、網路與管理 |
+| [Windows 安裝](docs/WINDOWS-SETUP.md) | Docker Desktop／WSL 流程 |
+| [Ubuntu 安裝](docs/UBUNTU-SETUP.md) | Docker Engine、sudo、UID／GID |
+| [資料庫設定](docs/DATABASE-SETUP.md) | 環境變數與 TLS |
+| [Docker 詳細說明](docs/DOCKER-SETUP.md) | 容器、掛載、網路與管理 |
 | [共用依賴](common/ASSETS.md) | common 套件與舊版依賴範圍 |
-| [原生 Windows 備用安裝](WINDOWS-NATIVE-SETUP.md) | 刻意不使用 Docker 時的替代方式 |
+| [原生 Windows 備用安裝](docs/WINDOWS-NATIVE-SETUP.md) | 刻意不使用 Docker 時的替代方式 |

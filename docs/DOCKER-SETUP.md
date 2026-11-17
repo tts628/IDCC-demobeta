@@ -73,7 +73,7 @@ Docker 映像建置時會驗證 Apache 設定及 PHP 擴充套件。容器健康
 
 現在也會檢查首頁共用套件／語系檔，並透過 HTTP 請求首頁與 `/common/IDCC_plugin/jquery/jquery.min.js`。缺少這些檔案或 `/common` 映射錯誤時，容器會顯示 unhealthy。共用依賴已放入專案的 `common`，不需要另外從原本網站伺服器取得。
 
-更新這次修正時，將新版程式及 `common` 放回原本專案位置，保留自己的 `env`，再執行 `docker compose up -d --build --wait`（Ubuntu 建議執行 `bash ./install.sh` 以保留 UID／GID 設定）。這次包含 Dockerfile 修改，需要重建映像，單純重新整理或 restart 無法套用。
+更新時，將新版程式及 `common` 放回原本專案位置，保留自己的根目錄 `.env`、`env/env.json` 與資料檔，PHP 連線程式則隨新版更新。再執行 `docker compose up -d --build --wait`（Ubuntu 建議執行 `bash ./install.sh` 以保留 UID／GID 設定）。Dockerfile 位於 `docker/Dockerfile`，由 Compose 自動指定；需要重建映像，單純重新整理或 restart 無法套用。
 
 現有 `Home/composer.lock` 的 **PhpSpreadsheet 1.12.0 宣告 PHP `^7.1`**，與 PHP 8.3 不相容；這次不更動 vendor、composer.lock 或應用程式，仍需另外升級／測試試算表功能。另須留意 Linux 路徑大小寫、Windows 專屬檔案路徑與指令的相容性。健康狀態只代表環境可用，不等於所有舊程式已通過驗收。
 

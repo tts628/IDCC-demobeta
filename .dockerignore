@@ -20,3 +20,7 @@ WINDOWS*.md
 DOCKER*.md
 UBUNTU*.md
 INSTALL.md
+
+docs
+scripts
+docker/Dockerfile

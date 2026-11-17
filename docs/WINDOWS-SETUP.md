@@ -15,4 +15,4 @@
 
 更多容器設定、資料庫連線及操作方式請看 [DOCKER-SETUP.md](DOCKER-SETUP.md)。
 
-原生 Windows 安裝保留在 `install-native.cmd`／`install-native.ps1`，只在刻意選擇原生方式時使用；說明見 [WINDOWS-NATIVE-SETUP.md](WINDOWS-NATIVE-SETUP.md)。不需要兩種都安裝。如果先前已建立 `IDCC-DemoBeta` 原生服務，Docker 安裝不會停止它；遇到 8080 衝突時，可參考 Docker 說明改用其他連接埠。
+原生 Windows 安裝保留在 `scripts/native/install.cmd`／`scripts/native/install.ps1`，只在刻意選擇原生方式時使用；說明見 [WINDOWS-NATIVE-SETUP.md](WINDOWS-NATIVE-SETUP.md)。不需要兩種都安裝。如果先前已建立 `IDCC-DemoBeta` 原生服務，Docker 安裝不會停止它；遇到 8080 衝突時，可參考 Docker 說明改用其他連接埠。

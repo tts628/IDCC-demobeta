@@ -91,7 +91,7 @@ ServerSignature Off
 <Directory "$r/setup">
     Require all denied
 </Directory>
-<LocationMatch "(?i)(^|/)(\.git|\.env[^/]*|env|setup|vendor)(/|$)">
+<LocationMatch "(?i)(^|/)(\.git|\.env[^/]*|env|setup|scripts|docs|vendor)(/|$)">
     Require all denied
 </LocationMatch>
 <FilesMatch "(?i)(^\.|\.(ps1|psm1|cmd|bat|lock|log|ini|sql|bak)$|^composer\.json$)">

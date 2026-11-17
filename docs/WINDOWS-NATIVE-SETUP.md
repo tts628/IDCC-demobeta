@@ -1,6 +1,6 @@
-# Windows 一鍵安裝
+# Windows 原生安裝（備用）
 
-將 GitHub 儲存庫完整下載並解壓縮，雙擊根目錄的 `install-native.cmd`，同意 Windows 管理員授權。請保留 PowerShell 視窗，直到出現 **Environment verified**。單純下載 ZIP 不會觸發安裝。
+將 GitHub 儲存庫完整下載並解壓縮，進入 `scripts/native`，雙擊 `install.cmd`，同意 Windows 管理員授權。請保留 PowerShell 視窗，直到出現 **Environment verified**。單純下載 ZIP 不會觸發安裝。
 
 預設網址：**http://127.0.0.1:8080/DemoBeta/Home/**
 
@@ -31,19 +31,19 @@
 
 ```powershell
 cd "你的專案解壓縮目錄"
-powershell -NoProfile -ExecutionPolicy Bypass -File .\install-native.ps1 -ApacheExe 'D:\Apache24\bin\httpd.exe' -PhpExe 'D:\php\php.exe'
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts/native/install.ps1 -ApacheExe 'D:\Apache24\bin\httpd.exe' -PhpExe 'D:\php\php.exe'
 ```
 
 只查看偵測結果（不安裝、不修改服務）：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\install-native.ps1 -Plan
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts/native/install.ps1 -Plan
 ```
 
 8080 被其他程式使用時，安裝會停止。可改用：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\install-native.ps1 -Port 8081
+powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts/native/install.ps1 -Port 8081
 ```
 
 重跑會重用既有環境；重新產生本專案的設定，並重啟本專案服務。請固定專案位置；安裝後移動或刪除解壓縮資料夾會讓網站失效。重新執行時請使用上次相同的 `-Port` 參數。
