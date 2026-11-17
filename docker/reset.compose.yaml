@@ -1,0 +1,8 @@
+# Standalone teardown configuration: no credentials or database volume declaration.
+# Keep the fixed project name used by the installer.
+name: idcc-demobata
+services:
+  web:
+    image: idcc-demobata-web:local
+  postgres:
+    image: postgres:17-bookworm

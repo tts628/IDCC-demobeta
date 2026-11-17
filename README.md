@@ -1,3 +1,7 @@
+## 重設執行環境
+
+Windows 執行 `reset.cmd`；Ubuntu 執行 `bash reset.sh`。輸入 `RESET` 確認後，移除本專案容器、網路與應用映像，保留 PostgreSQL 資料、密碼及 `.env`。之後重跑安裝程式即可重建。詳見 [重設說明](docs/RESET.md)。
+
 ## IDCC PostgreSQL 與 Demo 模式
 
 預設 Demo 模式沿用現有 SQL Server；Docker 安裝同時建立空的 PostgreSQL，密碼自動產生且保存在本機 `.env.postgres`。請依 [切換與驗證說明](docs/POSTGRES-DEMO.md) 操作。關閉 Demo 前仍需完成資料表與 SQL 查詢移植。
