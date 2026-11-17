@@ -8,7 +8,17 @@ services:
     env_file:
       - path: ./.env
         required: false
+      - path: ./.env.postgres
+        required: true
+    depends_on:
+      postgres:
+        condition: service_healthy
     environment:
+      IDCC_DEMO_MODE: "${IDCC_DEMO_MODE:-true}"
+      IDCC_PG_HOST: postgres
+      IDCC_PG_PORT: "5432"
+      POSTGRES_DB: idcc
+      POSTGRES_USER: idcc
       APACHE_RUN_USER: "${IDCC_APACHE_USER:-www-data}"
       APACHE_RUN_GROUP: "${IDCC_APACHE_GROUP:-www-data}"
     ports:
@@ -31,3 +41,21 @@ services:
     stop_grace_period: 30s
     security_opt:
       - no-new-privileges:true
+  postgres:
+    image: postgres:17-bookworm
+    env_file:
+      - ./.env.postgres
+    environment:
+      POSTGRES_DB: idcc
+      POSTGRES_USER: idcc
+    volumes:
+      - idcc_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U idcc -d idcc"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    restart: unless-stopped
+volumes:
+  idcc_postgres_data:

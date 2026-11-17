@@ -1,3 +1,7 @@
+## IDCC PostgreSQL 與 Demo 模式
+
+預設 Demo 模式沿用現有 SQL Server；Docker 安裝同時建立空的 PostgreSQL，密碼自動產生且保存在本機 `.env.postgres`。請依 [切換與驗證說明](docs/POSTGRES-DEMO.md) 操作。關閉 Demo 前仍需完成資料表與 SQL 查詢移植。
+
 # IDCC DemoBeta
 
 使用 Docker 執行 Apache、PHP 8.3 與 SQL Server 驅動的 IDCC 展示專案。支援 Windows 與 Ubuntu 安裝入口，資料庫使用既有的 SQL Server，安裝程式不會建立資料庫或匯入展示資料。
@@ -210,7 +214,7 @@ docker compose up -d --build --wait
 
 ### Windows：原本使用 Download ZIP 安裝
 
-在 PowerShell 執行以下整段。會從 GitHub 下載最新版，保留根目錄 `.env` 與自訂 `env.json`，更新 PHP 連線程式等其他同名檔案；不會用 `/MIR` 刪除本機額外檔案。
+在 PowerShell 執行以下整段。會從 GitHub 下載最新版，保留根目錄 `.env`、`.env.postgres` 與自訂 `env.json`，更新 PHP 連線程式等其他同名檔案；不會用 `/MIR` 刪除本機額外檔案。
 
 ```powershell
 $ErrorActionPreference = "Stop"
@@ -230,7 +234,7 @@ Expand-Archive "$stage\project.zip" "$stage\extracted"
 $folders = @(Get-ChildItem "$stage\extracted" -Directory)
 if ($folders.Count -ne 1) { throw "解壓縮內容不符合預期，請停止更新。" }
 
-robocopy $folders[0].FullName $project /E /XJ /XD .git /XF .env env.json
+robocopy $folders[0].FullName $project /E /XJ /XD .git /XF .env .env.postgres env.json
 if ($LASTEXITCODE -ge 8) { throw "檔案更新失敗，請先不要繼續。" }
 
 Set-Location $project
@@ -243,7 +247,7 @@ docker compose ps
 
 ### Ubuntu：ZIP 安裝
 
-下載最新版並解壓縮到暫存目錄，將內容合併到原本專案位置，保留自己的 `.env`、`env/env.json` 與上傳／輸出資料，再執行：
+下載最新版並解壓縮到暫存目錄，將內容合併到原本專案位置，保留自己的 `.env`、`.env.postgres`、`env/env.json` 與上傳／輸出資料，再執行：
 
 ```bash
 cd ~/IDCC-demobeta-main

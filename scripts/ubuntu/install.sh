@@ -142,6 +142,14 @@ fi
 compose=(compose --project-directory "$project_root" --file "$project_root/compose.yaml")
 docker_call compose up --help | grep -- '--wait-timeout' >/dev/null || die 'Compose is too old. Update its plugin to a version supporting --wait-timeout, then rerun.'
 log 'Validating Compose and building Apache/PHP (the first build can take several minutes)...'
+# Never overwrite credentials for an existing PostgreSQL volume.
+if [[ ! -e "$project_root/.env.postgres" ]]; then
+  (umask 077
+   password=$(od -An -N32 -tx1 /dev/urandom | tr -d ' \n')
+   [[ ${#password} == 64 ]] || exit 1
+   set -o noclobber
+   printf 'POSTGRES_PASSWORD=%s\n' "$password" > "$project_root/.env.postgres") || die 'Cannot create PostgreSQL credential file.'
+fi
 docker_call "${compose[@]}" config --quiet
 docker_call "${compose[@]}" up --detach --build --wait --wait-timeout 180
 docker_call "${compose[@]}" ps

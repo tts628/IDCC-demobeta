@@ -7,7 +7,7 @@ RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends ca-certificates curl gnupg \
         libfreetype6-dev libjpeg62-turbo-dev libpng-dev libzip-dev libonig-dev \
-        unixodbc-dev; \
+        unixodbc-dev libpq-dev; \
     curl -fsSL https://packages.microsoft.com/keys/microsoft.asc \
         | gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg; \
     echo 'deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/microsoft-prod.gpg] https://packages.microsoft.com/debian/12/prod bookworm main' \
@@ -15,7 +15,7 @@ RUN set -eux; \
     apt-get update; \
     ACCEPT_EULA=Y apt-get install -y --no-install-recommends msodbcsql18; \
     docker-php-ext-configure gd --with-freetype --with-jpeg; \
-    docker-php-ext-install -j"$(nproc)" gd mbstring zip mysqli pdo_mysql opcache; \
+    docker-php-ext-install -j"$(nproc)" gd mbstring zip mysqli pdo_mysql pdo_pgsql opcache; \
     pecl install "sqlsrv-${SQLSRV_VERSION}" "pdo_sqlsrv-${SQLSRV_VERSION}"; \
     docker-php-ext-enable sqlsrv pdo_sqlsrv; \
     a2enmod rewrite; \
@@ -32,7 +32,7 @@ RUN a2enconf idcc \
     && test -f /var/www/html/DemoBeta/common/IDCC_plugin/jquery/jquery.min.js \
     && ln -s /var/www/html/DemoBeta/common /var/www/html/common \
     && apache2ctl -t \
-    && php -r '$required=["curl","openssl","ctype","dom","fileinfo","gd","iconv","mbstring","SimpleXML","xml","xmlreader","xmlwriter","zip","mysqli","pdo_mysql","sqlsrv","pdo_sqlsrv"]; $missing=array_diff($required,get_loaded_extensions()); if ($missing) {fwrite(STDERR,implode(",",$missing)); exit(1);}'
+    && php -r '$required=["curl","openssl","ctype","dom","fileinfo","gd","iconv","mbstring","SimpleXML","xml","xmlreader","xmlwriter","zip","mysqli","pdo_mysql","pdo_pgsql","sqlsrv","pdo_sqlsrv"]; $missing=array_diff($required,get_loaded_extensions()); if ($missing) {fwrite(STDERR,implode(",",$missing)); exit(1);}'
 
 WORKDIR /var/www/html/DemoBeta
 HEALTHCHECK --interval=15s --timeout=5s --start-period=30s --retries=5 \

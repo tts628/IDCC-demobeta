@@ -9,9 +9,9 @@ class DbMapper
     private function load(array $options): array
     {
         $database = strtoupper((string) ($options[0] ?? ''));
-        $files = ['IDCC' => 'database_IDCC.php', 'SPC' => 'database_SPC.php'];
+        $files = ['IDCC' => 'database_IDCC.php', 'SPC' => 'database_SPC.php', 'IDCC_DEMO' => 'database_IDCC_DEMO.php'];
         if (!isset($files[$database])) {
-            throw new \InvalidArgumentException('Supported database configurations are IDCC and SPC.');
+            throw new \InvalidArgumentException('Supported database configurations are IDCC, IDCC_DEMO and SPC.');
         }
         if (!isset(self::$connections[$database])) {
             $file = dirname(__DIR__, 2) . '/env/' . $files[$database];
@@ -34,6 +34,10 @@ class DbMapper
 
     public function getLink(array $connectOption)
     {
+        require_once dirname(__DIR__, 2) . '/env/idcc-mode.php';
+        if (strtoupper((string) ($connectOption[0] ?? '')) === 'IDCC' && !idccDemoMode()) {
+            throw new \RuntimeException('PostgreSQL mode selected. This legacy sqlsrv page must be migrated to PostgreSQL PDO first.');
+        }
         $config = $this->load($connectOption);
         if (in_array('ReturnDatesAsStrings', $connectOption, true)) {
             if (!$config['server'] || !is_array($config['options'])) {
@@ -56,7 +60,7 @@ class DbMapper
     {
         $config = $this->load($connectOption);
         if (!($config['pdo'] instanceof \PDO)) {
-            throw new \RuntimeException('PDO SQL Server connection is unavailable. Check project env settings.');
+            throw new \RuntimeException('PDO database connection is unavailable. Check project env settings.');
         }
         return $config['pdo'];
     }
