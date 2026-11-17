@@ -1,12 +1,12 @@
 # Windows 安裝入口：Docker
 
-如果目標電腦是 Ubuntu，請在專案根目錄執行 `bash ./install.sh`，詳見 [Ubuntu 安裝說明](UBUNTU-SETUP.md)；以下步驟適用 Windows。
+如果目標電腦是 Ubuntu，請在專案根目錄執行 `bash ubuntu/install.sh`，詳見 [Ubuntu 安裝說明](UBUNTU-SETUP.md)；以下步驟適用 Windows。
 
 目前預設使用 **Docker 容器執行 Apache、PHP**。Windows 主機只需要 Docker Desktop／WSL 2，不會另外安裝原生 Apache、PHP。
 
 1. 從 GitHub 下載整個儲存庫 ZIP，完整解壓縮到固定位置。
-2. 雙擊根目錄 `install.cmd`，同意 Windows 管理員授權。
-3. 若提示重開機，儲存工作並重開機，再雙擊一次 `install.cmd`。
+2. 雙擊專案內的 `windows/install.cmd`，同意 Windows 管理員授權。
+3. 若提示重開機，儲存工作並重開機，再雙擊一次 `windows/install.cmd`。
 4. Docker Desktop 首次安裝時，依畫面完成安裝與使用條款確認。已有 Docker 的電腦會跳過安裝。
 5. 等待建置完成及 **Docker environment verified**。
 6. 開啟 **http://127.0.0.1:8080/DemoBeta/Home/**。

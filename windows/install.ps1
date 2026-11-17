@@ -7,7 +7,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
-$projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
+$projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 function Find-DockerFile {
     param([string]$Name, [string[]]$Candidates)
     $command = Get-Command $Name -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
@@ -47,12 +47,12 @@ foreach ($required in @('compose.yaml','docker\Dockerfile','Home\index.php','Hom
     if (!(Test-Path -LiteralPath (Join-Path $projectRoot $required))) { throw "Missing project file/folder: $required. Extract the entire repository first." }
 }
 $osType = Get-DockerOSType
-if ($osType -eq 'windows') { throw 'Switch Docker Desktop to Linux containers, then rerun install.cmd.' }
+if ($osType -eq 'windows') { throw 'Switch Docker Desktop to Linux containers, then rerun windows\install.cmd.' }
 if (!$osType -and !$desktopExe) {
     if ($NoInstall) { throw 'No running local Linux Docker engine or Docker Desktop was found. Install/start Docker Desktop first.' }
     $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
     $principal = New-Object Security.Principal.WindowsPrincipal($identity)
-    if (!$principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { throw 'Run install.cmd to authorize installation as Administrator.' }
+    if (!$principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { throw 'Run windows\install.cmd to authorize installation as Administrator.' }
     Write-Host 'Preparing WSL 2 for Docker Desktop...'
     $restartRequired = $false
     foreach ($feature in @('Microsoft-Windows-Subsystem-Linux','VirtualMachinePlatform')) {
@@ -63,7 +63,7 @@ if (!$osType -and !$desktopExe) {
         }
     }
     if ($restartRequired) {
-        Write-Warning 'WSL prerequisites were enabled. Restart Windows, then run install.cmd again. This script will not restart Windows automatically.'
+        Write-Warning 'WSL prerequisites were enabled. Restart Windows, then run windows\install.cmd again. This script will not restart Windows automatically.'
         exit 3010
     }
     $wslVersion = $null
@@ -73,7 +73,7 @@ if (!$osType -and !$desktopExe) {
     } catch { }
     if (!$wslVersion) {
         & wsl.exe --install --no-distribution --no-launch
-        if ($LASTEXITCODE -eq 3010) { Write-Warning 'Restart Windows, then rerun install.cmd.'; exit 3010 }
+        if ($LASTEXITCODE -eq 3010) { Write-Warning 'Restart Windows, then rerun windows\install.cmd.'; exit 3010 }
         if ($LASTEXITCODE -ne 0) { throw 'WSL installation failed. Check virtualization/Windows requirements and rerun.' }
     }
     if (!$wslVersion -or $wslVersion -lt [version]'2.1.5') {
@@ -90,11 +90,11 @@ if (!$osType -and !$desktopExe) {
     if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.GetNameInfo([Security.Cryptography.X509Certificates.X509NameType]::SimpleName,$false) -notmatch '^Docker Inc\.?$') { throw 'Docker installer signature verification failed.' }
     # Keep the vendor installer interactive so the user can review its terms.
     $installed = Start-Process -FilePath $installer -ArgumentList @('install','--backend=wsl-2') -PassThru -Wait
-    if ($installed.ExitCode -eq 3010) { Write-Warning 'Restart Windows, then rerun install.cmd.'; exit 3010 }
+    if ($installed.ExitCode -eq 3010) { Write-Warning 'Restart Windows, then rerun windows\install.cmd.'; exit 3010 }
     if ($installed.ExitCode -ne 0) { throw "Docker Desktop installation failed (exit $($installed.ExitCode))." }
     $dockerExe = Find-DockerCli
     $desktopExe = Find-DockerDesktop
-    if (!$dockerExe -or !$desktopExe) { throw 'Docker Desktop paths were not found after installation. Reopen PowerShell and run install.cmd again.' }
+    if (!$dockerExe -or !$desktopExe) { throw 'Docker Desktop paths were not found after installation. Reopen PowerShell and run windows\install.cmd again.' }
 } elseif (!$osType) {
     Write-Host 'Docker Desktop detected; skipping installation.'
 } else { Write-Host 'Running local Linux Docker engine detected; skipping installation.' }
@@ -109,7 +109,7 @@ if (!$osType) {
         Start-Sleep -Seconds 2
     }
 }
-if ($osType -ne 'linux') { throw 'Docker Linux engine is not ready. Open Docker Desktop, finish setup, ensure WSL 2/virtualization are available, and rerun install.cmd.' }
+if ($osType -ne 'linux') { throw 'Docker Linux engine is not ready. Open Docker Desktop, finish setup, ensure WSL 2/virtualization are available, and rerun windows\install.cmd.' }
 $composeFile = Join-Path $projectRoot 'compose.yaml'
 $env:IDCC_HTTP_PORT = [string]$Port
 # Refreshing the app never stops or removes an existing native Apache service.

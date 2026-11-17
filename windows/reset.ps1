@@ -3,11 +3,11 @@
 param([switch]$Plan)
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
-$projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..\..'))
+$projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 Write-Host "Project: idcc-demobata ($projectRoot)"
 Write-Host 'REMOVE: project containers and network; idcc-demobata-web:local image.'
 Write-Host 'KEEP: all PostgreSQL volumes/data, .env, .env.postgres, source files, Docker/WSL, other projects.'
-Write-Host 'The app will stop. Run install.cmd afterwards to rebuild.'
+Write-Host 'The app will stop. Run windows\install.cmd afterwards to rebuild.'
 if ($Plan) { return }
 $command = Get-Command docker.exe -CommandType Application -ErrorAction SilentlyContinue | Select-Object -First 1
 $dockerExe = if ($command) { $command.Source } else { $null }
@@ -29,4 +29,4 @@ Invoke-LocalDocker -DockerArgs @('compose','--project-name','idcc-demobata','--p
 # Never force image removal: another container may still need this image.
 $imageIds = @(Invoke-LocalDocker -DockerArgs @('image','ls','--quiet','--filter','reference=idcc-demobata-web:local'))
 if ($imageIds.Count -gt 0) { Invoke-LocalDocker -DockerArgs @('image','rm','idcc-demobata-web:local') }
-Write-Host 'Reset complete. PostgreSQL data and credentials were kept. Run install.cmd to rebuild.' -ForegroundColor Green
+Write-Host 'Reset complete. PostgreSQL data and credentials were kept. Run windows\install.cmd to rebuild.' -ForegroundColor Green

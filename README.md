@@ -1,6 +1,6 @@
 ## 重設執行環境
 
-Windows 執行 `reset.cmd`；Ubuntu 執行 `bash reset.sh`。輸入 `RESET` 確認後，移除本專案容器、網路與應用映像，保留 PostgreSQL 資料、密碼及 `.env`。之後重跑安裝程式即可重建。詳見 [重設說明](docs/RESET.md)。
+Windows 執行 `windows/reset.cmd`；Ubuntu 執行 `bash ubuntu/reset.sh`。輸入 `RESET` 確認後，移除本專案容器、網路與應用映像，保留 PostgreSQL 資料、密碼及 `.env`。之後重跑安裝程式即可重建。詳見 [重設說明](docs/RESET.md)。
 
 ## IDCC PostgreSQL 與 Demo 模式
 
@@ -8,7 +8,7 @@ Windows 執行 `reset.cmd`；Ubuntu 執行 `bash reset.sh`。輸入 `RESET` 確�
 
 # IDCC DemoBeta
 
-使用 Docker 執行 Apache、PHP 8.3 與 SQL Server 驅動的 IDCC 展示專案。支援 Windows 與 Ubuntu 安裝入口，資料庫使用既有的 SQL Server，安裝程式不會建立資料庫或匯入展示資料。
+使用 Docker 執行 Apache、PHP 8.3 與 SQL Server 驅動的 IDCC 展示專案。支援 Windows 與 Ubuntu 安裝入口，Demo 模式使用既有 SQL Server，並同時建立空的 PostgreSQL；不會匯入展示資料。
 
 > 安裝完成分成三步：**容器 healthy → 資料庫連線成功 → 確認頁面查詢範圍內有資料**。只有 healthy 不代表真實資料庫已連上。
 
@@ -19,13 +19,10 @@ IDCC-demobeta/
 ├─ README.md                 安裝與維護總入口
 ├─ compose.yaml              Docker 服務定義
 ├─ .env.example              本機連線設定範本
-├─ install.cmd               Windows 雙擊入口
-├─ install.ps1               Windows PowerShell 相容入口
-├─ install.sh                Ubuntu 相容入口
+├─ windows/                  Windows 安裝與重設（install.cmd、reset.cmd）
+├─ ubuntu/                   Ubuntu 安裝與重設（install.sh、reset.sh）
 ├─ docs/                     平台、資料庫與 Docker 詳細說明
 ├─ scripts/
-│  ├─ windows/               Windows Docker 安裝主程式
-│  ├─ ubuntu/                Ubuntu Docker 安裝主程式
 │  └─ native/                Windows 原生 Apache/PHP 備用安裝
 ├─ docker/                   Dockerfile、Apache/PHP 設定、健康檢查及診斷
 ├─ Home/                     原有網站與報表
@@ -37,9 +34,9 @@ IDCC-demobeta/
 └─ test/                     原有測試檔
 ```
 
-網站目錄維持原位；常用的 `install.cmd`、`install.ps1`、`bash ./install.sh` 指令也保持可用。Dockerfile 已移到 `docker/Dockerfile`，由 compose.yaml 自動指定。若手動建置，請使用 `docker build -f docker/Dockerfile .`。
+網站目錄維持原位；安裝與重設入口已依作業系統集中到 `windows/`、`ubuntu/`。Dockerfile 已移到 `docker/Dockerfile`，由 compose.yaml 自動指定。若手動建置，請使用 `docker build -f docker/Dockerfile .`。
 
-從舊版 ZIP 合併更新時，舊根目錄的說明與原生安裝檔可能仍留在本機；新版已使用 docs/ 與 scripts/ 內容，不需操作這些舊副本。確認新版可用並備份後，可手動移除舊副本，勿刪除自己的 .env 或資料。
+從舊版 ZIP 合併更新時，舊根目錄的說明與原生安裝檔可能仍留在本機；新版入口位於 windows/ 與 ubuntu/，文件位於 docs/，不需操作這些舊副本。確認新版可用並備份後，可手動移除舊副本，勿刪除自己的 .env 或資料。
 
 ## 1. 下載專案
 
@@ -48,7 +45,7 @@ IDCC-demobeta/
 - Windows 範例：`C:\IDCC-demobeta-main`
 - Ubuntu 範例：`~/IDCC-demobeta-main`
 
-根目錄應直接看得到 `compose.yaml`、`docker/Dockerfile`、`install.cmd`、`install.sh`、`common`、`env`、`Home`。不要只複製部分資料夾，也不要將解壓縮資料夾刪除；容器會掛載這個目錄。
+根目錄應直接看得到 `compose.yaml`、`docker/Dockerfile`、`windows`、`ubuntu`、`common`、`env`、`Home`。不要只複製部分資料夾，也不要將解壓縮資料夾刪除；容器會掛載這個目錄。
 
 ## 2. 設定資料庫
 
@@ -126,9 +123,9 @@ SPC 對應 `SPC_DB_TRUST_SERVER_CERTIFICATE=true`。這會**保留加密，但�
 
 ### Windows
 
-1. 雙擊根目錄 **`install.cmd`**，同意管理員授權。
+1. 雙擊專案內的 **`windows/install.cmd`**，同意管理員授權。
 2. 已有可用 Docker 時跳過安裝；缺少時準備 WSL 2 與 Docker Desktop。
-3. 若提示重開機，先儲存工作、重開機，再執行一次 `install.cmd`。
+3. 若提示重開機，先儲存工作、重開機，再執行一次 `windows/install.cmd`。
 4. 完成 Docker Desktop 的首次安裝／條款提示，等待 Linux 容器引擎就緒。
 5. 等待映像建置及健康檢查完成，看到 **`Docker environment verified`**。
 
@@ -138,7 +135,7 @@ Windows 主機不需要另裝 Apache、PHP。預設不要執行原生備用入�
 
 ```powershell
 cd "C:\IDCC-demobeta-main"
-powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -Port 8081
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1 -Port 8081
 ```
 
 ### Ubuntu
@@ -147,7 +144,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -Port 8081
 
 ```bash
 cd ~/IDCC-demobeta-main
-bash ./install.sh
+bash ubuntu/install.sh
 ```
 
 需要時輸入 sudo 密碼。腳本會確認 Ubuntu 版本，使用已有的 Docker，或從 Docker 官方 apt 儲存庫安裝缺少的元件，再建置容器；不需要 Docker Desktop，也不用先 `chmod +x`。
@@ -155,9 +152,9 @@ bash ./install.sh
 支援 Ubuntu 22.04、24.04、26.04、26.10，amd64／arm64。一般使用者擁有專案時，腳本會對應 Apache 的 UID／GID，讓輸出檔案能寫回主機；不對整份專案執行 chmod／chown。
 
 ```bash
-bash ./install.sh --plan           # 只看計畫
-bash ./install.sh --no-install     # 不安裝套件，仍可啟動既有服務與專案
-bash ./install.sh --port 8081      # 換連接埠
+bash ubuntu/install.sh --plan           # 只看計畫
+bash ubuntu/install.sh --no-install     # 不安裝套件，仍可啟動既有服務與專案
+bash ubuntu/install.sh --port 8081      # 換連接埠
 ```
 
 Ubuntu 有衝突的舊套件時，腳本會停止並列出，不自動刪除。更多細節見 [Ubuntu 說明](docs/UBUNTU-SETUP.md)。
@@ -204,7 +201,7 @@ docker compose up -d --force-recreate --wait
 docker compose exec -T web php docker/diagnose-db.php
 ```
 
-**只做 `restart` 不會載入新的容器環境變數。** Ubuntu 建議重新執行 `bash ./install.sh`，保留 UID／GID 設定。自訂連接埠時也請保留原本的 `-Port`／`--port` 參數。
+**只做 `restart` 不會載入新的容器環境變數。** Ubuntu 建議重新執行 `bash ubuntu/install.sh`，保留 UID／GID 設定。自訂連接埠時也請保留原本的 `-Port`／`--port` 參數。
 
 修改 Dockerfile、PHP 擴充套件或映像中的 Apache 設定時，需要重新建置：
 
@@ -255,7 +252,7 @@ docker compose ps
 
 ```bash
 cd ~/IDCC-demobeta-main
-bash ./install.sh
+bash ubuntu/install.sh
 ```
 
 ### 原本使用 Git clone 安裝
@@ -267,7 +264,7 @@ bash ./install.sh
 | 問題 | 處理方式 |
 | --- | --- |
 | `no configuration file provided` | 先切換到含 `compose.yaml` 的專案根目錄 |
-| 安裝要求重開機 | WSL／Docker 系統元件可能尚待啟用；重開後再執行 `install.cmd` |
+| 安裝要求重開機 | WSL／Docker 系統元件可能尚待啟用；重開後再執行 `windows/install.cmd` |
 | `.env` 明明有填，診斷卻顯示 `missing_keys` | 確認檔名不是 `.env.txt`、Compose 已更新且包含 `env_file`，再 force-recreate |
 | `TLS_CERTIFICATE` | 檢查 CA／主機名稱；可信任的展示環境可明確選擇上述信任憑證設定 |
 | `18456`、`State: 8` | SQL Server 判定密碼不符；確認同一伺服器、帳密與 `.env` 語法，修改後重建容器 |

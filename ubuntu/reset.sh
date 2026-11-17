@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
-project_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd -P)
+project_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 plan=false
 case ${1:-} in
   --plan) plan=true; shift ;;
-  -h|--help) printf 'Usage: bash reset.sh [--plan]\n'; exit 0 ;;
+  -h|--help) printf 'Usage: bash ubuntu/reset.sh [--plan]\n'; exit 0 ;;
 esac
-(($# == 0)) || die 'Unknown option. Usage: bash reset.sh [--plan]'
+(($# == 0)) || die 'Unknown option. Usage: bash ubuntu/reset.sh [--plan]'
 printf 'Project: idcc-demobata (%s)\n' "$project_root"
-printf '%s\n' 'REMOVE: project containers and network; idcc-demobata-web:local image.'   'KEEP: all PostgreSQL volumes/data, .env, .env.postgres, source files, Docker, other projects.'   'The app will stop. Run bash install.sh afterwards to rebuild.'
+printf '%s\n' 'REMOVE: project containers and network; idcc-demobata-web:local image.'   'KEEP: all PostgreSQL volumes/data, .env, .env.postgres, source files, Docker, other projects.'   'The app will stop. Run bash ubuntu/install.sh afterwards to rebuild.'
 $plan && exit 0
 docker_bin=$(type -P docker) || die 'Docker CLI not found. Nothing was removed.'
 endpoint=${DOCKER_HOST:-unix:///var/run/docker.sock}
@@ -28,4 +28,4 @@ docker_call compose --project-name idcc-demobata --project-directory "$project_r
 if docker_call image inspect idcc-demobata-web:local >/dev/null 2>&1; then
   docker_call image rm idcc-demobata-web:local
 fi
-printf 'Reset complete. PostgreSQL data and credentials were kept. Run bash install.sh to rebuild.\n'
+printf 'Reset complete. PostgreSQL data and credentials were kept. Run bash ubuntu/install.sh to rebuild.\n'

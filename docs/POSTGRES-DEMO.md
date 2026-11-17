@@ -1,6 +1,6 @@
 # IDCC Demo 與 PostgreSQL
 
-Windows 執行根目錄 `install.cmd`，Ubuntu 執行 `bash install.sh`。安裝程式會保留原有 `.env`，首次產生 `.env.postgres` 隨機密碼，啟動 PHP/Apache 與 PostgreSQL 17。重跑不會覆寫密碼或清空資料。
+Windows 執行專案內的 `windows/install.cmd`，Ubuntu 執行 `bash ubuntu/install.sh`。安裝程式會保留原有 `.env`，首次產生 `.env.postgres` 隨機密碼，啟動 PHP/Apache 與 PostgreSQL 17。重跑不會覆寫密碼或清空資料。
 
 預設 `IDCC_DEMO_MODE=true`（未設定亦為 true），現有頁面沿用原有 IDCC_DB_* SQL Server 測試連線。SPC 連線維持原設定。
 

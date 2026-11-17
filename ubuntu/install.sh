@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Ubuntu installer: bash ./install.sh [--port 8081] [--plan] [--no-install]
+# Ubuntu installer: bash ubuntu/install.sh [--port 8081] [--plan] [--no-install]
 set -Eeuo pipefail
 trap 'printf "ERROR: installation stopped at line %s. Review the preceding error.\n" "$LINENO" >&2' ERR
 
@@ -27,7 +27,7 @@ while (($#)); do
     shift
     ;;
   -h | --help)
-    printf 'Usage: bash ./install.sh [--port 8080] [--plan] [--no-install]\n'
+    printf 'Usage: bash ubuntu/install.sh [--port 8080] [--plan] [--no-install]\n'
     exit 0
     ;;
   *) die "Unknown option: $1" ;;
@@ -36,8 +36,8 @@ done
 [[ $port =~ ^[0-9]{1,5}$ ]] || die 'Port must be a number from 1024 to 65535.'
 port=$((10#$port))
 ((port >= 1024 && port <= 65535)) || die 'Port must be from 1024 to 65535.'
-project_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd -P)
-[[ $(uname -s) == Linux ]] || die 'On Windows run install.cmd. This shell installer supports Ubuntu Linux.'
+project_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
+[[ $(uname -s) == Linux ]] || die 'On Windows run windows/install.cmd. This shell installer supports Ubuntu Linux.'
 [[ -r /etc/os-release ]] || die 'Cannot detect Linux distribution.'
 # shellcheck disable=SC1091
 source /etc/os-release

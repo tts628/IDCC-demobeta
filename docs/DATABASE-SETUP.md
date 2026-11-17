@@ -37,7 +37,7 @@ SPC 保留舊變數 `HOST`、`MDSVN_SPC_DB`、`UID`、`PWD` 作為相容備援�
 docker compose up -d --force-recreate --wait
 ```
 
-Ubuntu 若原本使用 install.sh 設定 UID／GID，請執行 `bash ./install.sh` 以保留映射設定。
+Ubuntu 若原本使用 install.sh 設定 UID／GID，請執行 `bash ubuntu/install.sh` 以保留映射設定。
 
 `.env` 已加入 `.gitignore` 和 `.dockerignore`，不要上傳，也不要使用 `git add --force .env`。`docker compose config` 可能顯示解析後的密碼，請勿把完整輸出貼到公開地方。
 

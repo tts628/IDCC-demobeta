@@ -4,7 +4,7 @@
 
 Windows 主機 → Docker Desktop 的 Linux 容器引擎 → `web` 容器（Apache + PHP 8.3 + PHP 擴充套件 + Microsoft SQL Server ODBC 18）。資料庫仍使用 `env` 指定的既有伺服器，不額外建立 SQL Server 或 MySQL 資料庫容器。
 
-Windows 安裝入口是 `install.cmd`，PowerShell 入口是 `install.ps1`。Ubuntu 在專案根目錄執行 `bash ./install.sh`，會偵測並安裝缺少的 Docker Engine／Compose；詳見 [UBUNTU-SETUP.md](UBUNTU-SETUP.md)。Linux／macOS 已有 Docker 與 Compose 的使用者也可直接執行下方的 Compose 指令。
+Windows 安裝入口是 `windows/install.cmd`，PowerShell 入口是 `windows/install.ps1`。Ubuntu 在專案根目錄執行 `bash ubuntu/install.sh`，會偵測並安裝缺少的 Docker Engine／Compose；詳見 [UBUNTU-SETUP.md](UBUNTU-SETUP.md)。Linux／macOS 已有 Docker 與 Compose 的使用者也可直接執行下方的 Compose 指令。
 
 ## 初次安裝與重複執行
 
@@ -19,19 +19,19 @@ Windows 安裝入口是 `install.cmd`，PowerShell 入口是 `install.ps1`。Ubu
 只查看安裝計畫，不修改系統：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -Plan
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1 -Plan
 ```
 
 已有 Docker，只允許啟動網站、不允許安裝系統元件：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -NoInstall
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1 -NoInstall
 ```
 
 改用其他連接埠：
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\install.ps1 -Port 8081
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1 -Port 8081
 ```
 
 上述網址就會改成 `http://127.0.0.1:8081/DemoBeta/Home/`。後續啟動請保持相同 `-Port`；手動 Compose 操作則先設定 `$env:IDCC_HTTP_PORT='8081'`。預設只綁定本機 `127.0.0.1`，不自動對外開放防火牆。
@@ -73,7 +73,7 @@ Docker 映像建置時會驗證 Apache 設定及 PHP 擴充套件。容器健康
 
 現在也會檢查首頁共用套件／語系檔，並透過 HTTP 請求首頁與 `/common/IDCC_plugin/jquery/jquery.min.js`。缺少這些檔案或 `/common` 映射錯誤時，容器會顯示 unhealthy。共用依賴已放入專案的 `common`，不需要另外從原本網站伺服器取得。
 
-更新時，將新版程式及 `common` 放回原本專案位置，保留自己的根目錄 `.env`、`.env.postgres`、`env/env.json` 與資料檔，PHP 連線程式則隨新版更新。再執行 `docker compose up -d --build --wait`（Ubuntu 建議執行 `bash ./install.sh` 以保留 UID／GID 設定）。Dockerfile 位於 `docker/Dockerfile`，由 Compose 自動指定；需要重建映像，單純重新整理或 restart 無法套用。
+更新時，將新版程式及 `common` 放回原本專案位置，保留自己的根目錄 `.env`、`.env.postgres`、`env/env.json` 與資料檔，PHP 連線程式則隨新版更新。再執行 `docker compose up -d --build --wait`（Ubuntu 建議執行 `bash ubuntu/install.sh` 以保留 UID／GID 設定）。Dockerfile 位於 `docker/Dockerfile`，由 Compose 自動指定；需要重建映像，單純重新整理或 restart 無法套用。
 
 現有 `Home/composer.lock` 的 **PhpSpreadsheet 1.12.0 宣告 PHP `^7.1`**，與 PHP 8.3 不相容；這次不更動 vendor、composer.lock 或應用程式，仍需另外升級／測試試算表功能。另須留意 Linux 路徑大小寫、Windows 專屬檔案路徑與指令的相容性。健康狀態只代表環境可用，不等於所有舊程式已通過驗收。
 
