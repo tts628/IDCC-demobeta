@@ -4,6 +4,13 @@ param([switch]$Plan)
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 $projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+$backendFile = Join-Path $projectRoot '.idcc-docker-backend'
+$savedBackend = if (Test-Path -LiteralPath $backendFile) { (Get-Content -LiteralPath $backendFile -Raw).Trim() } else { '' }
+$desktopPresent = (Test-Path "$env:ProgramFiles\Docker\Docker\Docker Desktop.exe") -or (Test-Path "$env:LOCALAPPDATA\Programs\DockerDesktop\Docker Desktop.exe")
+if ($savedBackend -eq 'wsl' -or ($savedBackend -ne 'desktop' -and !$desktopPresent -and !(Get-Command docker.exe -ErrorAction SilentlyContinue))) {
+    & (Join-Path $PSScriptRoot 'wsl.ps1') -Action Reset -Plan:$Plan -NoInstall
+    exit $LASTEXITCODE
+}
 Write-Host "Project: idcc-demobata ($projectRoot)"
 Write-Host 'REMOVE: project containers and network; idcc-demobata-web:local image.'
 Write-Host 'KEEP: all PostgreSQL volumes/data, .env, .env.postgres, source files, Docker/WSL, other projects.'

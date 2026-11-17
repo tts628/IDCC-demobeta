@@ -1,3 +1,5 @@
+> Windows 新安裝不再安裝 Docker Desktop，改用 WSL 2 + Ubuntu Docker Engine。PowerShell 的 Docker 操作請使用 `powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose ps` 等命令代理；詳見 [Windows 操作說明](docs/WINDOWS-SETUP.md)。
+
 ## 重設執行環境
 
 Windows 執行 `windows/reset.cmd`；Ubuntu 執行 `bash ubuntu/reset.sh`。輸入 `RESET` 確認後，移除本專案容器、網路與應用映像，保留 PostgreSQL 資料、密碼及 `.env`。之後重跑安裝程式即可重建。詳見 [重設說明](docs/RESET.md)。
@@ -124,9 +126,9 @@ SPC 對應 `SPC_DB_TRUST_SERVER_CERTIFICATE=true`。這會**保留加密，但�
 ### Windows
 
 1. 雙擊專案內的 **`windows/install.cmd`**，同意管理員授權。
-2. 已有可用 Docker 時跳過安裝；缺少時準備 WSL 2 與 Docker Desktop。
+2. 已有可用 Docker 時跳過安裝；新安裝使用 WSL 2／Ubuntu Docker Engine，不安裝 Docker Desktop。
 3. 若提示重開機，先儲存工作、重開機，再執行一次 `windows/install.cmd`。
-4. 完成 Docker Desktop 的首次安裝／條款提示，等待 Linux 容器引擎就緒。
+4. 新電腦依提示完成 WSL／Ubuntu 初始設定；已有 Docker Desktop 則沿用原引擎。
 5. 等待映像建置及健康檢查完成，看到 **`Docker environment verified`**。
 
 Windows 主機不需要另裝 Apache、PHP。預設不要執行原生備用入口 `scripts/native/install.cmd`。
@@ -197,8 +199,8 @@ docker compose exec -T web php docker/diagnose-db.php
 
 ```powershell
 cd "C:\IDCC-demobeta-main"
-docker compose up -d --force-recreate --wait
-docker compose exec -T web php docker/diagnose-db.php
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose up -d --force-recreate --wait
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose exec -T web php docker/diagnose-db.php
 ```
 
 **只做 `restart` 不會載入新的容器環境變數。** Ubuntu 建議重新執行 `bash ubuntu/install.sh`，保留 UID／GID 設定。自訂連接埠時也請保留原本的 `-Port`／`--port` 參數。
@@ -239,9 +241,9 @@ robocopy $folders[0].FullName $project /E /XJ /XD .git /XF .env .env.postgres en
 if ($LASTEXITCODE -ge 8) { throw "檔案更新失敗，請先不要繼續。" }
 
 Set-Location $project
-docker compose up -d --build --wait
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose up -d --build --wait
 if ($LASTEXITCODE -ne 0) { throw "容器重建失敗，請查看錯誤訊息。" }
-docker compose ps
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose ps
 ```
 
 完成後開啟網站，按 **Ctrl＋F5** 強制重新整理。若原本 PHP 連線程式內仍有自行填寫的帳密，請先遷移至根目錄 `.env`，再更新程式。
@@ -292,7 +294,7 @@ docker compose start
 docker compose down
 ```
 
-專案與輸出檔案留在主機資料夾，`env` 對容器是唯讀掛載。`down` 移除容器／網路，不刪除主機專案；操作前仍應維持資料備份。Docker Desktop 是否在 Windows 登入時自動啟動，由其設定控制。
+專案與輸出檔案留在主機資料夾，`env` 對容器是唯讀掛載。`down` 移除容器／網路，不刪除主機專案；操作前仍應維持資料備份。WSL 模式在 Windows 重開機後重新執行安裝入口啟動；已有 Docker Desktop 的自動啟動由其設定控制。
 
 ## 9. 已知限制與其他文件
 
@@ -303,7 +305,7 @@ docker compose down
 
 | 文件 | 內容 |
 | --- | --- |
-| [Windows 安裝](docs/WINDOWS-SETUP.md) | Docker Desktop／WSL 流程 |
+| [Windows 安裝](docs/WINDOWS-SETUP.md) | WSL Docker Engine／既有引擎流程 |
 | [Ubuntu 安裝](docs/UBUNTU-SETUP.md) | Docker Engine、sudo、UID／GID |
 | [資料庫設定](docs/DATABASE-SETUP.md) | 環境變數與 TLS |
 | [Docker 詳細說明](docs/DOCKER-SETUP.md) | 容器、掛載、網路與管理 |

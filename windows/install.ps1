@@ -39,8 +39,15 @@ function Get-DockerOSType {
 if (![Environment]::Is64BitOperatingSystem -or $env:PROCESSOR_ARCHITECTURE -eq 'ARM64') { throw 'This Windows bootstrap supports x64 only.' }
 $dockerExe = Find-DockerCli
 $desktopExe = Find-DockerDesktop
+$backendFile = Join-Path $projectRoot '.idcc-docker-backend'
+$savedBackend = if (Test-Path -LiteralPath $backendFile) { (Get-Content -LiteralPath $backendFile -Raw).Trim() } else { '' }
+$osType = if (!$Plan) { Get-DockerOSType } else { $null }
+if ($savedBackend -eq 'wsl' -or (!$desktopExe -and !$osType -and $savedBackend -ne 'desktop')) {
+    & (Join-Path $PSScriptRoot 'wsl.ps1') -Action Install -Port $Port -Plan:$Plan -NoInstall:$NoInstall
+    exit $LASTEXITCODE
+}
 if ($Plan) {
-    [pscustomobject]@{ Mode='Docker (Linux containers)'; DockerCLI=$dockerExe; DockerDesktop=$desktopExe; MissingDockerAction=$(if($NoInstall){'Stop'}else{'Install Docker Desktop and WSL prerequisites'}); Project=$projectRoot; URL="http://127.0.0.1:$Port/DemoBeta/Home/" }
+    [pscustomobject]@{ Mode='Reuse existing Windows Docker engine'; DockerCLI=$dockerExe; DockerDesktop=$desktopExe; MissingDockerAction='Never install Docker Desktop'; Project=$projectRoot; URL="http://127.0.0.1:$Port/DemoBeta/Home/" }
     return
 }
 foreach ($required in @('compose.yaml','docker\Dockerfile','Home\index.php','Home\vendor\autoload.php','env','docker\health.php','common\IDCC_plugin\jquery\jquery.min.js','common\language\language.php')) {
@@ -48,56 +55,8 @@ foreach ($required in @('compose.yaml','docker\Dockerfile','Home\index.php','Hom
 }
 $osType = Get-DockerOSType
 if ($osType -eq 'windows') { throw 'Switch Docker Desktop to Linux containers, then rerun windows\install.cmd.' }
-if (!$osType -and !$desktopExe) {
-    if ($NoInstall) { throw 'No running local Linux Docker engine or Docker Desktop was found. Install/start Docker Desktop first.' }
-    $identity = [Security.Principal.WindowsIdentity]::GetCurrent()
-    $principal = New-Object Security.Principal.WindowsPrincipal($identity)
-    if (!$principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { throw 'Run windows\install.cmd to authorize installation as Administrator.' }
-    Write-Host 'Preparing WSL 2 for Docker Desktop...'
-    $restartRequired = $false
-    foreach ($feature in @('Microsoft-Windows-Subsystem-Linux','VirtualMachinePlatform')) {
-        $status = Get-WindowsOptionalFeature -Online -FeatureName $feature
-        if ($status.State -ne 'Enabled') {
-            $change = Enable-WindowsOptionalFeature -Online -FeatureName $feature -All -NoRestart
-            if ($change.RestartNeeded) { $restartRequired = $true }
-        }
-    }
-    if ($restartRequired) {
-        Write-Warning 'WSL prerequisites were enabled. Restart Windows, then run windows\install.cmd again. This script will not restart Windows automatically.'
-        exit 3010
-    }
-    $wslVersion = $null
-    try {
-        $wslOutput = (& wsl.exe --version 2>$null) -join "`n"
-        if ($LASTEXITCODE -eq 0 -and ($wslOutput -replace "`0",'') -match '(\d+\.\d+\.\d+(?:\.\d+)?)') { $wslVersion = [version]$Matches[1] }
-    } catch { }
-    if (!$wslVersion) {
-        & wsl.exe --install --no-distribution --no-launch
-        if ($LASTEXITCODE -eq 3010) { Write-Warning 'Restart Windows, then rerun windows\install.cmd.'; exit 3010 }
-        if ($LASTEXITCODE -ne 0) { throw 'WSL installation failed. Check virtualization/Windows requirements and rerun.' }
-    }
-    if (!$wslVersion -or $wslVersion -lt [version]'2.1.5') {
-        & wsl.exe --update --web-download
-        if ($LASTEXITCODE -ne 0) { throw 'WSL update failed. Run wsl --update manually and rerun.' }
-    } else { Write-Host "WSL $wslVersion detected; skipping installation/update." }
-    $cache = Join-Path $env:ProgramData 'IDCC-DemoBeta\docker-cache'
-    New-Item -ItemType Directory -Path $cache -Force | Out-Null
-    $installer = Join-Path $cache 'Docker Desktop Installer.exe'
-    Write-Host 'Downloading Docker Desktop from Docker...'
-    & curl.exe --fail --location --silent --show-error --retry 2 --proto '=https' --proto-redir '=https' --output $installer 'https://desktop.docker.com/win/main/amd64/Docker%20Desktop%20Installer.exe'
-    if ($LASTEXITCODE -ne 0) { throw 'Docker Desktop download failed.' }
-    $signature = Get-AuthenticodeSignature -LiteralPath $installer
-    if ($signature.Status -ne 'Valid' -or $signature.SignerCertificate.GetNameInfo([Security.Cryptography.X509Certificates.X509NameType]::SimpleName,$false) -notmatch '^Docker Inc\.?$') { throw 'Docker installer signature verification failed.' }
-    # Keep the vendor installer interactive so the user can review its terms.
-    $installed = Start-Process -FilePath $installer -ArgumentList @('install','--backend=wsl-2') -PassThru -Wait
-    if ($installed.ExitCode -eq 3010) { Write-Warning 'Restart Windows, then rerun windows\install.cmd.'; exit 3010 }
-    if ($installed.ExitCode -ne 0) { throw "Docker Desktop installation failed (exit $($installed.ExitCode))." }
-    $dockerExe = Find-DockerCli
-    $desktopExe = Find-DockerDesktop
-    if (!$dockerExe -or !$desktopExe) { throw 'Docker Desktop paths were not found after installation. Reopen PowerShell and run windows\install.cmd again.' }
-} elseif (!$osType) {
-    Write-Host 'Docker Desktop detected; skipping installation.'
-} else { Write-Host 'Running local Linux Docker engine detected; skipping installation.' }
+# Existing Desktop installations stay on the same engine to preserve volumes.
+if (!$osType -and !$desktopExe) { throw 'Previously selected Windows Docker engine is unavailable. Start it; no backend migration was performed.' }
 if (!$osType) {
     if (!$desktopExe) { throw 'Start your local Linux Docker engine and rerun.' }
     Write-Host 'Starting Docker Desktop. Complete any first-run prompts in its window.'
@@ -131,3 +90,5 @@ Invoke-Docker -Arguments @('compose','--file',$composeFile,'ps')
 Write-Host "Docker environment verified. Open http://127.0.0.1:$Port/DemoBeta/Home/" -ForegroundColor Green
 Write-Host 'Application files persist in this project folder. env is mounted read-only and excluded from the image.'
 Write-Warning 'The existing PhpSpreadsheet 1.12.0 declares PHP ^7.1. PHP 8 application compatibility still needs separate testing/update.'
+
+[IO.File]::WriteAllText($backendFile, 'desktop', (New-Object Text.UTF8Encoding($false)))

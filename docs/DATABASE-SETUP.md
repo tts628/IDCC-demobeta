@@ -34,7 +34,7 @@ SPC 保留舊變數 `HOST`、`MDSVN_SPC_DB`、`UID`、`PWD` 作為相容備援�
 儲存後重新建立容器，單純 restart 不會載入新增或修改的容器環境變數：
 
 ```powershell
-docker compose up -d --force-recreate --wait
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose up -d --force-recreate --wait
 ```
 
 Ubuntu 若原本使用 install.sh 設定 UID／GID，請執行 `bash ubuntu/install.sh` 以保留映射設定。

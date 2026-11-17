@@ -33,3 +33,5 @@ docker compose up -d --build --force-recreate --wait
 資料保存在 Compose named volume `idcc_postgres_data`。一般 `up`、`down`、容器重建會保留資料；不要執行 `docker compose down -v`，它會刪除資料庫。更新專案時保留 `.env` **與 `.env.postgres`**。保留並備份密碼檔；已有資料庫時改該檔不會自動修改資料庫內的密碼。
 
 首次安裝後若只用 Compose 手動啟動，也必須先執行安裝程式產生密碼檔。現有環境沿用同一專案名稱與專案目錄，避免建立另一組 volume。Windows 原生 Apache 備用安裝不包含 PostgreSQL；此流程使用 Docker。
+
+Windows WSL 模式的 Docker 命令請使用 `powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1` 取代命令開頭的 `docker`。安裝／重設入口會自動使用所選引擎；不安裝或卸載 Docker Desktop。

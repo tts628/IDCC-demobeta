@@ -2,17 +2,17 @@
 
 ## 架構
 
-Windows 主機 → Docker Desktop 的 Linux 容器引擎 → `web` 容器（Apache + PHP 8.3 + PHP 擴充套件 + Microsoft SQL Server ODBC 18）。資料庫仍使用 `env` 指定的既有伺服器，不額外建立 SQL Server 或 MySQL 資料庫容器。
+Windows 主機 → WSL 2／Ubuntu 的 Docker Engine（或沿用既有 Desktop 引擎） → `web` 容器（Apache + PHP 8.3 + PHP 擴充套件 + Microsoft SQL Server ODBC 18）。資料庫仍使用 `env` 指定的既有伺服器，不額外建立 SQL Server 或 MySQL 資料庫容器。
 
 Windows 安裝入口是 `windows/install.cmd`，PowerShell 入口是 `windows/install.ps1`。Ubuntu 在專案根目錄執行 `bash ubuntu/install.sh`，會偵測並安裝缺少的 Docker Engine／Compose；詳見 [UBUNTU-SETUP.md](UBUNTU-SETUP.md)。Linux／macOS 已有 Docker 與 Compose 的使用者也可直接執行下方的 Compose 指令。
 
 ## 初次安裝與重複執行
 
-- 需要符合 Docker Desktop 要求的 Windows 版本、硬體虛擬化及足夠磁碟空間。
+- 需要支援 WSL 2 的 Windows 10/11 x64、硬體虛擬化及足夠磁碟空間。
 - 已有可用的本機 Linux Docker 引擎就跳過安裝；已有 Docker Desktop 時，保留它的版本與設定，嘗試啟動。
-- 沒有 Docker Desktop 時，啟用必要 WSL 功能，準備 WSL，再下載 Docker 官方安裝程式。下載後檢查有效的 Docker 數位簽章，安裝介面由使用者完成條款確認。
+- 沒有 Docker Desktop 時，準備 WSL 2 與 Ubuntu-24.04，透過 Docker 官方 apt 儲存庫安裝 Docker Engine／Compose，不下載 Desktop。
 - WSL 功能首次啟用可能要求重開機。腳本以 `3010` 結束並提示重跑，不會自己重新啟動 Windows。
-- Docker 必須使用 **Linux containers**。腳本固定連接本機 Windows Docker pipe，不使用其他遠端 Docker context。
+- Docker 必須使用 **Linux containers**。Desktop 模式連接本機 Windows pipe，WSL 模式連接 Ubuntu 內本機 Unix socket；不使用遠端 Docker context。
 - 本機原生 Apache、PHP 即使存在，也不會被容器安裝修改或重裝。
 - 初次建置會下載映像與 Linux 套件，需要網路；後續重跑通常會使用 Docker 建置快取。
 
@@ -38,15 +38,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1 -Port 
 
 ## 手動操作
 
-在專案根目錄執行，並確定 Docker Desktop 已啟動且目前 context 是本機 Docker Desktop：
+以下為 Docker 原生命令。WSL 模式請在 Windows 使用 `powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1` 取代命令開頭的 `docker`；在專案根目錄操作並保持相同埠。詳見 [Windows 說明](WINDOWS-SETUP.md)：
 
 ```powershell
-docker compose up -d --build --wait
-docker compose ps
-docker compose logs -f web
-docker compose stop
-docker compose start
-docker compose down
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose up -d --build --wait
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose ps
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose logs -f web
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose stop
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose start
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose down
 ```
 
 `down` 移除本專案容器與網路，不會刪除主機的程式、`env` 或輸出檔案。`restart: unless-stopped` 會在 Docker 引擎重新啟動後恢復未手動停止的容器；Windows 登入時是否自動啟動 Docker Desktop，由 Docker Desktop 的設定控制。
@@ -80,8 +80,8 @@ Docker 映像建置時會驗證 Apache 設定及 PHP 擴充套件。容器健康
 `php:8.3-apache-bookworm` 會隨上游更新 8.3 修補版；SQLSRV 與 PDO_SQLSRV 暫固定於 5.13.3。若要拉取更新的 PHP 基礎映像：
 
 ```powershell
-docker compose build --pull
-docker compose up -d --wait
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose build --pull
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose up -d --wait
 ```
 
 本次開發環境沒有 Docker 引擎，已做 Compose 靜態驗證、PowerShell 語法與偵測測試、PHP 健康檢查邏輯測試；完整映像建置、Docker Desktop／WSL 的管理員安裝流程尚待目標電腦執行驗證。

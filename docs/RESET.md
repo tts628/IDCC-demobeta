@@ -19,3 +19,5 @@ bash ubuntu/reset.sh --plan
 重設後不會自動啟動，Windows 再執行 `windows/install.cmd`，Ubuntu 再執行 `bash ubuntu/install.sh`。保持原專案目錄與 `.env.postgres`，安裝程式會重建容器、重新使用原 PostgreSQL 資料及密碼。也會沿用 `.env` 裡的 Demo 開關。
 
 重設流程使用獨立的 `docker/reset.compose.yaml`，即使尚未產生 `.env.postgres` 也能清除。此工具不提供清空資料庫或刪除設定的選項。
+
+Windows WSL 模式的 Docker 命令請使用 `powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1` 取代命令開頭的 `docker`。安裝／重設入口會自動使用所選引擎；不安裝或卸載 Docker Desktop。
