@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 $required = ['curl', 'openssl', 'ctype', 'dom', 'fileinfo', 'gd', 'iconv', 'mbstring',
-    'SimpleXML', 'xml', 'xmlreader', 'xmlwriter', 'zip', 'mysqli', 'pdo_mysql', 'sqlsrv', 'pdo_sqlsrv'];
+    'SimpleXML', 'xml', 'xmlreader', 'xmlwriter', 'zip', 'mysqli', 'pdo_mysql', 'pdo_pgsql', 'sqlsrv', 'pdo_sqlsrv'];
 $missing = array_values(array_diff($required, get_loaded_extensions()));
 $root = rtrim($_SERVER['DOCUMENT_ROOT'] ?? '/var/www/html', '/');
 $assets = [

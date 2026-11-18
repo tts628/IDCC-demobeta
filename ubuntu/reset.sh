@@ -3,11 +3,16 @@ set -Eeuo pipefail
 die() { printf 'ERROR: %s\n' "$*" >&2; exit 1; }
 project_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd -P)
 plan=false
-case ${1:-} in
-  --plan) plan=true; shift ;;
-  -h|--help) printf 'Usage: bash ubuntu/reset.sh [--plan]\n'; exit 0 ;;
-esac
-(($# == 0)) || die 'Unknown option. Usage: bash ubuntu/reset.sh [--plan]'
+confirmed=false
+while (($#)); do
+  case $1 in
+    --plan) plan=true ;;
+    --confirmed) confirmed=true ;; # Used after confirmation in the Windows GUI.
+    -h|--help) printf 'Usage: bash ubuntu/reset.sh [--plan]\n'; exit 0 ;;
+    *) die 'Unknown option. Usage: bash ubuntu/reset.sh [--plan]' ;;
+  esac
+  shift
+done
 printf 'Project: idcc-demobata (%s)\n' "$project_root"
 printf '%s\n' 'REMOVE: project containers and network; idcc-demobata-web:local image.'   'KEEP: all PostgreSQL volumes/data, .env, .env.postgres, source files, Docker, other projects.'   'The app will stop. Run bash ubuntu/install.sh afterwards to rebuild.'
 $plan && exit 0
@@ -21,8 +26,10 @@ if ! docker_call info >/dev/null 2>&1; then
   docker_call info >/dev/null 2>&1 || die 'Start the local Docker engine and retry. Nothing was removed.'
 fi
 docker_call ps -a --filter label=com.docker.compose.project=idcc-demobata --format 'table {{.Names}}\t{{.Status}}'
-read -r -p 'Type RESET to remove the listed project environment: ' confirmation || die 'No confirmation received.'
-[[ $confirmation == RESET ]] || { printf 'Cancelled. Nothing was removed.\n'; exit 0; }
+if ! $confirmed; then
+  read -r -p 'Type RESET to remove the listed project environment: ' confirmation || die 'No confirmation received.'
+  [[ $confirmation == RESET ]] || { printf 'Cancelled. Nothing was removed.\n'; exit 0; }
+fi
 docker_call compose --project-name idcc-demobata --project-directory "$project_root"   --env-file "$project_root/docker/reset.env" --file "$project_root/docker/reset.compose.yaml"   down --remove-orphans --timeout 30
 # No --volumes, no prune, no force removal; retain shared PostgreSQL image.
 if docker_call image inspect idcc-demobata-web:local >/dev/null 2>&1; then

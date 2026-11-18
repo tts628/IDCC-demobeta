@@ -1,3 +1,5 @@
+> Windows 圖形介面：`windows/setup.cmd`；獨立資料庫設定：`windows/database-setup.cmd`；頁面選擇：`windows/pages-setup.cmd`。可先略過資料庫安裝環境，詳見 [介面操作說明](WINDOWS-GUI.md)。
+
 # Windows 安裝：不需 Docker Desktop
 
 新電腦使用 **WSL 2 + Ubuntu-24.04 + Docker Engine/Compose** 執行 Apache、PHP 與 PostgreSQL。不下載或安裝 Docker Desktop。需要支援 WSL 2 的 Windows 10/11 x64 與硬體虛擬化。

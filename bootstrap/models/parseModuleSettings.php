@@ -47,6 +47,10 @@ class ModuleSettingsModel
     
             // ... (Optional) Basic processing of $htmlJsonString if needed
     
+            if (str_replace('\\', '/', $realPath) === str_replace('\\', '/', dirname(__DIR__, 2) . '/Home/Menu/modules/sidebar/settings.json')) {
+                require_once dirname(__DIR__, 2) . '/common/Config/PageFeatures.php';
+                return json_encode(idccFilterSidebar(json_decode($JsonString, true, 512, JSON_THROW_ON_ERROR)), JSON_UNESCAPED_UNICODE);
+            }
             return $JsonString; // Return the raw or processed HTML data based on your logic
         } else {
             return ("module not available");

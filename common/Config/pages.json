@@ -1,0 +1,618 @@
+[
+  {
+    "id": "UpcomingDyeingList",
+    "label": "即將投染清單",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/DataStats_Analysis/UpcomingDyeingList/UrgentEvent.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/UpcomingDyeingList/",
+    "external": false
+  },
+  {
+    "id": "DyeMachineSummary",
+    "label": "染色機台運行狀態",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/RealTimeMonitoring/DyeMachineSummary/M1F1D1.php",
+    "prefix": "Home/Legacy/RealTimeMonitoring/DyeMachineSummary/",
+    "external": false
+  },
+  {
+    "id": "ProductionStatus",
+    "label": "染機生產概況",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/RealTimeMonitoring/ProductionStatus/",
+    "prefix": "Home/Legacy/RealTimeMonitoring/ProductionStatus/",
+    "external": false
+  },
+  {
+    "id": "TemperatureCurve",
+    "label": "染機生產概況(電視牆)",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/RealTimeMonitoring/TemperatureCurve/Dye_dashboard.php",
+    "prefix": "Home/Legacy/RealTimeMonitoring/TemperatureCurve/",
+    "external": false
+  },
+  {
+    "id": "DyeMachineRealTime",
+    "label": "染機即時監視",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/RealTimeMonitoring/DyeMachineRealTime/Dyeing_machine_visualization_v4.php",
+    "prefix": "Home/Legacy/RealTimeMonitoring/DyeMachineRealTime/",
+    "external": false
+  },
+  {
+    "id": "DyeMachineStartUpReport",
+    "label": "染機運行狀況",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/KPIVisualization/DyeMachineStartUpReport/DyeAlarmReport-new.php",
+    "prefix": "Home/Legacy/KPIVisualization/DyeMachineStartUpReport/",
+    "external": false
+  },
+  {
+    "id": "BleachingDyeVat",
+    "label": "漂缸運行資訊",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/RealTimeMonitoring/BleachingDyeVat/Bleaching_dye_vat.php",
+    "prefix": "Home/Legacy/RealTimeMonitoring/BleachingDyeVat/",
+    "external": false
+  },
+  {
+    "id": "DyelotScheduleChart",
+    "label": "染機工單排程查詢",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/DyelotSchedule/DyelotScheduleChart/",
+    "prefix": "Home/Legacy/DyelotSchedule/DyelotScheduleChart/",
+    "external": false
+  },
+  {
+    "id": "DyelotOperationChart",
+    "label": "染色工單運行監視",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/RealTimeMonitoring/DyelotOperationChart/DyelotOverview.php",
+    "prefix": "Home/Legacy/RealTimeMonitoring/DyelotOperationChart/",
+    "external": false
+  },
+  {
+    "id": "ScheduleTable",
+    "label": "染機工單排程圖",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/DyelotSchedule/ScheduleTable/v2.0.0/NW_DyeScheduleManual1.php",
+    "prefix": "Home/Legacy/DyelotSchedule/ScheduleTable/v2.0.0/",
+    "external": false
+  },
+  {
+    "id": "OverdueDyelotReport",
+    "label": "本日top20染色超時工單報告",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/DataStats_Analysis/OverdueDyelotReport/OvertimeDyelot.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/OverdueDyelotReport/",
+    "external": false
+  },
+  {
+    "id": "MachineProductionQuery",
+    "label": "染色產量查詢",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/CapacityStatistics/MachineProductionQuery/",
+    "prefix": "Home/Legacy/CapacityStatistics/MachineProductionQuery/",
+    "external": false
+  },
+  {
+    "id": "MachineProductionStats",
+    "label": "染色各機台產量統計",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/CapacityStatistics/MachineProductionStats/MachineProduction.php",
+    "prefix": "Home/Legacy/CapacityStatistics/MachineProductionStats/",
+    "external": false
+  },
+  {
+    "id": "DyeingKPIQuery",
+    "label": "染色課關鍵指標查詢",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/KPIVisualization/DyeingKPIQuery/",
+    "prefix": "Home/Legacy/KPIVisualization/DyeingKPIQuery/",
+    "external": false
+  },
+  {
+    "id": "DyeKeyIndicator",
+    "label": "染機系統關鍵指標報表",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/KPIVisualization/DyeKeyIndicator/Indicators_Dyeing.php",
+    "prefix": "Home/Legacy/KPIVisualization/DyeKeyIndicator/",
+    "external": false
+  },
+  {
+    "id": "DyeKPIReport",
+    "label": "染機稼動率報表",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/KPIVisualization/DyeKPIReport/Uptime_Analysis_enquiry.php",
+    "prefix": "Home/Legacy/KPIVisualization/DyeKPIReport/",
+    "external": false
+  },
+  {
+    "id": "Equip_DelayQuery",
+    "label": "染色延遲查詢",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/HistoricalEvent/Equip_DelayQuery/",
+    "prefix": "Home/Legacy/HistoricalEvent/Equip_DelayQuery/",
+    "external": false
+  },
+  {
+    "id": "Equip_IdleQuery",
+    "label": "染色停機查詢",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/HistoricalEvent/Equip_IdleQuery/",
+    "prefix": "Home/Legacy/HistoricalEvent/Equip_IdleQuery/",
+    "external": false
+  },
+  {
+    "id": "Equip_AlarmQuery",
+    "label": "染機警報查詢",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/HistoricalEvent/Equip_AlarmQuery/",
+    "prefix": "Home/Legacy/HistoricalEvent/Equip_AlarmQuery/",
+    "external": false
+  },
+  {
+    "id": "RealTimeDelay",
+    "label": "染色即時延遲報告",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/DataStats_Analysis/RealTimeDelay/RealTimeDelay.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/RealTimeDelay/",
+    "external": false
+  },
+  {
+    "id": "RealTimeAlarm",
+    "label": "染色即時警報報告",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/DataStats_Analysis/RealTimeAlarm/RealTimeAlarm.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/RealTimeAlarm/",
+    "external": false
+  },
+  {
+    "id": "AlarmDelayAnalysis",
+    "label": "染色警報與延遲TOP 10 分析",
+    "group": "智慧染色解決方案",
+    "url": "./Legacy/DataStats_Analysis/AlarmDelayAnalysis/MonthlyInterruptions.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/AlarmDelayAnalysis/",
+    "external": false
+  },
+  {
+    "id": "MachineScreenshot",
+    "label": "供料設備畫面",
+    "group": "智慧供料解決方案",
+    "url": "./Legacy/RealTimeMonitoring/MachineScreenshot/",
+    "prefix": "Home/Legacy/RealTimeMonitoring/MachineScreenshot/",
+    "external": false
+  },
+  {
+    "id": "302RealTime",
+    "label": "302 F 即時畫面",
+    "group": "智慧供料解決方案",
+    "url": "./Legacy/RealTimeMonitoring/302RealTime/NEW_LA302F_ReslTime.php",
+    "prefix": "Home/Legacy/RealTimeMonitoring/302RealTime/",
+    "external": false
+  },
+  {
+    "id": "DyeAdditiveUsageStats",
+    "label": "染/助劑計劑量異常統計",
+    "group": "智慧供料解決方案",
+    "url": "./Legacy/DataStats_Analysis/DyeAdditiveUsageStats/DispenseErrorReport-new.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/DyeAdditiveUsageStats/",
+    "external": false
+  },
+  {
+    "id": "DyeAdditiveTimeUsageStats",
+    "label": "染助劑耗時與用量統計",
+    "group": "智慧供料解決方案",
+    "url": "./Legacy/DataStats_Analysis/DyeAdditiveTimeUsageStats/Feeding_Analysis_enquiry.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/DyeAdditiveTimeUsageStats/",
+    "external": false
+  },
+  {
+    "id": "NNWTimeUsageStats",
+    "label": "NNY/NBK/WHT耗時與用量統計分析",
+    "group": "智慧供料解決方案",
+    "url": "./Legacy/DataStats_Analysis/NNWTimeUsageStats/NNW_Analysis_enquiry.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/NNWTimeUsageStats/",
+    "external": false
+  },
+  {
+    "id": "DispenserKPIReport",
+    "label": "供料系統關鍵指標報表",
+    "group": "智慧供料解決方案",
+    "url": "./Legacy/KPIVisualization/DispenserKPIReport/Indicators_Dispenser_V1.0.0.php",
+    "prefix": "Home/Legacy/KPIVisualization/DispenserKPIReport/",
+    "external": false
+  },
+  {
+    "id": "DyeAuxWarehouseStats",
+    "label": "染助劑倉庫扣帳統計",
+    "group": "智慧供料解決方案",
+    "url": "./Legacy/KPIVisualization/DyeAuxWarehouseStats/D02_Analysis_enquiry.php",
+    "prefix": "Home/Legacy/KPIVisualization/DyeAuxWarehouseStats/",
+    "external": false
+  },
+  {
+    "id": "Equip_AlarmQuery_Dispenser",
+    "label": "供料警報查詢",
+    "group": "智慧供料解決方案",
+    "url": "./Legacy/HistoricalEvent/Equip_AlarmQuery/",
+    "prefix": "Home/Legacy/HistoricalEvent/Equip_AlarmQuery/",
+    "external": false
+  },
+  {
+    "id": "Equip_IdleQuery_Dispenser",
+    "label": "供料停機查詢",
+    "group": "智慧供料解決方案",
+    "url": "./Legacy/HistoricalEvent/Equip_IdleQuery/",
+    "prefix": "Home/Legacy/HistoricalEvent/Equip_IdleQuery/",
+    "external": false
+  },
+  {
+    "id": "StenterStatus",
+    "label": "Stenter Operation Status 1",
+    "group": "智慧整理解決方案",
+    "url": "./Legacy/RealTimeMonitoring/StenterStatus/",
+    "prefix": "Home/Legacy/RealTimeMonitoring/StenterStatus/",
+    "external": false
+  },
+  {
+    "id": "EquipmentMonitoring",
+    "label": "後整理設備監視",
+    "group": "智慧整理解決方案",
+    "url": "./Legacy/RealTimeMonitoring/EquipmentMonitoring/FinishingMachines_index.php",
+    "prefix": "Home/Legacy/RealTimeMonitoring/EquipmentMonitoring/",
+    "external": false
+  },
+  {
+    "id": "EquipmentStats_History",
+    "label": "後整理設備歷史資料查詢",
+    "group": "智慧整理解決方案",
+    "url": "./Legacy/RealTimeMonitoring/EquipmentStats_History/History_Information_index.php",
+    "prefix": "Home/Legacy/RealTimeMonitoring/EquipmentStats_History/",
+    "external": false
+  },
+  {
+    "id": "FinishingProductionStatus",
+    "label": "後整理設備生產概況",
+    "group": "智慧整理解決方案",
+    "url": "./Legacy/RealTimeMonitoring/ProductionStatus/",
+    "prefix": "Home/Legacy/RealTimeMonitoring/ProductionStatus/",
+    "external": false
+  },
+  {
+    "id": "WorkOrderGantt",
+    "label": "各工段工單排程圖",
+    "group": "智慧整理解決方案",
+    "url": "./Legacy/DyelotSchedule/ScheduleTable/v1.0.0/FinishScheduleManual1.php",
+    "prefix": "Home/Legacy/DyelotSchedule/ScheduleTable/v1.0.0/",
+    "external": false
+  },
+  {
+    "id": "FinishingProductionQuery",
+    "label": "後整理產量查詢",
+    "group": "智慧整理解決方案",
+    "url": "./Legacy/CapacityStatistics/MachineProductionQuery/",
+    "prefix": "Home/Legacy/CapacityStatistics/MachineProductionQuery/",
+    "external": false
+  },
+  {
+    "id": "FinishingKPIQuery",
+    "label": "後整理關鍵指標查詢",
+    "group": "智慧整理解決方案",
+    "url": "./Legacy/KPIVisualization/FinishingKPIQuery/",
+    "prefix": "Home/Legacy/KPIVisualization/FinishingKPIQuery/",
+    "external": false
+  },
+  {
+    "id": "FinishingKPIReport",
+    "label": "定型機關鍵指標可視化",
+    "group": "智慧整理解決方案",
+    "url": "./Legacy/KPIVisualization/FinishingKPIReport/Indicators_Finishing.php",
+    "prefix": "Home/Legacy/KPIVisualization/FinishingKPIReport/",
+    "external": false
+  },
+  {
+    "id": "FinishingUtilizationReport",
+    "label": "後整理設備稼動率報表",
+    "group": "智慧整理解決方案",
+    "url": "./Legacy/KPIVisualization/FinishingUtilizationReport/FinishingMachines_Activation_index.php",
+    "prefix": "Home/Legacy/KPIVisualization/FinishingUtilizationReport/",
+    "external": false
+  },
+  {
+    "id": "Equip_AlarmQuery_Finishing",
+    "label": "後整理警報查詢",
+    "group": "智慧整理解決方案",
+    "url": "./Legacy/HistoricalEvent/Equip_AlarmQuery/",
+    "prefix": "Home/Legacy/HistoricalEvent/Equip_AlarmQuery/",
+    "external": false
+  },
+  {
+    "id": "Equip_IdleQuery_Finishing",
+    "label": "後整理停機查詢",
+    "group": "智慧整理解決方案",
+    "url": "./Legacy/HistoricalEvent/Equip_IdleQuery/",
+    "prefix": "Home/Legacy/HistoricalEvent/Equip_IdleQuery/",
+    "external": false
+  },
+  {
+    "id": "ShrinkingStats",
+    "label": "縮鍊機異常報表查詢",
+    "group": "智慧整理解決方案",
+    "url": "./Legacy/RealTimeMonitoring/ShrinkingStats/contraction_enquiry.php",
+    "prefix": "Home/Legacy/RealTimeMonitoring/ShrinkingStats/",
+    "external": false
+  },
+  {
+    "id": "EnergyUsageStats",
+    "label": "各機台用水/用電/用蒸氣統計",
+    "group": "智慧監控解決方案",
+    "url": "./Legacy/EnergyManagement/EnergyUsageStats/V2/ResourceUsageV3.php",
+    "prefix": "Home/Legacy/EnergyManagement/EnergyUsageStats/V2/",
+    "external": false
+  },
+  {
+    "id": "ResourceUtilization",
+    "label": "全廠當日用水/用電/用蒸氣/碳排量統計圖",
+    "group": "智慧監控解決方案",
+    "url": "./Legacy/EnergyManagement/ResourceUtilization/energy.php",
+    "prefix": "Home/Legacy/EnergyManagement/ResourceUtilization/",
+    "external": false
+  },
+  {
+    "id": "FactoryPowerReport",
+    "label": "各工段用電統計",
+    "group": "智慧監控解決方案",
+    "url": "./Legacy/EnergyManagement/FactoryPowerReport/",
+    "prefix": "Home/Legacy/EnergyManagement/FactoryPowerReport/",
+    "external": false
+  },
+  {
+    "id": "WaterConsumptionQuery",
+    "label": "水資源消耗查詢",
+    "group": "智慧監控解決方案",
+    "url": "./Legacy/EnergyManagement/WaterConsumptionQuery/",
+    "prefix": "Home/Legacy/EnergyManagement/WaterConsumptionQuery/",
+    "external": false
+  },
+  {
+    "id": "EnergyConsumptionCalendar",
+    "label": "機台能源可視化",
+    "group": "智慧監控解決方案",
+    "url": "./Legacy/EnergyManagement/EnergyConsumptionCalendar/",
+    "prefix": "Home/Legacy/EnergyManagement/EnergyConsumptionCalendar/",
+    "external": false
+  },
+  {
+    "id": "DyelotResourceUsage",
+    "label": "工單能源可視化",
+    "group": "智慧監控解決方案",
+    "url": "./Legacy/EnergyManagement/DyelotResourceUsage/DyelotResourceUsage.php",
+    "prefix": "Home/Legacy/EnergyManagement/DyelotResourceUsage/",
+    "external": false
+  },
+  {
+    "id": "EnergyConsumptionQuery",
+    "label": "能源消耗查詢",
+    "group": "智慧監控解決方案",
+    "url": "./Legacy/EnergyManagement/EnergyConsumptionQuery/",
+    "prefix": "Home/Legacy/EnergyManagement/EnergyConsumptionQuery/",
+    "external": false
+  },
+  {
+    "id": "EnergyUsageBar",
+    "label": "全廠當日用水/用電/用蒸氣/碳排量統計長條圖",
+    "group": "智慧監控解決方案",
+    "url": "./Legacy/EnergyManagement/EnergyUsageBar/EnergyUsageBarChar.php",
+    "prefix": "Home/Legacy/EnergyManagement/EnergyUsageBar/",
+    "external": false
+  },
+  {
+    "id": "EnergyManagement",
+    "label": "流亞能耗管理",
+    "group": "智慧監控解決方案",
+    "url": "https://logicartidcc.website/ihouseBA/index.html?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMb2dpY2FydC1JRENDIn0._P5eXSjWQLe_1OGkWeCdYf9hDdR88CMtalbZTE_iDB4&em=Edit&uid=ea4f5ab8-2a6e-846c-a40e-c2766680b4c1&title=%E6%B5%81%E4%BA%9E%E8%83%BD%E8%80%97%E7%AE%A1%E7%90%86&language=en",
+    "prefix": "",
+    "external": true
+  },
+  {
+    "id": "Empty_LoomUsageAnalysis",
+    "label": "布車追蹤",
+    "group": "智慧監控解決方案",
+    "url": "./Legacy/RealTimeMonitoring/Empty_LoomUsageAnalysis/Empty_LoomUsageAnalysis.php",
+    "prefix": "Home/Legacy/RealTimeMonitoring/Empty_LoomUsageAnalysis/",
+    "external": false
+  },
+  {
+    "id": "SectionCapacityReport",
+    "label": "工段產能分析報表",
+    "group": "智慧中心解決方案",
+    "url": "./Legacy/DataStats_Analysis/SectionCapacityReport/DyeCapacityReport_Analysis_enquiry.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/SectionCapacityReport/",
+    "external": false
+  },
+  {
+    "id": "CentralScheduleTable",
+    "label": "工單排程圖",
+    "group": "智慧中心解決方案",
+    "url": "./Legacy/DyelotSchedule/ScheduleTable/v2.0.0/NW_DyeScheduleManual1.php",
+    "prefix": "Home/Legacy/DyelotSchedule/ScheduleTable/v2.0.0/",
+    "external": false
+  },
+  {
+    "id": "WarehouseShipping",
+    "label": "倉庫出貨量",
+    "group": "智慧中心解決方案",
+    "url": "./Legacy/DataStats_Analysis/WarehouseShipping/WG_Analysis_enquiry.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/WarehouseShipping/",
+    "external": false
+  },
+  {
+    "id": "WarehouseIncoming",
+    "label": "倉庫入庫量",
+    "group": "智慧中心解決方案",
+    "url": "./Legacy/DataStats_Analysis/WarehouseIncoming/WO_Analysis_enquiry.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/WarehouseIncoming/",
+    "external": false
+  },
+  {
+    "id": "WarehouseReturns",
+    "label": "倉庫退貨量",
+    "group": "智慧中心解決方案",
+    "url": "./Legacy/DataStats_Analysis/WarehouseReturns/WR_Analysis_enquiry.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/WarehouseReturns/",
+    "external": false
+  },
+  {
+    "id": "WarehouseInventory",
+    "label": "倉庫庫存量",
+    "group": "智慧中心解決方案",
+    "url": "./Legacy/DataStats_Analysis/WarehouseInventory/WMS_Analysis_enquiry.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/WarehouseInventory/",
+    "external": false
+  },
+  {
+    "id": "RawFabricStockStats",
+    "label": "胚布庫存統計表",
+    "group": "智慧中心解決方案",
+    "url": "./Legacy/DataStats_Analysis/RawFabricStockStats/V4/InventoryQcReport3.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/RawFabricStockStats/V4/",
+    "external": false
+  },
+  {
+    "id": "AnnualTrendChart",
+    "label": "各年趨勢圖",
+    "group": "智慧中心解決方案",
+    "url": "./Legacy/DataStats_Analysis/AnnualTrendChart/Chart_of_each_year.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/AnnualTrendChart/",
+    "external": false
+  },
+  {
+    "id": "Top10DeptAnomaliesDetails",
+    "label": "前十大部門異常-細項",
+    "group": "智慧中心解決方案",
+    "url": "./Legacy/DataStats_Analysis/Top10DeptAnomaliesDetails/myData_6_detail_abnormalities.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/Top10DeptAnomaliesDetails/",
+    "external": false
+  },
+  {
+    "id": "Top10DefectAnomalies",
+    "label": "前十大瑕疵異常",
+    "group": "智慧中心解決方案",
+    "url": "./Legacy/DataStats_Analysis/Top10DefectAnomalies/myData_2_defective_abnormalities.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/Top10DefectAnomalies/",
+    "external": false
+  },
+  {
+    "id": "Top10ProductAnomalies",
+    "label": "前十大品名異常",
+    "group": "智慧中心解決方案",
+    "url": "./Legacy/DataStats_Analysis/Top10ProductAnomalies/myData_4_name_abnormalities.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/Top10ProductAnomalies/",
+    "external": false
+  },
+  {
+    "id": "Top20ColorNG_ProductCustomerDetails",
+    "label": "20大顏色NG-品名與客戶細項",
+    "group": "智慧中心解決方案",
+    "url": "./Legacy/DataStats_Analysis/Top20ColorNG_ProductCustomerDetails/no5.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/Top20ColorNG_ProductCustomerDetails/",
+    "external": false
+  },
+  {
+    "id": "OrderBacklogAnalysis",
+    "label": "總訂單卡量分析",
+    "group": "智慧中心解決方案",
+    "url": "./Legacy/DataStats_Analysis/OrderBacklogAnalysis/no1.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/OrderBacklogAnalysis/",
+    "external": false
+  },
+  {
+    "id": "BrandBacklogAnalysis",
+    "label": "品牌總卡量分析",
+    "group": "智慧中心解決方案",
+    "url": "./Legacy/DataStats_Analysis/BrandBacklogAnalysis/no5.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/BrandBacklogAnalysis/",
+    "external": false
+  },
+  {
+    "id": "AnnualBacklogSizeAnalysis",
+    "label": "年份卡量大小分析",
+    "group": "智慧中心解決方案",
+    "url": "./Legacy/DataStats_Analysis/AnnualBacklogSizeAnalysis/no9.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/AnnualBacklogSizeAnalysis/",
+    "external": false
+  },
+  {
+    "id": "ext-resourceReports",
+    "label": "能源資訊即時看板",
+    "group": "智慧中心解決方案",
+    "url": "https://logicartidcc.website/Daluen/Reports/Stenter/3D/3D_for_exhibition.php",
+    "prefix": "",
+    "external": true
+  },
+  {
+    "id": "LabKPIReports",
+    "label": "化驗室關鍵指標報表",
+    "group": "智慧串流解決方案",
+    "url": "./Legacy/KPIVisualization/LabKPIReports/Indicators_Laboratory.php",
+    "prefix": "Home/Legacy/KPIVisualization/LabKPIReports/",
+    "external": false
+  },
+  {
+    "id": "IoTFinishingUtilizationReport",
+    "label": "SMBIoT機聯網設備稼動率報表",
+    "group": "智慧串流解決方案",
+    "url": "./Legacy/KPIVisualization/FinishingUtilizationReport/FinishingMachines_Activation_index.php",
+    "prefix": "Home/Legacy/KPIVisualization/FinishingUtilizationReport/",
+    "external": false
+  },
+  {
+    "id": "BoilerOperatingStatus",
+    "label": "鍋爐運行狀態",
+    "group": "智慧串流解決方案",
+    "url": "./Legacy/RealTimeMonitoring/BoilerOperatingStatus/",
+    "prefix": "Home/Legacy/RealTimeMonitoring/BoilerOperatingStatus/",
+    "external": false
+  },
+  {
+    "id": "IoTEquipmentMonitoring",
+    "label": "SMBIoT機聯網設備即時資訊",
+    "group": "智慧串流解決方案",
+    "url": "./Legacy/RealTimeMonitoring/EquipmentMonitoring/FinishingMachines_index.php",
+    "prefix": "Home/Legacy/RealTimeMonitoring/EquipmentMonitoring/",
+    "external": false
+  },
+  {
+    "id": "IoTEquipmentStatsHistory",
+    "label": "SMBIoT 機聯網設備歷史資料查詢",
+    "group": "智慧串流解決方案",
+    "url": "./Legacy/RealTimeMonitoring/EquipmentStats_History/History_Information_index.php",
+    "prefix": "Home/Legacy/RealTimeMonitoring/EquipmentStats_History/",
+    "external": false
+  },
+  {
+    "id": "IoTShrinkingStats",
+    "label": "SMBIoT機聯網設備異常報表查詢",
+    "group": "智慧串流解決方案",
+    "url": "./Legacy/RealTimeMonitoring/ShrinkingStats/contraction_enquiry.php",
+    "prefix": "Home/Legacy/RealTimeMonitoring/ShrinkingStats/",
+    "external": false
+  },
+  {
+    "id": "IoTEquipIdleQueryDispenser",
+    "label": "SMBIoT機聯網停機查詢",
+    "group": "智慧串流解決方案",
+    "url": "./Legacy/HistoricalEvent/Equip_IdleQuery/",
+    "prefix": "Home/Legacy/HistoricalEvent/Equip_IdleQuery/",
+    "external": false
+  },
+  {
+    "id": "ProductionLoads",
+    "label": "產能統計地圖",
+    "group": "智慧串流解決方案",
+    "url": "./Legacy/DataStats_Analysis/ProductionLoads/page4.php",
+    "prefix": "Home/Legacy/DataStats_Analysis/ProductionLoads/",
+    "external": false
+  }
+]

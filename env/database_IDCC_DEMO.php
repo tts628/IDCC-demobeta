@@ -3,6 +3,8 @@ $serverName = getenv('IDCC_DB_HOST');
 $Database = getenv('IDCC_DB_NAME');
 $UID = getenv('IDCC_DB_UID');
 $PWD = getenv('IDCC_DB_PWD');
+require_once __DIR__ . '/database-required.php';
+idccRequireDatabaseSettings([$serverName, $Database, $UID, $PWD]);
 $trustServerCertificate = filter_var(getenv('IDCC_DB_TRUST_SERVER_CERTIFICATE') ?: 'false', FILTER_VALIDATE_BOOLEAN);
 $connectionInfo = array(
     "Database" => $Database,

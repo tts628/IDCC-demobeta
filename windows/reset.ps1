@@ -1,6 +1,6 @@
 #Requires -Version 5.1
 [CmdletBinding()]
-param([switch]$Plan)
+param([switch]$Plan,[switch]$Confirmed)
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 $projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -8,7 +8,7 @@ $backendFile = Join-Path $projectRoot '.idcc-docker-backend'
 $savedBackend = if (Test-Path -LiteralPath $backendFile) { (Get-Content -LiteralPath $backendFile -Raw).Trim() } else { '' }
 $desktopPresent = (Test-Path "$env:ProgramFiles\Docker\Docker\Docker Desktop.exe") -or (Test-Path "$env:LOCALAPPDATA\Programs\DockerDesktop\Docker Desktop.exe")
 if ($savedBackend -eq 'wsl' -or ($savedBackend -ne 'desktop' -and !$desktopPresent -and !(Get-Command docker.exe -ErrorAction SilentlyContinue))) {
-    & (Join-Path $PSScriptRoot 'wsl.ps1') -Action Reset -Plan:$Plan -NoInstall
+    & (Join-Path $PSScriptRoot 'wsl.ps1') -Action Reset -Plan:$Plan -NoInstall -Confirmed:$Confirmed
     exit $LASTEXITCODE
 }
 Write-Host "Project: idcc-demobata ($projectRoot)"
@@ -31,7 +31,7 @@ function Invoke-LocalDocker {
 }
 Invoke-LocalDocker -DockerArgs @('info','--format','{{.OSType}}')
 Invoke-LocalDocker -DockerArgs @('ps','-a','--filter','label=com.docker.compose.project=idcc-demobata','--format','table {{.Names}}\t{{.Status}}')
-if ((Read-Host 'Type RESET to remove the listed project environment') -cne 'RESET') { Write-Host 'Cancelled. Nothing was removed.'; return }
+if (!$Confirmed -and (Read-Host 'Type RESET to remove the listed project environment') -cne 'RESET') { Write-Host 'Cancelled. Nothing was removed.'; return }
 Invoke-LocalDocker -DockerArgs @('compose','--project-name','idcc-demobata','--project-directory',$projectRoot,'--env-file',(Join-Path $projectRoot 'docker\reset.env'),'--file',(Join-Path $projectRoot 'docker\reset.compose.yaml'),'down','--remove-orphans','--timeout','30')
 # Never force image removal: another container may still need this image.
 $imageIds = @(Invoke-LocalDocker -DockerArgs @('image','ls','--quiet','--filter','reference=idcc-demobata-web:local'))

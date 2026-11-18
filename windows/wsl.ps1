@@ -5,6 +5,7 @@ param(
     [ValidateRange(1024,65535)][int]$Port = 8080,
     [switch]$Plan,
     [switch]$NoInstall,
+    [switch]$Confirmed,
     [string[]]$DockerArgs = @()
 )
 $ErrorActionPreference = 'Stop'
@@ -68,7 +69,9 @@ if ($Action -eq 'Install') {
     [IO.File]::WriteAllText((Join-Path $projectRoot '.idcc-docker-backend'), 'wsl', (New-Object Text.UTF8Encoding($false)))
     Write-Host 'WSL Docker environment ready. No Docker Desktop was installed.' -ForegroundColor Green
 } elseif ($Action -eq 'Reset') {
-    Invoke-Wsl -WslArgs ($base + @('bash','ubuntu/reset.sh'))
+    $resetArgs = @('bash','ubuntu/reset.sh')
+    if ($Confirmed) { $resetArgs += '--confirmed' }
+    Invoke-Wsl -WslArgs ($base + $resetArgs)
 } else {
     # Explicit local socket; never use Docker Desktop integration or a remote context.
     Invoke-Wsl -WslArgs ($base + @('env','-u','DOCKER_HOST','-u','DOCKER_CONTEXT','docker','--host','unix:///var/run/docker.sock') + $DockerArgs)

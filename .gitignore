@@ -3,3 +3,5 @@
 !.env.example
 
 .idcc-docker-backend
+
+.idcc-pages.json

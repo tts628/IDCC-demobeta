@@ -1,3 +1,5 @@
+> Windows 圖形介面：`windows/setup.cmd`；獨立資料庫設定：`windows/database-setup.cmd`；頁面選擇：`windows/pages-setup.cmd`。可先略過資料庫安裝環境，詳見 [介面操作說明](docs/WINDOWS-GUI.md)。
+
 > Windows 新安裝不再安裝 Docker Desktop，改用 WSL 2 + Ubuntu Docker Engine。PowerShell 的 Docker 操作請使用 `powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose ps` 等命令代理；詳見 [Windows 操作說明](docs/WINDOWS-SETUP.md)。
 
 ## 重設執行環境
@@ -237,7 +239,7 @@ Expand-Archive "$stage\project.zip" "$stage\extracted"
 $folders = @(Get-ChildItem "$stage\extracted" -Directory)
 if ($folders.Count -ne 1) { throw "解壓縮內容不符合預期，請停止更新。" }
 
-robocopy $folders[0].FullName $project /E /XJ /XD .git /XF .env .env.postgres env.json
+robocopy $folders[0].FullName $project /E /XJ /XD .git /XF .env .env.postgres .idcc-docker-backend .idcc-pages.json env.json
 if ($LASTEXITCODE -ge 8) { throw "檔案更新失敗，請先不要繼續。" }
 
 Set-Location $project
