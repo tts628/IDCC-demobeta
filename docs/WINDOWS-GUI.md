@@ -25,3 +25,15 @@ Demo 預設勾選，使用既有 SQL Server。取消勾選會切到空的 Postgr
 主介面的重設按鈕先顯示確認對話框，保留資料、密碼、`.env` 與頁面設定。原本 `windows/reset.cmd` 仍要求輸入 RESET。作業中無法關閉主視窗，避免誤以為安裝已結束。
 
 更新時除了保留 `.env`、`.env.postgres`、`.idcc-docker-backend` 與 `env.json`，也要保留 `.idcc-pages.json`。手動鏡像同步的 `/XF` 清單請加入 `.idcc-pages.json`。PostgreSQL 資料仍在 Docker volume，資料夾備份不包含該資料卷。
+
+## 開啟時閃退
+
+新版入口改用獨立 launch-setup.ps1，固定使用 Windows PowerShell 5.1 的 STA 模式，失敗時保留視窗。開啟介面需要完整專案，不能只下載 windows 資料夾。可能原因包含檔案未同步完整、啟動參數／路徑、UAC 取消，或介面載入錯誤；需以實際錯誤判斷。
+
+啟動失敗紀錄保存在 `%LOCALAPPDATA%\IDCC-DemoBeta\setup-startup.log`。只記錄啟動錯誤，不列出資料庫設定或環境變數。若舊版仍然閃退，可在 PowerShell 手動執行並保留錯誤：
+
+```powershell
+powershell.exe -NoProfile -STA -NoExit -ExecutionPolicy Bypass -File 'C:\IDCC-demobeta-main\windows\setup.ps1'
+```
+
+請提供錯誤訊息，以確認原因。
