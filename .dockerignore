@@ -31,3 +31,5 @@ ubuntu
 .idcc-docker-backend
 
 .idcc-pages.json
+
+.idcc-pages.json.*

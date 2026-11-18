@@ -1,3 +1,5 @@
+> Ubuntu 終端機選單：`bash ubuntu/setup.sh`；獨立資料庫設定：`bash ubuntu/database-setup.sh`；頁面勾選：`bash ubuntu/pages-setup.sh`。詳見 [終端機操作說明](docs/UBUNTU-TUI.md)。
+
 > Windows 圖形介面：`windows/setup.cmd`；獨立資料庫設定：`windows/database-setup.cmd`；頁面選擇：`windows/pages-setup.cmd`。可先略過資料庫安裝環境，詳見 [介面操作說明](docs/WINDOWS-GUI.md)。
 
 > Windows 新安裝不再安裝 Docker Desktop，改用 WSL 2 + Ubuntu Docker Engine。PowerShell 的 Docker 操作請使用 `powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose ps` 等命令代理；詳見 [Windows 操作說明](docs/WINDOWS-SETUP.md)。

@@ -1,3 +1,5 @@
+> Ubuntu 終端機選單：`bash ubuntu/setup.sh`；獨立資料庫設定：`bash ubuntu/database-setup.sh`；頁面勾選：`bash ubuntu/pages-setup.sh`。詳見 [終端機操作說明](UBUNTU-TUI.md)。
+
 # 安裝入口
 
 | 作業系統 | 在完整解壓縮的專案根目錄執行 |
