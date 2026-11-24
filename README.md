@@ -171,23 +171,18 @@ Ubuntu 有衝突的舊套件時，腳本會停止並列出，不自動刪除。�
 
 ```text
 docker compose ps
-docker compose exec -T web php docker/diagnose-db.php
+docker compose exec -T web php docker/diagnose-setup.php
 ```
 
-容器 `web` 應為 **Up … (healthy)**。診斷腳本會進行唯讀的連線、資料表與首頁 API 檢查，不輸出帳密或資料列內容。
+容器 `web` 應為 **Up … (healthy)**。連線測試會分別列出 PostgreSQL、IDCC、SPC，只建立連線並執行不涉及資料表的 `SELECT 1`，不檢查業務資料表、日期範圍或首頁 API，也不修改資料或輸出帳密。
 
-| 診斷項目 | 成功的意義 |
+| 狀態 | 意義 |
 | --- | --- |
-| `environment` | 容器收到 IDCC 的四個必要變數 |
-| `drivers` | SQLSRV 與 PDO_SQLSRV 已載入 |
-| `tls_settings` | 顯示加密／信任憑證的實際選項，不代表登入已成功 |
-| `sqlsrv_connect` | SQLSRV 成功登入指定資料庫 |
-| `pdo_connect` | PDO 連線成功 |
-| `table` | 可查詢首頁需要的資料表 |
-| `data_window` | 顯示資料日期與查詢範圍內是否有資料 |
-| `homepage_api` | 首頁 API 回傳正常 JSON 陣列 |
+| `success` | 該資料庫可以正常連線；SQL Server 的 SQLSRV 與 PDO 都通過 |
+| `failed` | 該資料庫連線失敗，會附上憑證、帳密、網路或驅動等錯誤類別 |
+| `not_configured` | 尚未設定或未填完整，已略過，不代表成功 |
 
-請逐項查看 `ok`，最後的 `finished` 不代表前面全部成功。SPC 的連線檢查可用 `php docker/diagnose-db.php SPC`。
+Windows 使用 `windows/setup.cmd` 的「測試已儲存的連線」可看白話結果。Ubuntu 使用 `bash ubuntu/setup.sh`，或在 CLI 指令最後加 `--human`。若只想確認連線，請使用上述新工具；舊的 `docker/diagnose-db.php` 是額外深入檢查工具，仍包含資料表與首頁 API 檢查。
 
 再以**安裝電腦的瀏覽器**開啟：
 
@@ -204,7 +199,7 @@ docker compose exec -T web php docker/diagnose-db.php
 ```powershell
 cd "C:\IDCC-demobeta-main"
 powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose up -d --force-recreate --wait
-powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose exec -T web php docker/diagnose-db.php
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose exec -T web php docker/diagnose-setup.php
 ```
 
 **只做 `restart` 不會載入新的容器環境變數。** Ubuntu 建議重新執行 `bash ubuntu/install.sh`，保留 UID／GID 設定。自訂連接埠時也請保留原本的 `-Port`／`--port` 參數。

@@ -281,7 +281,7 @@ class TerminalUI:
                 key = checks[choice - len(fields) - 1][0]
                 values[key] = 'false' if values.get(key, 'false').lower() in ('true', '1', 'yes', 'on') else 'true'
             elif choice == len(entries) - 2:
-                self.compose(['exec', '-T', 'web', 'php', 'docker/diagnose-setup.php'])
+                self.compose(['exec', '-T', 'web', 'php', 'docker/diagnose-setup.php', '--human'])
             else:
                 try:
                     updates = {key: values.get(key, '') for key, _, _ in fields}
@@ -340,7 +340,7 @@ class TerminalUI:
             self.pages()
             return
         actions = [self.install, self.database, self.pages,
-                   lambda: self.compose(['exec', '-T', 'web', 'php', 'docker/diagnose-setup.php']),
+                   lambda: self.compose(['exec', '-T', 'web', 'php', 'docker/diagnose-setup.php', '--human']),
                    lambda: self.external(lambda: subprocess.run(['bash', str(self.root / 'ubuntu/reset.sh')], cwd=self.root).returncode)]
         while True:
             choice = self.choose('主選單', ['安裝／啟動環境（可略過資料庫）', '獨立資料庫設定', '勾選要保留的頁面', '診斷目前連線', '重設環境（保留資料，需輸入 RESET）', '離開'])

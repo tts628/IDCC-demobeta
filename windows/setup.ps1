@@ -67,7 +67,7 @@ $form.Text='IDCC DemoBeta 安裝與設定';$form.Size=New-Object Drawing.Size(10
 $outer=New-Object Windows.Forms.TableLayoutPanel;$outer.Dock='Fill';$outer.RowCount=3;$outer.ColumnCount=1
 [void]$outer.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',54)))
 [void]$outer.RowStyles.Add((New-Object Windows.Forms.RowStyle('Percent',100)))
-[void]$outer.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',205)))
+[void]$outer.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',265)))
 $form.Controls.Add($outer)
 $outer.Controls.Add((New-Label "IDCC 環境管理    ｜    $script:root"),0,0)
 $tabs=New-Object Windows.Forms.TabControl;$tabs.Dock='Fill';$outer.Controls.Add($tabs,0,1)
@@ -76,7 +76,7 @@ $db=New-Object Windows.Forms.TabPage;$db.Text='2  資料庫設定（可稍後）
 $pages=New-Object Windows.Forms.TabPage;$pages.Text='3  頁面選擇';[void]$tabs.TabPages.Add($pages)
 $progressBox=New-Object Windows.Forms.GroupBox;$progressBox.Text='執行進度';$progressBox.Dock='Fill';$progressBox.Padding='10,14,10,8';$outer.Controls.Add($progressBox,0,2)
 $progressLayout=New-Object Windows.Forms.TableLayoutPanel;$progressLayout.Dock='Fill';$progressLayout.ColumnCount=1;$progressLayout.RowCount=4
-foreach($height in @(32,25,67,22)){[void]$progressLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',$height)))}
+foreach($height in @(32,25,127,22)){[void]$progressLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',$height)))}
 $progressBox.Controls.Add($progressLayout)
 $taskTitle=New-Object Windows.Forms.Label;$taskTitle.Text='準備就緒';$taskTitle.Dock='Fill';$taskTitle.TextAlign='MiddleLeft';$taskTitle.Font=New-Object Drawing.Font($form.Font.FontFamily,12,[Drawing.FontStyle]::Bold);$progressLayout.Controls.Add($taskTitle,0,0)
 $progress=New-Object Windows.Forms.ProgressBar;$progress.Dock='Fill';$progress.Margin='0,2,0,3';$progress.Minimum=0;$progress.Maximum=100;$progress.Value=0;$progressLayout.Controls.Add($progress,0,1)
@@ -134,7 +134,7 @@ function Save-Database {
 $save=New-Button $dbButtons '只儲存設定' {try{if(Save-Database){Note '已儲存。容器需重新建立才會套用。'}}catch{Note $_.Exception.Message}}
 $apply=New-Button $dbButtons '儲存並套用' {try{if(Save-Database){Start-Task Apply}}catch{Note $_.Exception.Message}}
 $test=New-Button $dbButtons '測試已儲存的連線' {Start-Task Diagnose}
-$dbLayout.Controls.Add((New-Label "可全部留空，之後從 database-setup.cmd 設定。密碼只存本機 .env，不會顯示在執行紀錄。`n測試使用已儲存並套用到容器的設定；未儲存的輸入不會參與測試。"),0,3);$dbLayout.SetColumnSpan($dbLayout.GetControlFromPosition(0,3),2)
+$dbLayout.Controls.Add((New-Label "可全部留空，之後從 database-setup.cmd 設定。密碼只存本機 .env，不會顯示在執行紀錄。`n只測試連線，不檢查資料表。請先儲存並套用；未儲存的輸入不會參與測試。"),0,3);$dbLayout.SetColumnSpan($dbLayout.GetControlFromPosition(0,3),2)
 # Pages are switches; modules sharing a directory are linked.
 $pageLayout=New-Object Windows.Forms.TableLayoutPanel;$pageLayout.Dock='Fill';$pageLayout.RowCount=3;$pageLayout.ColumnCount=1
 [void]$pageLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',62)));[void]$pageLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Percent',100)));[void]$pageLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',54)));$pages.Controls.Add($pageLayout)
