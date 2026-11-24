@@ -1,3 +1,5 @@
+> 目前三組設定為：IDCC Server＝自動填入的正式 PostgreSQL；DemoIDCC Server＝SQL Server 測試連線；SPC Server＝獨立 SQL Server。Demo 開啟只改變網站 IDCC 的來源，不影響 SPC。詳見 [資料庫設定](DATABASE-SETUP.md)。
+
 # Docker 部署說明
 
 ## 架構

@@ -23,11 +23,12 @@ class Settings:
         if len(ids) != len(set(ids)):
             raise ValueError('頁面目錄包含重複 ID。')
 
-    def read_env(self):
+    def read_env(self, path=None):
+        path = Path(path) if path is not None else self.env_file
         result = {}
-        if not self.env_file.exists():
+        if not path.exists():
             return result
-        for line in self.env_file.read_text(encoding='utf-8-sig').splitlines():
+        for line in path.read_text(encoding='utf-8-sig').splitlines():
             match = re.match(r'^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$', line)
             if not match:
                 continue
@@ -62,13 +63,16 @@ class Settings:
             if os.path.exists(tmp):
                 os.unlink(tmp)
 
-    def save_env(self, values):
+    def save_env(self, values, path=None, remove=()):
+        target = Path(path) if path is not None else self.env_file
         encoded = {k: self.encode(v) for k, v in values.items()}
-        original = self.env_file.read_text(encoding='utf-8-sig').splitlines() if self.env_file.exists() else []
+        original = target.read_text(encoding='utf-8-sig').splitlines() if target.exists() else []
         lines, seen = [], set()
         for line in original:
             match = re.match(r'^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=', line)
             key = match[1] if match else None
+            if key in remove:
+                continue
             if key in encoded:
                 if key not in seen:
                     lines.append(key + '=' + encoded[key])
@@ -76,7 +80,38 @@ class Settings:
             else:
                 lines.append(line)
         lines += [key + '=' + value for key, value in encoded.items() if key not in seen]
-        self.atomic_write(self.env_file, '\n'.join(lines) + '\n')
+        self.atomic_write(target, '\n'.join(lines) + '\n')
+
+    def connection_profiles(self):
+        values = self.read_env()
+        pg = self.read_env(self.root / '.env.postgres')
+        legacy = (not any(k.startswith('DEMOIDCC_DB_') for k in values)
+                  and values.get('IDCC_CONNECTION_LAYOUT') != '2'
+                  and values.get('IDCC_DB_DRIVER') != 'pgsql')
+        prefix = 'IDCC' if legacy else 'DEMOIDCC'
+        suffixes = ('HOST', 'NAME', 'UID', 'PWD', 'TRUST_SERVER_CERTIFICATE')
+        return {
+            'IDCC': dict(HOST='postgres', PORT='5432', NAME='idcc', UID='idcc', PWD=pg.get('POSTGRES_PASSWORD', ''), DRIVER='pgsql'),
+            'DemoIDCC': {k: values.get(prefix + '_DB_' + k, '') for k in suffixes},
+            'SPC': {k: values.get('SPC_DB_' + k, '') for k in suffixes},
+            'legacy': legacy,
+        }
+
+    def prepare_connections(self):
+        profiles = self.connection_profiles()
+        values = self.read_env()
+        updates = {'IDCC_CONNECTION_LAYOUT': '2'}
+        if not values.get('IDCC_DEMO_MODE'):
+            updates['IDCC_DEMO_MODE'] = 'true'
+        for key, value in profiles['DemoIDCC'].items():
+            if 'DEMOIDCC_DB_' + key not in values:
+                updates['DEMOIDCC_DB_' + key] = value
+        remove = ['IDCC_DB_' + key for key in ('HOST', 'PORT', 'NAME', 'UID', 'PWD', 'DRIVER', 'TRUST_SERVER_CERTIFICATE')]
+        self.save_env(updates, remove=remove)
+        if profiles['IDCC']['PWD']:
+            primary = {'IDCC_DB_' + key: value for key, value in profiles['IDCC'].items()}
+            self.save_env(primary, path=self.root / '.env.postgres')
+
 
     def enabled(self):
         known = {p['id'] for p in self.catalog}
@@ -106,7 +141,7 @@ class Settings:
 
     @staticmethod
     def validate_database(values):
-        for slot in ('IDCC', 'SPC'):
+        for slot in ('DEMOIDCC', 'SPC'):
             present = sum(bool(values.get(slot + '_DB_' + key)) for key in ('HOST', 'NAME', 'UID', 'PWD'))
             if present not in (0, 4):
                 raise ValueError(slot + ' 請填完整四個欄位，或全部留空稍後設定。')
@@ -253,14 +288,18 @@ class TerminalUI:
 
     def database(self):
         values = self.settings.read_env()
+        profiles = self.settings.connection_profiles()
+        for suffix, value in profiles['DemoIDCC'].items():
+            values.setdefault('DEMOIDCC_DB_' + suffix, value)
         # Same two SQL Server slots and settings file as the Windows setup.
         demo = values.get('IDCC_DEMO_MODE', 'true').lower() not in ('false', '0', 'off', 'no')
-        fields = [(slot + '_DB_' + suffix, slot + ' ' + label, suffix == 'PWD')
-                  for slot in ('IDCC', 'SPC') for suffix, label in (('HOST', '主機/IP'), ('NAME', '資料庫名稱'), ('UID', '登入帳號'), ('PWD', '密碼'))]
-        checks = [(slot + '_DB_TRUST_SERVER_CERTIFICATE', slot + ' 信任伺服器憑證（僅受信任測試環境）') for slot in ('IDCC', 'SPC')]
+        fields = [(slot + '_DB_' + suffix, ('DemoIDCC' if slot == 'DEMOIDCC' else slot) + ' ' + label, suffix == 'PWD')
+                  for slot in ('DEMOIDCC', 'SPC') for suffix, label in (('HOST', '主機/IP'), ('NAME', '資料庫名稱'), ('UID', '登入帳號'), ('PWD', '密碼'))]
+        checks = [(slot + '_DB_TRUST_SERVER_CERTIFICATE', ('DemoIDCC' if slot == 'DEMOIDCC' else slot) + ' 信任伺服器憑證（僅受信任測試環境）') for slot in ('DEMOIDCC', 'SPC')]
         selected = 0
         while True:
-            entries = ['[x] Demo：目前 SQL Server' if demo else '[ ] Demo 關閉：空的 PostgreSQL（舊頁面尚未移植）']
+            entries = ['[x] Demo：IDCC 使用 DemoIDCC；SPC 獨立' if demo else '[ ] Demo 關閉：IDCC 使用 PostgreSQL；SPC 獨立']
+            entries += ['IDCC Server（PostgreSQL，自動填入，僅供查看）']
             entries += [label + '：' + ('已設定（隱藏）' if password and values.get(key) else values.get(key, '（未設定）')) for key, label, password in fields]
             entries += [('[' + ('x' if values.get(key, 'false').lower() in ('true', '1', 'yes', 'on') else ' ') + '] ' + label) for key, label in checks]
             entries += ['只儲存設定', '儲存並套用到容器', '測試已儲存並套用的連線', '返回（放棄未儲存輸入）']
@@ -272,13 +311,16 @@ class TerminalUI:
                 if demo and not self.confirm('關閉 Demo 前須先移植 SQL 與資料表，確定？'):
                     continue
                 demo = not demo
-            elif 1 <= choice <= len(fields):
-                key, label, secret = fields[choice - 1]
+            elif choice == 1:
+                primary = self.settings.connection_profiles()['IDCC']
+                self.choose('IDCC Server（安裝後自動填入，不修改）', ['主機：' + primary['HOST'], '連接埠：' + primary['PORT'], '資料庫：' + primary['NAME'], '帳號：' + primary['UID'], '密碼：' + ('已自動填入（隱藏）' if primary['PWD'] else '安裝後自動產生'), '返回'])
+            elif 2 <= choice <= len(fields) + 1:
+                key, label, secret = fields[choice - 2]
                 values[key] = self.edit(label, values.get(key, ''), password=secret)
                 if not secret:
                     values[key] = values[key].strip()
-            elif choice <= len(fields) + len(checks):
-                key = checks[choice - len(fields) - 1][0]
+            elif choice <= len(fields) + len(checks) + 1:
+                key = checks[choice - len(fields) - 2][0]
                 values[key] = 'false' if values.get(key, 'false').lower() in ('true', '1', 'yes', 'on') else 'true'
             elif choice == len(entries) - 2:
                 self.compose(['exec', '-T', 'web', 'php', 'docker/diagnose-setup.php', '--human'])
@@ -289,6 +331,7 @@ class TerminalUI:
                     updates['IDCC_DEMO_MODE'] = str(demo).lower()
                     self.settings.validate_database(updates)
                     self.settings.save_env(updates)
+                    self.settings.prepare_connections()
                     self.status = '已儲存。只儲存不會更改執行中的容器。'
                     if choice == len(entries) - 3:
                         self.compose(['up', '-d', '--force-recreate', '--wait', '--wait-timeout', '180'])
@@ -356,9 +399,14 @@ def main():
     parser = argparse.ArgumentParser(description='IDCC Ubuntu 終端機安裝與設定')
     parser.add_argument('--screen', choices=['main', 'database', 'pages'], default='main')
     parser.add_argument('--check', action='store_true', help='只檢查頁面設定，不啟動互動介面、不安裝套件')
+    parser.add_argument('--prepare-connections', action='store_true', help='Initialize connection profiles without showing credentials')
     args = parser.parse_args()
     root = Path(__file__).resolve().parent.parent
     try:
+        if args.prepare_connections:
+            Settings(root).prepare_connections()
+            print('Connection profiles prepared. SPC settings preserved.')
+            return 0
         if args.check:
             settings = Settings(root)
             print(json.dumps({'ok': True, 'catalog_pages': len(settings.catalog), 'enabled_pages': len(settings.enabled()), 'env_exists': settings.env_file.exists()}))

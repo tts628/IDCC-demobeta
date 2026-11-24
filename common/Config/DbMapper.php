@@ -9,9 +9,9 @@ class DbMapper
     private function load(array $options): array
     {
         $database = strtoupper((string) ($options[0] ?? ''));
-        $files = ['IDCC' => 'database_IDCC.php', 'SPC' => 'database_SPC.php', 'IDCC_DEMO' => 'database_IDCC_DEMO.php'];
+        $files = ['IDCC' => 'database_IDCC.php', 'SPC' => 'database_SPC.php', 'IDCC_DEMO' => 'database_IDCC_DEMO.php', 'DEMOIDCC' => 'database_IDCC_DEMO.php', 'IDCC_SERVER' => 'database_IDCC_POSTGRES.php'];
         if (!isset($files[$database])) {
-            throw new \InvalidArgumentException('Supported database configurations are IDCC, IDCC_DEMO and SPC.');
+            throw new \InvalidArgumentException('Supported database configurations are IDCC, DemoIDCC, IDCC_SERVER and SPC.');
         }
         if (!isset(self::$connections[$database])) {
             $file = dirname(__DIR__, 2) . '/env/' . $files[$database];

@@ -1,9 +1,10 @@
 <?php
-$host = getenv('IDCC_PG_HOST') ?: 'postgres';
-$port = getenv('IDCC_PG_PORT') ?: '5432';
-$Database = getenv('POSTGRES_DB') ?: 'idcc';
-$UID = getenv('POSTGRES_USER') ?: 'idcc';
-$PWD = getenv('POSTGRES_PASSWORD');
+$primary = strtolower(getenv('IDCC_DB_DRIVER') ?: '') === 'pgsql';
+$host = ($primary ? getenv('IDCC_DB_HOST') : false) ?: getenv('IDCC_PG_HOST') ?: 'postgres';
+$port = ($primary ? getenv('IDCC_DB_PORT') : false) ?: getenv('IDCC_PG_PORT') ?: '5432';
+$Database = ($primary ? getenv('IDCC_DB_NAME') : false) ?: getenv('POSTGRES_DB') ?: 'idcc';
+$UID = ($primary ? getenv('IDCC_DB_UID') : false) ?: getenv('POSTGRES_USER') ?: 'idcc';
+$PWD = ($primary ? getenv('IDCC_DB_PWD') : false) ?: getenv('POSTGRES_PASSWORD');
 if (!$PWD) throw new \RuntimeException('Missing PostgreSQL password. Run the Docker installer.');
 foreach ([$host, $port, $Database] as $part) {
     if (preg_match('/[;\x00-\x20]/', $part)) throw new \RuntimeException('Invalid PostgreSQL connection setting.');

@@ -22,12 +22,13 @@ function idccConnectionProbe(string $slot, array $services = []): array
         if (($value === false || $value === '') && $fallback !== null) $value = $env($fallback);
         return $value;
     };
-    if ($slot === 'PostgreSQL') {
-        $host = $get('IDCC_PG_HOST') ?: 'postgres';
-        $port = $get('IDCC_PG_PORT') ?: '5432';
-        $name = $get('POSTGRES_DB') ?: 'idcc';
-        $user = $get('POSTGRES_USER') ?: 'idcc';
-        $password = $get('POSTGRES_PASSWORD');
+    if ($slot === 'IDCC' || $slot === 'PostgreSQL') {
+        $primary = strtolower($get('IDCC_DB_DRIVER') ?: '') === 'pgsql';
+        $host = ($primary ? $get('IDCC_DB_HOST') : false) ?: $get('IDCC_PG_HOST') ?: 'postgres';
+        $port = ($primary ? $get('IDCC_DB_PORT') : false) ?: $get('IDCC_PG_PORT') ?: '5432';
+        $name = ($primary ? $get('IDCC_DB_NAME') : false) ?: $get('POSTGRES_DB') ?: 'idcc';
+        $user = ($primary ? $get('IDCC_DB_UID') : false) ?: $get('POSTGRES_USER') ?: 'idcc';
+        $password = ($primary ? $get('IDCC_DB_PWD') : false) ?: $get('POSTGRES_PASSWORD');
         if ($password === false || $password === '') return array_replace($result, ['status'=>'not_configured','ok'=>null,'reason'=>'NOT_CONFIGURED']);
         foreach ([$host, $port, $name] as $part) {
             if (preg_match('/[;\x00-\x20]/', $part)) return $result + ['reason'=>'INVALID_SETTING'];
@@ -35,18 +36,21 @@ function idccConnectionProbe(string $slot, array $services = []): array
         if (!$driver('pdo_pgsql')) return $result + ['reason'=>'DRIVER_MISSING'];
         $dsn = "pgsql:host=$host;port=$port;dbname=$name;connect_timeout=8";
         $pdoName = 'PDO_PGSQL';
-    } elseif (in_array($slot, ['IDCC','SPC'], true)) {
+    } elseif (in_array($slot, ['DemoIDCC','SPC'], true)) {
+        $prefix = $slot === 'DemoIDCC' ? 'DEMOIDCC' : 'SPC';
+        $oldDemo = $slot === 'DemoIDCC' && strtolower($get('IDCC_DB_DRIVER') ?: '') !== 'pgsql' && $get('IDCC_CONNECTION_LAYOUT') !== '2';
+        foreach (['HOST','NAME','UID','PWD','TRUST_SERVER_CERTIFICATE'] as $key) if ($get('DEMOIDCC_DB_' . $key) !== false) $oldDemo = false;
         $fallback = $slot === 'SPC' ? ['HOST'=>'HOST','NAME'=>'MDSVN_SPC_DB','UID'=>'UID','PWD'=>'PWD'] : [];
         $values = [];
         $missing = [];
         foreach (['HOST','NAME','UID','PWD'] as $key) {
-            $values[$key] = $get($slot . '_DB_' . $key, $fallback[$key] ?? null);
+            $values[$key] = $get($prefix . '_DB_' . $key, $oldDemo ? ('IDCC_DB_' . $key) : ($fallback[$key] ?? null));
             if ($values[$key] === false || $values[$key] === '') $missing[] = $key;
         }
         if ($missing) return array_replace($result, ['status'=>'not_configured','ok'=>null,'reason'=>'NOT_CONFIGURED','missing_keys'=>$missing]);
         ['HOST'=>$host,'NAME'=>$name,'UID'=>$user,'PWD'=>$password] = $values;
         if (preg_match('/[;\x00]/', $host . $name)) return $result + ['reason'=>'INVALID_SETTING'];
-        $trust = filter_var($get($slot . '_DB_TRUST_SERVER_CERTIFICATE') ?: 'false', FILTER_VALIDATE_BOOLEAN);
+        $trust = filter_var($get($prefix . '_DB_TRUST_SERVER_CERTIFICATE', $oldDemo ? 'IDCC_DB_TRUST_SERVER_CERTIFICATE' : null) ?: 'false', FILTER_VALIDATE_BOOLEAN);
         if (!$driver('sqlsrv')) {
             $result['drivers'][] = ['name'=>'SQLSRV','ok'=>false,'category'=>'DRIVER_MISSING'];
         } else {

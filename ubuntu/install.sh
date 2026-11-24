@@ -150,6 +150,14 @@ if [[ ! -e "$project_root/.env.postgres" ]]; then
    set -o noclobber
    printf 'POSTGRES_PASSWORD=%s\n' "$password" > "$project_root/.env.postgres") || die 'Cannot create PostgreSQL credential file.'
 fi
+# Prepare distinct DemoIDCC (SQL Server) and IDCC (installed PostgreSQL) profiles.
+if ! command -v python3 >/dev/null; then
+  $no_install && die 'Python 3 is required for connection setup; --no-install prevents installing it.'
+  as_root apt-get update
+  as_root apt-get install -y python3
+fi
+python3 "$project_root/ubuntu/setup_tui.py" --prepare-connections
+
 docker_call "${compose[@]}" config --quiet
 docker_call "${compose[@]}" up --detach --build --wait --wait-timeout 180
 docker_call "${compose[@]}" ps

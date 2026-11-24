@@ -55,12 +55,13 @@ function idccQuery($connection, string $sql, array $params = []): array
 
 function idccDiagnose(array $arguments): int
 {
-    $database = strtoupper($arguments[1] ?? 'IDCC');
+    $database = strtoupper($arguments[1] ?? 'DEMOIDCC');
+    if ($database === 'DEMOIDCC') $database = 'IDCC';
     if (!in_array($database, ['IDCC', 'SPC'], true)) {
         idccReport('arguments', false, ['usage' => 'php docker/diagnose-db.php [IDCC|SPC]']);
         return 2;
     }
-    $keys = array_map(static fn($suffix) => $database . '_DB_' . $suffix, ['HOST', 'NAME', 'UID', 'PWD']);
+    $keys = array_map(static fn($suffix) => ($database === 'IDCC' ? 'DEMOIDCC' : $database) . '_DB_' . $suffix, ['HOST', 'NAME', 'UID', 'PWD']);
     $values = array_map(static fn($key) => getenv($key), $keys);
     $missing = [];
     foreach ($keys as $index => $key) {
@@ -68,7 +69,7 @@ function idccDiagnose(array $arguments): int
             $missing[] = $key;
         }
     }
-    idccReport('environment', !$missing, ['database_slot' => $database, 'missing_keys' => $missing]);
+    idccReport('environment', !$missing, ['database_slot' => $database === 'IDCC' ? 'DemoIDCC' : $database, 'missing_keys' => $missing]);
     if ($missing) {
         return 2;
     }
@@ -78,7 +79,7 @@ function idccDiagnose(array $arguments): int
         return 2;
     }
     [$host, $name, $user, $password] = $values;
-    $trustServerCertificate = filter_var(getenv($database . '_DB_TRUST_SERVER_CERTIFICATE') ?: 'false', FILTER_VALIDATE_BOOLEAN);
+    $trustServerCertificate = filter_var(getenv(($database === 'IDCC' ? 'DEMOIDCC' : $database) . '_DB_TRUST_SERVER_CERTIFICATE') ?: 'false', FILTER_VALIDATE_BOOLEAN);
     idccReport('tls_settings', true, ['encrypt' => true, 'trust_server_certificate' => $trustServerCertificate]);
     $options = ['Database' => $name, 'UID' => $user, 'PWD' => $password, 'CharacterSet' => 'UTF-8', 'LoginTimeout' => 8, 'Encrypt' => true, 'TrustServerCertificate' => $trustServerCertificate];
     $connection = @sqlsrv_connect($host, $options);

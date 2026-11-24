@@ -11,7 +11,7 @@ $reasons = [
     'CONNECTION_FAILED'=>'無法建立連線', 'CHECK_FAILED'=>'無法執行測試',
 ];
 $failed = false;
-foreach (['PostgreSQL','IDCC','SPC'] as $slot) {
+foreach (['IDCC','DemoIDCC','SPC'] as $slot) {
     if ($human) echo '正在測試 ' . $slot . '…' . PHP_EOL;
     else echo json_encode(['stage'=>'connection_start','database_slot'=>$slot]) . PHP_EOL;
     flush();

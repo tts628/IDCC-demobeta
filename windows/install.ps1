@@ -72,7 +72,7 @@ if ($osType -ne 'linux') { throw 'Docker Linux engine is not ready. Open Docker 
 $composeFile = Join-Path $projectRoot 'compose.yaml'
 $env:IDCC_HTTP_PORT = [string]$Port
 # Refreshing the app never stops or removes an existing native Apache service.
-# Keep SQL Server .env unchanged; generate a separate PostgreSQL credential once.
+# Preserve SQL Server credentials during profile upgrade; generate PostgreSQL credentials only once.
 $pgEnv = Join-Path $projectRoot '.env.postgres'
 if (!(Test-Path -LiteralPath $pgEnv)) {
     $bytes = New-Object byte[] 32
@@ -82,6 +82,8 @@ if (!(Test-Path -LiteralPath $pgEnv)) {
     [IO.File]::WriteAllText($pgEnv, "POSTGRES_PASSWORD=$password`n", (New-Object Text.UTF8Encoding($false)))
     Write-Host 'Created local PostgreSQL credential; existing SQL Server settings preserved.'
 }
+Import-Module (Join-Path $PSScriptRoot 'ConnectionProfiles.psm1') -Force
+Initialize-IdccConnectionProfiles $projectRoot
 Write-Host 'Validating Compose configuration...'
 Invoke-Docker -Arguments @('compose','--file',$composeFile,'config','--quiet')
 Write-Host 'Building Apache/PHP and starting the app. The first build can take several minutes...'

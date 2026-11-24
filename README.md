@@ -1,3 +1,5 @@
+> 資料庫設定已分成三組：正式 **IDCC Server（PostgreSQL，安裝自動填入）**、**DemoIDCC Server（SQL Server）**、獨立 **SPC Server**。新安裝預設 Demo 開啟，網站 IDCC 使用 DemoIDCC；SPC 不隨開關改變。舊設定會在重跑安裝或儲存並套用時轉換，詳見 [資料庫設定](docs/DATABASE-SETUP.md)。
+
 > Ubuntu 終端機選單：`bash ubuntu/setup.sh`；獨立資料庫設定：`bash ubuntu/database-setup.sh`；頁面勾選：`bash ubuntu/pages-setup.sh`。詳見 [終端機操作說明](docs/UBUNTU-TUI.md)。
 
 > Windows 圖形介面：`windows/setup.cmd`；獨立資料庫設定：`windows/database-setup.cmd`；頁面選擇：`windows/pages-setup.cmd`。可先略過資料庫安裝環境，詳見 [介面操作說明](docs/WINDOWS-GUI.md)。
@@ -86,11 +88,11 @@ nano .env
 以下都是範例，請改成實際資訊：
 
 ```dotenv
-IDCC_DB_HOST=db.example.internal,1433
-IDCC_DB_NAME=YOUR_IDCC_DATABASE
-IDCC_DB_UID=YOUR_SQL_LOGIN
-IDCC_DB_PWD='YOUR_SQL_PASSWORD'
-IDCC_DB_TRUST_SERVER_CERTIFICATE=false
+DEMOIDCC_DB_HOST=db.example.internal,1433
+DEMOIDCC_DB_NAME=YOUR_IDCC_DATABASE
+DEMOIDCC_DB_UID=YOUR_SQL_LOGIN
+DEMOIDCC_DB_PWD='YOUR_SQL_PASSWORD'
+DEMOIDCC_DB_TRUST_SERVER_CERTIFICATE=false
 
 SPC_DB_HOST=db.example.internal,1433
 SPC_DB_NAME=YOUR_SPC_DATABASE
@@ -120,7 +122,7 @@ SPC_DB_TRUST_SERVER_CERTIFICATE=false
 若是自己控管且已確認身分的展示資料庫，使用自簽憑證時可以明確設定：
 
 ```dotenv
-IDCC_DB_TRUST_SERVER_CERTIFICATE=true
+DEMOIDCC_DB_TRUST_SERVER_CERTIFICATE=true
 ```
 
 SPC 對應 `SPC_DB_TRUST_SERVER_CERTIFICATE=true`。這會**保留加密，但略過伺服器憑證驗證**，降低伺服器身分驗證保障。SQLSRV、PDO 與診斷腳本使用同一個選項。
@@ -174,7 +176,7 @@ docker compose ps
 docker compose exec -T web php docker/diagnose-setup.php
 ```
 
-容器 `web` 應為 **Up … (healthy)**。連線測試會分別列出 PostgreSQL、IDCC、SPC，只建立連線並執行不涉及資料表的 `SELECT 1`，不檢查業務資料表、日期範圍或首頁 API，也不修改資料或輸出帳密。
+容器 `web` 應為 **Up … (healthy)**。連線測試會分別列出 IDCC（PostgreSQL）、DemoIDCC、SPC，只建立連線並執行不涉及資料表的 `SELECT 1`，不檢查業務資料表、日期範圍或首頁 API，也不修改資料或輸出帳密。
 
 | 狀態 | 意義 |
 | --- | --- |

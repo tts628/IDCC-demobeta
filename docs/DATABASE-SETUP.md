@@ -1,50 +1,62 @@
-# Docker 資料庫設定
+# 三組資料庫連線設定
 
-連線資訊放在**專案根目錄 `.env`**。`env/database_IDCC.php` 與 `env/database_SPC.php` 透過 `getenv()` 讀取容器環境變數，通常不需要直接改這兩個 PHP 檔案。
+| 設定名稱 | 類型 | 用途與設定來源 |
+|---|---|---|
+| IDCC Server | PostgreSQL | 安裝時自動建立並填入正式連線，保存在 `.env.postgres` |
+| DemoIDCC Server | SQL Server | 展示／測試連線，保存在 `.env` 的 `DEMOIDCC_DB_*` |
+| SPC Server | SQL Server | 獨立連線，保存在 `.env` 的 `SPC_DB_*`，不受 Demo 切換影響 |
 
-Docker Compose 透過 `env_file` 把 `.env` 傳入容器，並非僅靠 Compose 的變數替換。未建立 `.env` 時仍能啟動網站環境，但資料庫功能不會具備正確連線設定。此設定需要支援 optional env_file 的 Compose 2.24 以上。
+DemoIDCC 是連線設定的名稱，不會把原 SQL Server 資料庫改名，也不需要建立名為 DemoIDCC 的資料庫；資料庫名稱仍填原本的名稱。
 
-Windows PowerShell，在專案目錄執行：
+## 切換規則
 
-```powershell
-if (!(Test-Path .env)) { Copy-Item .env.example .env }
-notepad .env
+新安裝預設 `IDCC_DEMO_MODE=true`。開啟時，網站的 IDCC 頁面只使用 DemoIDCC SQL Server；關閉時只選用正式 IDCC PostgreSQL。連線失敗不會偷偷改用另一個連線。SPC 頁面在兩種模式下都繼續使用自己的 SPC SQL Server。
+
+**PostgreSQL 目前是空的業務資料庫，舊頁面仍有 SQLSRV／T-SQL，關閉 Demo 前必須先移植資料表與查詢。** 容器安裝成功不代表業務頁面已完成移植。
+
+## Windows 與 Ubuntu 操作
+
+Windows 開啟 `windows/database-setup.cmd`，介面顯示三欄：IDCC 的 PostgreSQL 自動填入、僅供查看；DemoIDCC 與 SPC 可以編輯，密碼均遮蔽顯示。可先留空完成環境安裝。Ubuntu 使用 `bash ubuntu/database-setup.sh`，也能查看正式 IDCC 自動資訊並分開設定另外兩組連線。
+
+修改後按「儲存並套用」重建容器，才會讓新環境變數生效。「只儲存」不會改變執行中的容器。再按連線測試，會分別列出 IDCC（PostgreSQL）、DemoIDCC、SPC 的結果；只建立連線與執行 SELECT 1，不檢查業務表，也不修改資料。
+
+## Demo 與 SPC 的 .env 範例
+
+```dotenv
+IDCC_DEMO_MODE=true
+IDCC_CONNECTION_LAYOUT=2
+DEMOIDCC_DB_HOST=YOUR_DEMO_SQL_SERVER,1433
+DEMOIDCC_DB_NAME=YOUR_EXISTING_DATABASE
+DEMOIDCC_DB_UID=YOUR_SQL_LOGIN
+DEMOIDCC_DB_PWD='YOUR_SQL_PASSWORD'
+DEMOIDCC_DB_TRUST_SERVER_CERTIFICATE=false
+
+SPC_DB_HOST=YOUR_SPC_SQL_SERVER,1433
+SPC_DB_NAME=YOUR_SPC_DATABASE
+SPC_DB_UID=YOUR_SQL_LOGIN
+SPC_DB_PWD='YOUR_SQL_PASSWORD'
+SPC_DB_TRUST_SERVER_CERTIFICATE=false
 ```
 
-Ubuntu：
+主機欄是可由容器到達的主機名／IP，可加 `,埠`；資料庫名稱是另一欄。Windows 能解析的短主機名稱，容器可能無法解析，必要時使用完整 DNS 名稱或正確 IP。憑證旗標預設 false，只有信任的測試伺服器才明確選擇略過憑證驗證。不要把密碼或完整設定檔貼到聊天或提交 Git。
 
-```bash
-test -f .env || cp .env.example .env
-nano .env
+## 自動填入的正式 IDCC
+
+安裝程式保留原 `.env.postgres` 的 `POSTGRES_PASSWORD`，不重新產生，並在同檔同步：
+
+```dotenv
+IDCC_DB_DRIVER=pgsql
+IDCC_DB_HOST=postgres
+IDCC_DB_PORT=5432
+IDCC_DB_NAME=idcc
+IDCC_DB_UID=idcc
+# IDCC_DB_PWD 由安裝程式同步為既有 POSTGRES_PASSWORD，這裡不示範真實密碼。
 ```
 
-| 用途 | IDCC | SPC |
-| --- | --- | --- |
-| 伺服器 | IDCC_DB_HOST | SPC_DB_HOST |
-| 資料庫 | IDCC_DB_NAME | SPC_DB_NAME |
-| SQL 帳號 | IDCC_DB_UID | SPC_DB_UID |
-| SQL 密碼 | IDCC_DB_PWD | SPC_DB_PWD |
+這些是網站容器內的正式連線資訊，請勿在根目錄 `.env` 再放舊的 IDCC_DB_* SQL Server 帳密。DBeaver 在 Windows 主機上連線時使用主機映射的 IP／埠，不能直接把容器名稱 postgres 當成 Windows 主機名稱。是否已開放 DBeaver 連接埠仍取決於自己的 Compose 映射，此次不會新增或刪除映射。
 
-SPC 保留舊變數 `HOST`、`MDSVN_SPC_DB`、`UID`、`PWD` 作為相容備援；新設定請使用 SPC_DB_*，避免與作業系統的 UID／PWD 變數混淆。
+## 從舊版更新
 
-若 SQL Server 在同一台主機，HOST 使用 `host.docker.internal`；若在另一台電腦，填可連線的 IP／主機名稱。指定 TCP 連接埠可用 `主機,1433`，實際連接埠依你的 SQL Server 設定。資料庫仍需開放 TCP 並具備帳號及資料表。
+更新完整程式後，重跑安裝，或在設定介面按「儲存並套用」。程式會將根目錄舊 IDCC_DB_* SQL Server 設定轉為 DEMOIDCC_DB_*，保留原資料庫名稱、帳密與憑證選項，再把正式 IDCC PostgreSQL 資訊寫入 `.env.postgres`。已明確設定的 DemoIDCC 不會被覆寫，SPC 不會被轉換或更換；已手動關閉的 Demo 也會保留選擇。
 
-密碼建議用單引號包住，避免 `$` 被當成變數展開；若密碼本身含單引號，需依 Compose env_file 語法以反斜線跳脫。範本只是佔位文字，安裝腳本不會代填或驗證真實帳密。
-
-儲存後重新建立容器，單純 restart 不會載入新增或修改的容器環境變數：
-
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose up -d --force-recreate --wait
-```
-
-Ubuntu 若原本使用 install.sh 設定 UID／GID，請執行 `bash ubuntu/install.sh` 以保留映射設定。
-
-`.env` 已加入 `.gitignore` 和 `.dockerignore`，不要上傳，也不要使用 `git add --force .env`。`docker compose config` 可能顯示解析後的密碼，請勿把完整輸出貼到公開地方。
-
-## TLS 憑證
-
-預設強制加密並驗證伺服器憑證。正式環境請在容器信任 SQL Server 憑證的簽發 CA，並使用與憑證相符的 DNS 名稱連線。
-
-如果是自己控管的展示資料庫，且已確認身分，可以在 `.env` 明確設定 `IDCC_DB_TRUST_SERVER_CERTIFICATE=true`（SPC 對應 `SPC_DB_TRUST_SERVER_CERTIFICATE=true`）。此選項保留連線加密，但略過伺服器憑證驗證，降低伺服器身分驗證保障；不會修改資料庫伺服器。未設定、false 或無法辨識的值維持驗證憑證。
-
-SQLSRV、PDO 和診斷腳本會讀取同一個設定。儲存後需重新建立容器，再執行診斷，輸出中的 tls_settings 會顯示實際選項。
+轉換只調整本機設定檔，不搬移、改名或清除資料庫。仍請保留自己的備份；更新保留 `.env`、`.env.postgres`、`.idcc-docker-backend`、`.idcc-pages.json` 與自訂資料。重跑會重用既有 PostgreSQL 密碼與資料卷。若只覆蓋程式未重建容器，容器仍使用舊環境變數；轉換前的舊 SQL 設定僅為升級相容保留，不是連線失敗時的備援。

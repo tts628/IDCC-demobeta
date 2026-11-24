@@ -61,13 +61,14 @@ require_once realpath('../bootstrap/views/loadingElements/loadingElement.php');
 <body>
 <?php
 require_once dirname(__DIR__) . '/env/idcc-mode.php';
+require_once dirname(__DIR__) . '/env/idcc-demo-values.php';
 $idccConfigured = true;
 if (idccDemoMode()) foreach (['HOST', 'NAME', 'UID', 'PWD'] as $key) {
-    if (getenv('IDCC_DB_' . $key) === false || getenv('IDCC_DB_' . $key) === '') $idccConfigured = false;
+    if (idccDemoValue($key) === false || idccDemoValue($key) === '') $idccConfigured = false;
 }
 if (!$idccConfigured): ?>
 <div role="status" style="position:fixed;top:0;left:0;right:0;z-index:2147483647;padding:10px 16px;background:#fff3cd;color:#664d03;text-align:center;">
-    尚未設定 IDCC 資料庫。環境可正常安裝，請稍後開啟安裝包的「資料庫設定」工具，儲存並套用連線資訊。
+    尚未設定 DemoIDCC 測試資料庫。環境可正常安裝，請稍後開啟安裝包的「資料庫設定」工具，儲存並套用連線資訊。
 </div>
 <?php endif; ?>
     <div id="sidebar"></div>

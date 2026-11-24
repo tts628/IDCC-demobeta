@@ -11,7 +11,7 @@
         CONNECTION_FAILED='無法建立連線，請確認設定與資料庫服務'
         CHECK_FAILED='測試未能執行，請確認環境正常'
     }
-    $slots=@('PostgreSQL','IDCC','SPC');$results=@{};$active=$null
+    $slots=@('IDCC','DemoIDCC','SPC');$results=@{};$active=$null
     foreach($line in ($Text -split "`r?`n")){
         if(!$line.Trim().StartsWith('{')){continue}
         try{$record=$line|ConvertFrom-Json -ErrorAction Stop}catch{continue}

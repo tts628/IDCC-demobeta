@@ -6,6 +6,7 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 [Windows.Forms.Application]::EnableVisualStyles()
 Import-Module (Join-Path $PSScriptRoot 'SetupTaskView.psm1') -Force
+Import-Module (Join-Path $PSScriptRoot 'ConnectionProfiles.psm1') -Force
 $script:root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $script:utf8=New-Object Text.UTF8Encoding($false)
 $script:busy=$false
@@ -62,6 +63,7 @@ function New-Button([Windows.Forms.Control]$Parent,[string]$Text,[scriptblock]$C
 }
 function New-Label([string]$Text){$l=New-Object Windows.Forms.Label;$l.Text=$Text;$l.AutoSize=$true;$l.Margin='10,8,10,8';return $l}
 $script:settings=Read-Settings
+$script:profiles=Get-IdccConnectionProfiles $script:root
 $form=New-Object Windows.Forms.Form
 $form.Text='IDCC DemoBeta 安裝與設定';$form.Size=New-Object Drawing.Size(1040,820);$form.MinimumSize=New-Object Drawing.Size(920,740);$form.StartPosition='CenterScreen';$form.Font=New-Object Drawing.Font('Microsoft JhengHei UI',10)
 $outer=New-Object Windows.Forms.TableLayoutPanel;$outer.Dock='Fill';$outer.RowCount=3;$outer.ColumnCount=1
@@ -96,45 +98,58 @@ $resetButton=New-Button $flow '重設環境（保留資料與設定）' {
     if($answer -eq 'Yes'){Start-Task Reset}
 }
 $flow.Controls.Add((New-Label '安裝成功代表容器可執行；資料庫連線與業務資料另行檢查。'))
-# Database controls: two independent SQL Server slots.
-$dbLayout=New-Object Windows.Forms.TableLayoutPanel;$dbLayout.Dock='Fill';$dbLayout.ColumnCount=2;$dbLayout.RowCount=4
-[void]$dbLayout.ColumnStyles.Add((New-Object Windows.Forms.ColumnStyle('Percent',50)));[void]$dbLayout.ColumnStyles.Add((New-Object Windows.Forms.ColumnStyle('Percent',50)))
+# Primary IDCC is installed PostgreSQL; DemoIDCC and SPC are separate SQL Server profiles.
+$dbLayout=New-Object Windows.Forms.TableLayoutPanel;$dbLayout.Dock='Fill';$dbLayout.ColumnCount=3;$dbLayout.RowCount=4
+foreach($column in 0..2){[void]$dbLayout.ColumnStyles.Add((New-Object Windows.Forms.ColumnStyle('Percent',33.333)))}
 [void]$dbLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',42)));[void]$dbLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Percent',100)));[void]$dbLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',58)));[void]$dbLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',66)))
 $db.Controls.Add($dbLayout)
-$demo=New-Object Windows.Forms.CheckBox;$demo.Text='Demo 模式：使用目前 SQL Server 測試資料庫';$demo.AutoSize=$true;$demo.Margin='12,10,5,5';$demo.Checked=($script:settings['IDCC_DEMO_MODE'] -notin @('false','0','off','no'));$dbLayout.Controls.Add($demo,0,0);$dbLayout.SetColumnSpan($demo,2)
+$demo=New-Object Windows.Forms.CheckBox;$demo.Text='Demo 模式：IDCC 一律使用 DemoIDCC；SPC 保持自己的連線';$demo.AutoSize=$true;$demo.Margin='12,10,5,5';$demo.Checked=($script:settings['IDCC_DEMO_MODE'] -notin @('false','0','off','no'));$dbLayout.Controls.Add($demo,0,0);$dbLayout.SetColumnSpan($demo,3)
 $script:fields=@{};$script:trust=@{}
-foreach($slot in @('IDCC','SPC')){
-    $box=New-Object Windows.Forms.GroupBox;$box.Text="$slot SQL Server";$box.Dock='Fill'
-    $table=New-Object Windows.Forms.TableLayoutPanel;$table.Dock='Fill';$table.ColumnCount=2;$table.RowCount=5
-    [void]$table.ColumnStyles.Add((New-Object Windows.Forms.ColumnStyle('Absolute',105)));[void]$table.ColumnStyles.Add((New-Object Windows.Forms.ColumnStyle('Percent',100)))
+foreach($slot in @('IDCC','DEMOIDCC','SPC')){
+    $primary=$slot -eq 'IDCC'
+    $box=New-Object Windows.Forms.GroupBox;$box.Text=switch($slot){'IDCC'{'IDCC Server（PostgreSQL）'};'DEMOIDCC'{'DemoIDCC Server（SQL Server）'};default{'SPC Server（SQL Server）'}};$box.Dock='Fill'
+    $table=New-Object Windows.Forms.TableLayoutPanel;$table.Dock='Fill';$table.ColumnCount=2;$table.RowCount=6
+    [void]$table.ColumnStyles.Add((New-Object Windows.Forms.ColumnStyle('Absolute',85)));[void]$table.ColumnStyles.Add((New-Object Windows.Forms.ColumnStyle('Percent',100)))
+    foreach($row in 0..5){[void]$table.RowStyles.Add((New-Object Windows.Forms.RowStyle('Percent',16.667)))}
+    $entries=@(@('HOST','主機／IP'),@('NAME','資料庫名稱'),@('UID','登入帳號'),@('PWD','密碼'))
+    if($primary){$entries=@(@('HOST','主機／IP'),@('PORT','連接埠'),@('NAME','資料庫名稱'),@('UID','登入帳號'),@('PWD','密碼'))}
     $i=0
-    foreach($entry in @(@('HOST','主機／IP'),@('NAME','資料庫名稱'),@('UID','登入帳號'),@('PWD','密碼'))){
-        [void]$table.RowStyles.Add((New-Object Windows.Forms.RowStyle('Percent',20)))
+    foreach($entry in $entries){
         $table.Controls.Add((New-Label $entry[1]),0,$i)
-        $input=New-Object Windows.Forms.TextBox;$input.Dock='Top';$input.Margin='5,8,12,5'
-        $key=$slot+'_DB_'+$entry[0];$input.Text=[string]$script:settings[$key]
+        $input=New-Object Windows.Forms.TextBox;$input.Dock='Top';$input.Margin='5,6,8,4';$input.ReadOnly=$primary
+        $key=$slot+'_DB_'+$entry[0];$input.Text=[string]$script:profiles[$slot][$entry[0]]
         if($entry[0] -eq 'PWD'){$input.UseSystemPasswordChar=$true}
         $script:fields[$key]=$input;$table.Controls.Add($input,1,$i);$i++
     }
-    $check=New-Object Windows.Forms.CheckBox;$check.Text='信任伺服器憑證（僅受信任測試環境）';$check.AutoSize=$true;$check.Checked=($script:settings[$slot+'_DB_TRUST_SERVER_CERTIFICATE'] -in @('true','1','yes','on'));$table.Controls.Add($check,0,4);$table.SetColumnSpan($check,2);$script:trust[$slot]=$check
-    $box.Controls.Add($table);$column=if($slot -eq 'IDCC'){0}else{1};$dbLayout.Controls.Add($box,$column,1)
+    if($primary){$caption=New-Label '安裝後自動填入，密碼已遮蔽';$table.Controls.Add($caption,0,5);$table.SetColumnSpan($caption,2)}
+    else{
+        $check=New-Object Windows.Forms.CheckBox;$check.Text='信任測試伺服器憑證';$check.AutoSize=$true;$check.Checked=($script:profiles[$slot]['TRUST_SERVER_CERTIFICATE'] -in @('true','1','yes','on'));$table.Controls.Add($check,0,4);$table.SetColumnSpan($check,2);$script:trust[$slot]=$check
+    }
+    $box.Controls.Add($table);$column=@('IDCC','DEMOIDCC','SPC').IndexOf($slot);$dbLayout.Controls.Add($box,$column,1)
 }
-$dbButtons=New-Object Windows.Forms.FlowLayoutPanel;$dbButtons.Dock='Fill';$dbLayout.Controls.Add($dbButtons,0,2);$dbLayout.SetColumnSpan($dbButtons,2)
+function Refresh-PrimaryConnection {
+    $profile=Get-IdccConnectionProfiles $script:root
+    foreach($suffix in @('HOST','PORT','NAME','UID','PWD')){$script:fields['IDCC_DB_'+$suffix].Text=[string]$profile.IDCC[$suffix]}
+}
+$dbButtons=New-Object Windows.Forms.FlowLayoutPanel;$dbButtons.Dock='Fill';$dbLayout.Controls.Add($dbButtons,0,2);$dbLayout.SetColumnSpan($dbButtons,3)
 function Save-Database {
     $values=@{IDCC_DEMO_MODE=([string]$demo.Checked).ToLowerInvariant();IDCC_HTTP_PORT=[string]$port.Value}
-    foreach($slot in @('IDCC','SPC')){
+    foreach($slot in @('DEMOIDCC','SPC')){
         $filled=0
         foreach($suffix in @('HOST','NAME','UID','PWD')){$key=$slot+'_DB_'+$suffix;$value=$script:fields[$key].Text;if($suffix -ne 'PWD'){$value=$value.Trim()};$values[$key]=$value;if($value -ne ''){$filled++}}
         if($filled -gt 0 -and $filled -lt 4){throw "$slot 請填完整四個欄位，或全部留空稍後設定。"}
         $values[$slot+'_DB_TRUST_SERVER_CERTIFICATE']=([string]$script:trust[$slot].Checked).ToLowerInvariant()
     }
     if(!$demo.Checked){$r=[Windows.Forms.MessageBox]::Show('PostgreSQL 目前為空庫，舊頁面的查詢尚未移植。確定關閉 Demo？','切換模式',[Windows.Forms.MessageBoxButtons]::YesNo);if($r -ne 'Yes'){return $false}}
-    Write-Settings $values;return $true
+    Write-Settings $values
+    Initialize-IdccConnectionProfiles $script:root
+    Refresh-PrimaryConnection
+    return $true
 }
 $save=New-Button $dbButtons '只儲存設定' {try{if(Save-Database){Note '已儲存。容器需重新建立才會套用。'}}catch{Note $_.Exception.Message}}
 $apply=New-Button $dbButtons '儲存並套用' {try{if(Save-Database){Start-Task Apply}}catch{Note $_.Exception.Message}}
 $test=New-Button $dbButtons '測試已儲存的連線' {Start-Task Diagnose}
-$dbLayout.Controls.Add((New-Label "可全部留空，之後從 database-setup.cmd 設定。密碼只存本機 .env，不會顯示在執行紀錄。`n只測試連線，不檢查資料表。請先儲存並套用；未儲存的輸入不會參與測試。"),0,3);$dbLayout.SetColumnSpan($dbLayout.GetControlFromPosition(0,3),2)
+$dbLayout.Controls.Add((New-Label "IDCC 的 PostgreSQL 連線由安裝自動填入；DemoIDCC 與 SPC 可稍後設定，兩者互不替代。`n只測試連線，不檢查資料表。請先儲存並套用；未儲存的輸入不會參與測試。"),0,3);$dbLayout.SetColumnSpan($dbLayout.GetControlFromPosition(0,3),3)
 # Pages are switches; modules sharing a directory are linked.
 $pageLayout=New-Object Windows.Forms.TableLayoutPanel;$pageLayout.Dock='Fill';$pageLayout.RowCount=3;$pageLayout.ColumnCount=1
 [void]$pageLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',62)));[void]$pageLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Percent',100)));[void]$pageLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',54)));$pages.Controls.Add($pageLayout)
@@ -213,6 +228,7 @@ $timer.Add_Tick({
         $view=Get-SetupTaskView -Action $script:activeAction -Text $text -ExitCode $code
         Show-TaskView $view
         if($code -eq 3010){$taskTime.Text='請重新啟動 Windows 後再繼續。'}elseif($view.State -eq 'Error'){$taskTime.Text='請依上方說明處理後重試。'}else{$taskTime.Text='操作已結束，可以繼續使用其他功能。'}
+        if($code -eq 0 -and $script:activeAction -in @('Install','Apply')){Refresh-PrimaryConnection}
         $script:job.Dispose();$script:job=$null
     }else{Show-TaskView (Get-SetupTaskView -Action $script:activeAction -Text $text)}
 })
