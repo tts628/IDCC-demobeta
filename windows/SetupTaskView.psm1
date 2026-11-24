@@ -2,30 +2,30 @@
     [CmdletBinding()]
     param([ValidateSet('Install','Plan','Apply','Diagnose','Reset')][string]$Action,[string]$Text='',[int]$ExitCode=-99999)
     $titles=@{Install='正在準備安裝環境';Plan='正在檢查安裝方式';Apply='正在準備套用資料庫設定';Diagnose='正在準備測試資料庫連線';Reset='正在準備重設環境'}
-    $view=[pscustomobject]@{Title=$titles[$Action];Detail='請稍候，完成後會自動顯示結果。';State='Running';Complete=$false}
+    $view=[pscustomobject]@{Title=$titles[$Action];Detail='請稍候，完成後會自動顯示結果。';State='Running';Complete=$false;Progress=0}
     switch($Action){
         Install {
             $view.Detail='首次安裝需要下載環境元件，時間會依網路及電腦速度而不同。'
-            if($Text -match 'Installing.*Docker|Installing.*Ubuntu|Downloading.*Ubuntu|WSL update|Preparing WSL|apt-get'){$view.Title='正在準備系統與 Docker 環境'}
-            if($Text -match 'Starting Docker|Waiting for Docker|Starting the existing Docker|Docker detected|Docker Desktop detected'){$view.Title='正在啟動容器引擎'}
-            if($Text -match 'Building Apache/PHP|Validating Compose and building|load build definition|Building.*web'){$view.Title='正在建立 Apache 與 PHP 網站環境';$view.Detail='正在下載套件及建立網站映像，第一次執行通常較久。'}
-            if($Text -match 'Container [^\r\n]*(Creating|Recreated|Starting|Waiting|Healthy|Started)|\bUp [^\r\n]*healthy'){$view.Title='正在啟動網站與 PostgreSQL';$view.Detail='正在等待服務就緒，並確認網站健康狀態。'}
+            if($Text -match 'Installing.*Docker|Installing.*Ubuntu|Downloading.*Ubuntu|WSL update|Preparing WSL|apt-get'){$view.Title='正在準備系統與 Docker 環境';$view.Progress=20}
+            if($Text -match 'Starting Docker|Waiting for Docker|Starting the existing Docker|Docker detected|Docker Desktop detected'){$view.Title='正在啟動容器引擎';$view.Progress=40}
+            if($Text -match 'Building Apache/PHP|Validating Compose and building|load build definition|Building.*web'){$view.Title='正在建立 Apache 與 PHP 網站環境';$view.Progress=60;$view.Detail='正在下載套件及建立網站映像，第一次執行通常較久。'}
+            if($Text -match 'Container [^\r\n]*(Creating|Recreated|Starting|Waiting|Healthy|Started)|\bUp [^\r\n]*healthy'){$view.Title='正在啟動網站與 PostgreSQL';$view.Progress=80;$view.Detail='正在等待服務就緒，並確認網站健康狀態。'}
         }
         Apply {
             $view.Detail='您的設定已儲存，正在重新建立容器，讓新的連線設定生效。'
-            if($Text -match 'Recreat|Creat|Starting|Started'){$view.Title='正在重新啟動服務並載入設定'}
-            if($Text -match 'Waiting|Healthy|healthy'){$view.Title='正在確認服務可以正常啟動'}
+            if($Text -match 'Recreat|Creat|Starting|Started'){$view.Title='正在重新啟動服務並載入設定';$view.Progress=33}
+            if($Text -match 'Waiting|Healthy|healthy'){$view.Title='正在確認服務可以正常啟動';$view.Progress=67}
         }
         Diagnose {
             $view.Detail='正在檢查 PostgreSQL，以及已設定的 SQL Server 連線。'
-            if($Text -match 'postgres_connect'){$view.Title='已檢查 PostgreSQL，正在檢查測試資料庫'}
-            if($Text -match 'sqlsrv_connect|pdo_connect'){$view.Title='正在確認資料庫登入與資料存取'}
-            if($Text -match '"stage"\s*:\s*"(table|data_window|homepage_api)"'){$view.Title='正在檢查資料表與頁面資料'}
+            if($Text -match 'postgres_connect'){$view.Title='已檢查 PostgreSQL，正在檢查測試資料庫';$view.Progress=25}
+            if($Text -match 'sqlsrv_connect|pdo_connect'){$view.Title='正在確認資料庫登入與資料存取';$view.Progress=50}
+            if($Text -match '"stage"\s*:\s*"(table|data_window|homepage_api)"'){$view.Title='正在檢查資料表與頁面資料';$view.Progress=75}
         }
         Reset {
             $view.Detail='只清除本專案的執行環境，資料庫資料、密碼與設定會保留。'
-            if($Text -match 'Stopping|Stopped|Removing|Removed'){$view.Title='正在停止並移除本專案容器與網路'}
-            if($Text -match 'Untagged|Deleted:'){$view.Title='正在移除網站映像，保留資料與設定'}
+            if($Text -match 'Stopping|Stopped|Removing|Removed'){$view.Title='正在停止並移除本專案容器與網路';$view.Progress=33}
+            if($Text -match 'Untagged|Deleted:'){$view.Title='正在移除網站映像，保留資料與設定';$view.Progress=67}
         }
     }
     if($ExitCode -eq -99999){return $view}
@@ -74,6 +74,7 @@
             if(@($records|Where-Object {($_.PSObject.Properties['has_rows'] -and $_.has_rows -eq $false) -or ($_.PSObject.Properties['has_rows_in_window'] -and $_.has_rows_in_window -eq $false)}).Count){$view.Title='資料庫可連線，部分查詢沒有資料';$view.Detail='請檢查選擇的資料庫、頁面日期範圍，以及資料表是否已有資料。';$view.State='Warning'}
         }
     }
+    if($view.State -eq 'Success' -or ($view.State -eq 'Warning' -and $view.Title -ne '連線測試結果不完整')){$view.Progress=100}
     return $view
 }
 Export-ModuleMember -Function Get-SetupTaskView

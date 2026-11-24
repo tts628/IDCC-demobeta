@@ -10,6 +10,7 @@ $script:root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $script:utf8=New-Object Text.UTF8Encoding($false)
 $script:busy=$false
 $script:updating=$false
+$script:lastProgress=0
 $script:catalog=Get-Content (Join-Path $script:root 'common\Config\pages.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 $script:catalog=@($script:catalog | Sort-Object group,label)
 function Read-Settings {
@@ -66,7 +67,7 @@ $form.Text='IDCC DemoBeta 安裝與設定';$form.Size=New-Object Drawing.Size(10
 $outer=New-Object Windows.Forms.TableLayoutPanel;$outer.Dock='Fill';$outer.RowCount=3;$outer.ColumnCount=1
 [void]$outer.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',54)))
 [void]$outer.RowStyles.Add((New-Object Windows.Forms.RowStyle('Percent',100)))
-[void]$outer.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',190)))
+[void]$outer.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',205)))
 $form.Controls.Add($outer)
 $outer.Controls.Add((New-Label "IDCC 環境管理    ｜    $script:root"),0,0)
 $tabs=New-Object Windows.Forms.TabControl;$tabs.Dock='Fill';$outer.Controls.Add($tabs,0,1)
@@ -75,7 +76,7 @@ $db=New-Object Windows.Forms.TabPage;$db.Text='2  資料庫設定（可稍後）
 $pages=New-Object Windows.Forms.TabPage;$pages.Text='3  頁面選擇';[void]$tabs.TabPages.Add($pages)
 $progressBox=New-Object Windows.Forms.GroupBox;$progressBox.Text='執行進度';$progressBox.Dock='Fill';$progressBox.Padding='10,14,10,8';$outer.Controls.Add($progressBox,0,2)
 $progressLayout=New-Object Windows.Forms.TableLayoutPanel;$progressLayout.Dock='Fill';$progressLayout.ColumnCount=1;$progressLayout.RowCount=4
-foreach($height in @(32,25,52,22)){[void]$progressLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',$height)))}
+foreach($height in @(32,25,67,22)){[void]$progressLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',$height)))}
 $progressBox.Controls.Add($progressLayout)
 $taskTitle=New-Object Windows.Forms.Label;$taskTitle.Text='準備就緒';$taskTitle.Dock='Fill';$taskTitle.TextAlign='MiddleLeft';$taskTitle.Font=New-Object Drawing.Font($form.Font.FontFamily,12,[Drawing.FontStyle]::Bold);$progressLayout.Controls.Add($taskTitle,0,0)
 $progress=New-Object Windows.Forms.ProgressBar;$progress.Dock='Fill';$progress.Margin='0,2,0,3';$progress.Minimum=0;$progress.Maximum=100;$progress.Value=0;$progressLayout.Controls.Add($progress,0,1)
@@ -174,11 +175,16 @@ function Read-Log([string]$Path){
 function Show-TaskView($View){
     $taskTitle.Text=$View.Title;$taskDetail.Text=$View.Detail
     $taskTitle.ForeColor=switch($View.State){'Error'{[Drawing.Color]::Firebrick};'Warning'{[Drawing.Color]::DarkOrange};'Success'{[Drawing.Color]::ForestGreen};default{[Drawing.Color]::SteelBlue}}
-    if(!$View.Complete){$progress.Style='Marquee';$progress.MarqueeAnimationSpeed=28}
-    else{$progress.MarqueeAnimationSpeed=0;$progress.Style='Blocks';$progress.Value=if($View.State -eq 'Error' -or $View.Title -eq '需要重新啟動 Windows'){0}else{100}}
+    $progress.Style='Blocks'
+    # Advance only at observed process checkpoints; never move backwards within a task.
+    $script:lastProgress=[Math]::Max([int]$script:lastProgress,[int]$View.Progress)
+    $progress.Value=[Math]::Min(100,$script:lastProgress)
+    $note=if($View.Complete){"流程步驟進度：$($progress.Value)%"}else{"流程步驟進度：$($progress.Value)%（不是下載百分比；此階段完成後才會前進）。"}
+    $taskDetail.Text=$View.Detail+"`r`n"+$note
 }
 function Start-Task([string]$Action){
     if($script:busy){return}
+    $script:lastProgress=0;$progress.Value=0
     try{
         $script:jobDir=Join-Path $env:TEMP ('IDCC-setup-'+[guid]::NewGuid().ToString('N'));[void](New-Item -ItemType Directory $script:jobDir)
         $script:outFile=Join-Path $script:jobDir 'stdout.log';$script:errFile=Join-Path $script:jobDir 'stderr.log'
