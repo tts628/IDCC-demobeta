@@ -5,6 +5,7 @@ $ErrorActionPreference='Stop'
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 [Windows.Forms.Application]::EnableVisualStyles()
+Import-Module (Join-Path $PSScriptRoot 'SetupTaskView.psm1') -Force
 $script:root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $script:utf8=New-Object Text.UTF8Encoding($false)
 $script:busy=$false
@@ -65,15 +66,21 @@ $form.Text='IDCC DemoBeta 安裝與設定';$form.Size=New-Object Drawing.Size(10
 $outer=New-Object Windows.Forms.TableLayoutPanel;$outer.Dock='Fill';$outer.RowCount=3;$outer.ColumnCount=1
 [void]$outer.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',54)))
 [void]$outer.RowStyles.Add((New-Object Windows.Forms.RowStyle('Percent',100)))
-[void]$outer.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',205)))
+[void]$outer.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',190)))
 $form.Controls.Add($outer)
 $outer.Controls.Add((New-Label "IDCC 環境管理    ｜    $script:root"),0,0)
 $tabs=New-Object Windows.Forms.TabControl;$tabs.Dock='Fill';$outer.Controls.Add($tabs,0,1)
 $install=New-Object Windows.Forms.TabPage;$install.Text='1  安裝環境';[void]$tabs.TabPages.Add($install)
 $db=New-Object Windows.Forms.TabPage;$db.Text='2  資料庫設定（可稍後）';[void]$tabs.TabPages.Add($db)
 $pages=New-Object Windows.Forms.TabPage;$pages.Text='3  頁面選擇';[void]$tabs.TabPages.Add($pages)
-$log=New-Object Windows.Forms.TextBox;$log.Dock='Fill';$log.Multiline=$true;$log.ReadOnly=$true;$log.ScrollBars='Both';$log.WordWrap=$false;$log.Font=New-Object Drawing.Font('Consolas',9);$outer.Controls.Add($log,0,2)
-$log.Text="歡迎。可以先安裝環境，不必先填資料庫。`r`n"
+$progressBox=New-Object Windows.Forms.GroupBox;$progressBox.Text='執行進度';$progressBox.Dock='Fill';$progressBox.Padding='10,14,10,8';$outer.Controls.Add($progressBox,0,2)
+$progressLayout=New-Object Windows.Forms.TableLayoutPanel;$progressLayout.Dock='Fill';$progressLayout.ColumnCount=1;$progressLayout.RowCount=4
+foreach($height in @(32,25,52,22)){[void]$progressLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',$height)))}
+$progressBox.Controls.Add($progressLayout)
+$taskTitle=New-Object Windows.Forms.Label;$taskTitle.Text='準備就緒';$taskTitle.Dock='Fill';$taskTitle.TextAlign='MiddleLeft';$taskTitle.Font=New-Object Drawing.Font($form.Font.FontFamily,12,[Drawing.FontStyle]::Bold);$progressLayout.Controls.Add($taskTitle,0,0)
+$progress=New-Object Windows.Forms.ProgressBar;$progress.Dock='Fill';$progress.Margin='0,2,0,3';$progress.Minimum=0;$progress.Maximum=100;$progress.Value=0;$progressLayout.Controls.Add($progress,0,1)
+$taskDetail=New-Object Windows.Forms.Label;$taskDetail.Text='可以先安裝環境，資料庫設定可稍後再填。執行時會在這裡說明目前的步驟。';$taskDetail.Dock='Fill';$taskDetail.Padding='0,7,0,0';$progressLayout.Controls.Add($taskDetail,0,2)
+$taskTime=New-Object Windows.Forms.Label;$taskTime.Dock='Fill';$taskTime.ForeColor=[Drawing.Color]::DimGray;$progressLayout.Controls.Add($taskTime,0,3)
 $flow=New-Object Windows.Forms.FlowLayoutPanel;$flow.Dock='Fill';$flow.FlowDirection='TopDown';$flow.WrapContents=$false;$flow.AutoScroll=$true;$install.Controls.Add($flow)
 $flow.Controls.Add((New-Label "新電腦：WSL 2 → Ubuntu 24.04 → Docker Engine → Apache/PHP + PostgreSQL。`n已有 Docker Desktop 時沿用既有引擎。首次可能需要重開機，再開啟本工具。"))
 $portRow=New-Object Windows.Forms.FlowLayoutPanel;$portRow.AutoSize=$true;$portRow.Controls.Add((New-Label '網站連接埠'))
@@ -164,28 +171,44 @@ function Read-Log([string]$Path){
     if(!(Test-Path -LiteralPath $Path)){return ''}
     try{$stream=[IO.File]::Open($Path,'Open','Read','ReadWrite');$reader=New-Object IO.StreamReader($stream);try{return $reader.ReadToEnd()}finally{$reader.Dispose()}}catch{return ''}
 }
+function Show-TaskView($View){
+    $taskTitle.Text=$View.Title;$taskDetail.Text=$View.Detail
+    $taskTitle.ForeColor=switch($View.State){'Error'{[Drawing.Color]::Firebrick};'Warning'{[Drawing.Color]::DarkOrange};'Success'{[Drawing.Color]::ForestGreen};default{[Drawing.Color]::SteelBlue}}
+    if(!$View.Complete){$progress.Style='Marquee';$progress.MarqueeAnimationSpeed=28}
+    else{$progress.MarqueeAnimationSpeed=0;$progress.Style='Blocks';$progress.Value=if($View.State -eq 'Error' -or $View.Title -eq '需要重新啟動 Windows'){0}else{100}}
+}
 function Start-Task([string]$Action){
     if($script:busy){return}
     try{
         $script:jobDir=Join-Path $env:TEMP ('IDCC-setup-'+[guid]::NewGuid().ToString('N'));[void](New-Item -ItemType Directory $script:jobDir)
         $script:outFile=Join-Path $script:jobDir 'stdout.log';$script:errFile=Join-Path $script:jobDir 'stderr.log'
         $runner=Join-Path $PSScriptRoot 'setup-action.ps1'
-        $script:busy=$true;$tabs.Enabled=$false;$log.Text="執行中：$Action`r`n首次安裝下載可能較久，請保持視窗開啟。`r`n"
+        $script:activeAction=$Action;$script:busy=$true;$tabs.Enabled=$false
+        $script:watch=[Diagnostics.Stopwatch]::StartNew();$taskTime.Text='處理中，請保持視窗開啟。'
+        Show-TaskView (Get-SetupTaskView -Action $Action)
         $script:job=Start-Process powershell.exe -WindowStyle Hidden -PassThru -RedirectStandardOutput $script:outFile -RedirectStandardError $script:errFile -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$runner+'"'),'-Action',$Action,'-Port',[string]$port.Value)
-        $null=$script:job.Handle # Retain the handle so ExitCode is available after polling.
+        $null=$script:job.Handle
         $timer.Start()
-    }catch{$script:busy=$false;$tabs.Enabled=$true;Note $_.Exception.Message}
+    }catch{
+        $script:busy=$false;$tabs.Enabled=$true
+        Show-TaskView (Get-SetupTaskView -Action $Action -ExitCode 1)
+        $taskTime.Text='作業未能啟動。請確認專案檔案完整，或重新開啟安裝工具。'
+    }
 }
 $timer.Add_Tick({
     if(!$script:job){return}
+    # Native output stays in temporary diagnostic files, never in the visible interface.
     $text=(Read-Log $script:outFile)+"`r`n"+(Read-Log $script:errFile)
-    if($text){$log.Text=$text;$log.SelectionStart=$log.TextLength;$log.ScrollToCaret()}
+    $elapsed=$script:watch.Elapsed
+    $taskTime.Text=('已執行 {0:00} 分 {1:00} 秒；時間依網路與電腦速度而定。' -f [int][Math]::Floor($elapsed.TotalMinutes),$elapsed.Seconds)
     if($script:job.HasExited){
-        $script:job.WaitForExit();$code=$script:job.ExitCode;$timer.Stop();$tabs.Enabled=$true;$script:busy=$false
-        $log.AppendText("`r`n結束代碼：$code`r`n")
-        if($code -eq 3010){Note '需要重新啟動 Windows，之後再次開啟 setup.cmd 繼續。'}elseif($code -ne 0){Note '操作未完成，請查看執行紀錄。'}
+        $script:job.WaitForExit();$code=$script:job.ExitCode;$timer.Stop();$tabs.Enabled=$true;$script:busy=$false;$script:watch.Stop()
+        $text=(Read-Log $script:outFile)+"`r`n"+(Read-Log $script:errFile)
+        $view=Get-SetupTaskView -Action $script:activeAction -Text $text -ExitCode $code
+        Show-TaskView $view
+        if($code -eq 3010){$taskTime.Text='請重新啟動 Windows 後再繼續。'}elseif($view.State -eq 'Error'){$taskTime.Text='請依上方說明處理後重試。'}else{$taskTime.Text='操作已結束，可以繼續使用其他功能。'}
         $script:job.Dispose();$script:job=$null
-    }
+    }else{Show-TaskView (Get-SetupTaskView -Action $script:activeAction -Text $text)}
 })
 $form.Add_FormClosing({param($sender,$e) if($script:busy){$e.Cancel=$true;Note '作業執行中，請等候完成再關閉。'}})
 $form.Add_FormClosed({$timer.Dispose()})
