@@ -11,7 +11,6 @@ $script:root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $script:utf8=New-Object Text.UTF8Encoding($false)
 $script:busy=$false
 $script:updating=$false
-$script:lastProgress=0
 $script:catalog=Get-Content (Join-Path $script:root 'common\Config\pages.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 $script:catalog=@($script:catalog | Sort-Object group,label)
 function Read-Settings {
@@ -77,14 +76,27 @@ $install=New-Object Windows.Forms.TabPage;$install.Text='1  安裝環境';[void]
 $db=New-Object Windows.Forms.TabPage;$db.Text='2  資料庫設定（可稍後）';[void]$tabs.TabPages.Add($db)
 $pages=New-Object Windows.Forms.TabPage;$pages.Text='3  頁面選擇';[void]$tabs.TabPages.Add($pages)
 $exchangeTab=New-Object Windows.Forms.TabPage;$exchangeTab.Text='4  定時資料同步（選用）';[void]$tabs.TabPages.Add($exchangeTab)
-$progressBox=New-Object Windows.Forms.GroupBox;$progressBox.Text='執行進度';$progressBox.Dock='Fill';$progressBox.Padding='10,14,10,8';$outer.Controls.Add($progressBox,0,2)
-$progressLayout=New-Object Windows.Forms.TableLayoutPanel;$progressLayout.Dock='Fill';$progressLayout.ColumnCount=1;$progressLayout.RowCount=4
-foreach($height in @(32,25,127,22)){[void]$progressLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',$height)))}
-$progressBox.Controls.Add($progressLayout)
-$taskTitle=New-Object Windows.Forms.Label;$taskTitle.Text='準備就緒';$taskTitle.Dock='Fill';$taskTitle.TextAlign='MiddleLeft';$taskTitle.Font=New-Object Drawing.Font($form.Font.FontFamily,12,[Drawing.FontStyle]::Bold);$progressLayout.Controls.Add($taskTitle,0,0)
-$progress=New-Object Windows.Forms.ProgressBar;$progress.Dock='Fill';$progress.Margin='0,2,0,3';$progress.Minimum=0;$progress.Maximum=100;$progress.Value=0;$progressLayout.Controls.Add($progress,0,1)
-$taskDetail=New-Object Windows.Forms.Label;$taskDetail.Text='可以先安裝環境，資料庫設定可稍後再填。執行時會在這裡說明目前的步驟。';$taskDetail.Dock='Fill';$taskDetail.Padding='0,7,0,0';$progressLayout.Controls.Add($taskDetail,0,2)
-$taskTime=New-Object Windows.Forms.Label;$taskTime.Dock='Fill';$taskTime.ForeColor=[Drawing.Color]::DimGray;$progressLayout.Controls.Add($taskTime,0,3)
+# Each tab owns independent progress controls and a retained result.
+$progressHost=New-Object Windows.Forms.Panel;$progressHost.Dock='Fill';$outer.Controls.Add($progressHost,0,2)
+$script:tabProgress=@{};$script:activeTaskTab=0
+$titles=@('安裝環境','資料庫設定','頁面選擇','定時資料同步')
+$hints=@('按安裝／啟動環境開始；此處保留安裝、檢查計畫或重設的結果。','可稍後填寫連線設定；此處保留儲存、套用或連線測試的結果。','勾選需要的頁面並儲存；此處顯示頁面設定結果。','這是選用流程；此處保留檢查、啟用或停用的操作結果。背景同步狀態請看上方。')
+foreach($index in 0..3){
+    $box=New-Object Windows.Forms.GroupBox;$box.Text=$titles[$index]+' — 執行進度';$box.Dock='Fill';$box.Padding='10,14,10,8';$progressHost.Controls.Add($box)
+    $layout=New-Object Windows.Forms.TableLayoutPanel;$layout.Dock='Fill';$layout.ColumnCount=1;$layout.RowCount=4
+    foreach($height in @(32,25,127,22)){[void]$layout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',$height)))}
+    $box.Controls.Add($layout)
+    $title=New-Object Windows.Forms.Label;$title.Text='準備就緒';$title.Dock='Fill';$title.TextAlign='MiddleLeft';$title.Font=New-Object Drawing.Font($form.Font.FontFamily,12,[Drawing.FontStyle]::Bold);$layout.Controls.Add($title,0,0)
+    $bar=New-Object Windows.Forms.ProgressBar;$bar.Dock='Fill';$bar.Margin='0,2,0,3';$bar.Minimum=0;$bar.Maximum=100;$layout.Controls.Add($bar,0,1)
+    $detail=New-Object Windows.Forms.Label;$detail.Text=$hints[$index];$detail.Dock='Fill';$detail.Padding='0,7,0,0';$layout.Controls.Add($detail,0,2)
+    $time=New-Object Windows.Forms.Label;$time.Dock='Fill';$time.ForeColor=[Drawing.Color]::DimGray;$layout.Controls.Add($time,0,3)
+    $script:tabProgress[$index]=@{Box=$box;Title=$title;Bar=$bar;Detail=$detail;Time=$time;LastProgress=0}
+}
+function Show-TabProgress {
+    foreach($index in 0..3){$script:tabProgress[$index].Box.Visible=($index -eq $tabs.SelectedIndex)}
+    if($tabs.SelectedIndex -ge 0){$script:tabProgress[$tabs.SelectedIndex].Box.BringToFront()}
+}
+Show-TabProgress
 $flow=New-Object Windows.Forms.FlowLayoutPanel;$flow.Dock='Fill';$flow.FlowDirection='TopDown';$flow.WrapContents=$false;$flow.AutoScroll=$true;$install.Controls.Add($flow)
 # Current environment state is independent from installation task progress.
 $environmentBox=New-Object Windows.Forms.GroupBox;$environmentBox.Text='目前環境狀態';$environmentBox.Width=940;$environmentBox.Height=190;$environmentBox.Margin='6,6,6,6'
@@ -106,7 +118,7 @@ $portRow=New-Object Windows.Forms.FlowLayoutPanel;$portRow.AutoSize=$true;$portR
 $port=New-Object Windows.Forms.NumericUpDown;$port.Minimum=1024;$port.Maximum=65535;$port.Value=8080;$port.Width=110
 if($script:settings['IDCC_HTTP_PORT'] -match '^\d+$'){$n=[int]$script:settings['IDCC_HTTP_PORT'];if($n -ge 1024 -and $n -le 65535){$port.Value=$n}}
 $portRow.Controls.Add($port);$flow.Controls.Add($portRow)
-$installButton=New-Button $flow '安裝／啟動環境（資料庫可略過）' {try{Write-Settings @{IDCC_HTTP_PORT=[string]$port.Value};Start-Task Install}catch{Note $_.Exception.Message}}
+$installButton=New-Button $flow '安裝／啟動環境（資料庫可略過）' {try{Write-Settings @{IDCC_HTTP_PORT=[string]$port.Value};Start-Task Install}catch{Show-LocalResult 0 '設定未能儲存' $_.Exception.Message -Failed;Note $_.Exception.Message}}
 $previewButton=New-Button $flow '檢查安裝計畫（不安裝）' {Start-Task Plan}
 $openButton=New-Button $flow '開啟網站' {Start-Process "http://127.0.0.1:$($port.Value)/DemoBeta/Home/"}
 $resetButton=New-Button $flow '重設環境（保留資料與設定）' {
@@ -162,8 +174,8 @@ function Save-Database {
     Refresh-PrimaryConnection
     return $true
 }
-$save=New-Button $dbButtons '只儲存設定' {try{if(Save-Database){Note '已儲存。容器需重新建立才會套用。'}}catch{Note $_.Exception.Message}}
-$apply=New-Button $dbButtons '儲存並套用' {try{if(Save-Database){Start-Task Apply}}catch{Note $_.Exception.Message}}
+$save=New-Button $dbButtons '只儲存設定' {try{if(Save-Database){Show-LocalResult 1 '資料庫設定已儲存' '容器需重新建立才會套用。';Note '已儲存。容器需重新建立才會套用。'}}catch{Show-LocalResult 1 '設定未能儲存' $_.Exception.Message -Failed;Note $_.Exception.Message}}
+$apply=New-Button $dbButtons '儲存並套用' {try{if(Save-Database){Start-Task Apply}}catch{Show-LocalResult 1 '設定未能儲存' $_.Exception.Message -Failed;Note $_.Exception.Message}}
 $test=New-Button $dbButtons '測試已儲存的連線' {Start-Task Diagnose}
 $dbLayout.Controls.Add((New-Label "IDCC 的 PostgreSQL 連線由安裝自動填入；DemoIDCC 與 SPC 可稍後設定，兩者互不替代。`n只測試連線，不檢查資料表。請先儲存並套用；未儲存的輸入不會參與測試。"),0,3);$dbLayout.SetColumnSpan($dbLayout.GetControlFromPosition(0,3),3)
 # Pages are switches; modules sharing a directory are linked.
@@ -194,8 +206,9 @@ $savePages=New-Button $pageButtons '儲存頁面選擇' {
         $json=@{version=1;enabled=$ids}|ConvertTo-Json -Depth 5
         $tmp=$selectionFile+'.'+[guid]::NewGuid().ToString('N')+'.tmp'
         try{[IO.File]::WriteAllText($tmp,$json,$script:utf8);Move-Item -LiteralPath $tmp -Destination $selectionFile -Force}finally{if(Test-Path -LiteralPath $tmp){Remove-Item -LiteralPath $tmp}}
+        Show-LocalResult 2 '頁面選擇已儲存' '首次更新需重建映像，之後按 Ctrl+F5 重新整理即可套用。'
         Note '頁面設定已儲存。首次更新需重建映像，之後按 Ctrl+F5 重新整理即可套用。'
-    }catch{Note $_.Exception.Message}
+    }catch{Show-LocalResult 2 '頁面設定未能儲存' $_.Exception.Message -Failed;Note $_.Exception.Message}
 }
 # Optional scheduler; opening setup never enables data exchange.
 $exchangeLayout=New-Object Windows.Forms.TableLayoutPanel;$exchangeLayout.Dock='Fill';$exchangeLayout.ColumnCount=1;$exchangeLayout.RowCount=4
@@ -243,35 +256,48 @@ function Remove-MonitorFiles {
     }
     try{if(![string]::IsNullOrWhiteSpace($script:exchangeDir)){[IO.Directory]::Delete($script:exchangeDir,$false)}}catch{}
 }
-function Show-TaskView($View){
-    $taskTitle.Text=$View.Title;$taskDetail.Text=$View.Detail
-    $taskTitle.ForeColor=switch($View.State){'Error'{[Drawing.Color]::Firebrick};'Warning'{[Drawing.Color]::DarkOrange};'Success'{[Drawing.Color]::ForestGreen};default{[Drawing.Color]::SteelBlue}}
-    $progress.Style='Blocks'
-    # Advance only at observed process checkpoints; never move backwards within a task.
-    $script:lastProgress=[Math]::Max([int]$script:lastProgress,[int]$View.Progress)
-    $progress.Value=[Math]::Min(100,$script:lastProgress)
-    $note=if($View.Complete){"流程步驟進度：$($progress.Value)%"}else{"流程步驟進度：$($progress.Value)%（不是下載百分比；此階段完成後才會前進）。"}
-    $taskDetail.Text=$View.Detail+"`r`n"+$note
+function Show-TaskView($View,[int]$Tab=$script:activeTaskTab){
+    $entry=$script:tabProgress[$Tab]
+    $entry.Title.Text=$View.Title
+    $entry.Title.ForeColor=switch($View.State){'Error'{[Drawing.Color]::Firebrick};'Warning'{[Drawing.Color]::DarkOrange};'Success'{[Drawing.Color]::ForestGreen};default{[Drawing.Color]::SteelBlue}}
+    $entry.Bar.Style='Blocks'
+    $entry.LastProgress=[Math]::Max([int]$entry.LastProgress,[int]$View.Progress)
+    $entry.Bar.Value=[Math]::Min(100,$entry.LastProgress)
+    $note=if($View.Complete){"流程步驟進度：$($entry.Bar.Value)%"}else{"流程步驟進度：$($entry.Bar.Value)%（不是下載百分比；此階段完成後才會前進）。"}
+    $entry.Detail.Text=$View.Detail+"`r`n"+$note
+}
+function Set-TaskTime([string]$Text,[int]$Tab=$script:activeTaskTab){$script:tabProgress[$Tab].Time.Text=$Text}
+function Show-LocalResult([int]$Tab,[string]$Title,[string]$Detail,[switch]$Failed){
+    $script:tabProgress[$Tab].LastProgress=0
+    $state=if($Failed){'Error'}else{'Success'};$value=if($Failed){0}else{100}
+    Show-TaskView ([pscustomobject]@{Title=$Title;Detail=$Detail;State=$state;Progress=$value;Complete=$true}) -Tab $Tab
+    Set-TaskTime ('操作結束：'+(Get-Date -Format 'HH:mm:ss')) -Tab $Tab
+}
+function Set-TaskBusy([bool]$Busy){
+    $script:busy=$Busy
+    # Keep tab navigation available, while preventing concurrent configuration changes.
+    foreach($content in @($flow,$dbLayout,$pageLayout,$exchangeLayout)){$content.Enabled=!$Busy}
 }
 function Start-Task([string]$Action){
     if($Action -eq 'SyncInspect'){Start-ExchangeMonitor;return}
     if($script:busy){return}
     $script:exchangeGeneration++
-    $script:lastProgress=0;$progress.Value=0
+    $script:activeTaskTab=switch($Action){'Apply'{1};'Diagnose'{1};'SyncCheck'{3};'SyncEnable'{3};'SyncDisable'{3};default{0}}
+    $script:tabProgress[$script:activeTaskTab].LastProgress=0;$script:tabProgress[$script:activeTaskTab].Bar.Value=0
     try{
         $script:jobDir=New-SetupJobDirectory 'setup'
         $script:outFile=[IO.Path]::Combine($script:jobDir,'stdout.log');$script:errFile=[IO.Path]::Combine($script:jobDir,'stderr.log')
         $runner=[IO.Path]::Combine($PSScriptRoot,'setup-action.ps1')
-        $script:activeAction=$Action;$script:busy=$true;$tabs.Enabled=$false
-        $script:watch=[Diagnostics.Stopwatch]::StartNew();$taskTime.Text='處理中，請保持視窗開啟。'
+        $script:activeAction=$Action;Set-TaskBusy $true
+        $script:watch=[Diagnostics.Stopwatch]::StartNew();Set-TaskTime '處理中，請保持視窗開啟。'
         Show-TaskView (Get-SetupTaskView -Action $Action)
         $script:job=Start-Process powershell.exe -WindowStyle Hidden -WorkingDirectory $script:root -PassThru -RedirectStandardOutput $script:outFile -RedirectStandardError $script:errFile -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$runner+'"'),'-Action',$Action,'-Port',[string]$port.Value)
         $null=$script:job.Handle
         $timer.Start()
     }catch{
-        $script:busy=$false;$tabs.Enabled=$true
+        Set-TaskBusy $false
         Show-TaskView (Get-SetupTaskView -Action $Action -ExitCode 1)
-        $taskTime.Text='作業未能啟動。請確認專案檔案完整，或重新開啟安裝工具。'
+        Set-TaskTime '作業未能啟動。請確認專案檔案完整，或重新開啟安裝工具。'
     }
 }
 $timer.Add_Tick({
@@ -279,16 +305,16 @@ $timer.Add_Tick({
     # Native output stays in temporary diagnostic files, never in the visible interface.
     $text=(Read-Log $script:outFile)+"`r`n"+(Read-Log $script:errFile)
     $elapsed=$script:watch.Elapsed
-    $taskTime.Text=('已執行 {0:00} 分 {1:00} 秒；時間依網路與電腦速度而定。' -f [int][Math]::Floor($elapsed.TotalMinutes),$elapsed.Seconds)
+    Set-TaskTime ('已執行 {0:00} 分 {1:00} 秒；時間依網路與電腦速度而定。' -f [int][Math]::Floor($elapsed.TotalMinutes),$elapsed.Seconds)
     if($script:job.HasExited){
-        $script:job.WaitForExit();$code=$script:job.ExitCode;$timer.Stop();$tabs.Enabled=$true;$script:busy=$false;$script:watch.Stop()
+        $script:job.WaitForExit();$code=$script:job.ExitCode;$timer.Stop();Set-TaskBusy $false;$script:watch.Stop()
         $text=(Read-Log $script:outFile)+"`r`n"+(Read-Log $script:errFile)
         $view=Get-SetupTaskView -Action $script:activeAction -Text $text -ExitCode $code
         Show-TaskView $view
         if($script:activeAction -in @('SyncCheck','SyncEnable','SyncDisable')){
             $exchangeLog.Text=$text
         }
-        if($code -eq 3010){$taskTime.Text='請重新啟動 Windows 後再繼續。'}elseif($view.State -eq 'Error'){$taskTime.Text='請依上方說明處理後重試。'}else{$taskTime.Text='操作已結束，可以繼續使用其他功能。'}
+        if($code -eq 3010){Set-TaskTime '請重新啟動 Windows 後再繼續。'}elseif($view.State -eq 'Error'){Set-TaskTime '請依上方說明處理後重試。'}else{Set-TaskTime '操作已結束，可以繼續使用其他功能。'}
         if($code -eq 0 -and $script:activeAction -in @('Install','Apply')){Refresh-PrimaryConnection}
         $script:job.Dispose();$script:job=$null
         if($script:activeAction -in @('SyncEnable','SyncDisable','Install','Apply','Reset')){Start-ExchangeMonitor}
@@ -408,8 +434,8 @@ $environmentTimer.Add_Tick({if($tabs.SelectedTab -eq $install){Start-Environment
 $environmentTimer.Start()
 $exchangeTimer=New-Object Windows.Forms.Timer;$exchangeTimer.Interval=10000
 $exchangeTimer.Add_Tick({if($tabs.SelectedTab -eq $exchangeTab -and $exchangeAuto.Checked){Start-ExchangeMonitor}})
-$tabs.Add_SelectedIndexChanged({if(!$SmokeTest){if($tabs.SelectedTab -eq $exchangeTab){Start-ExchangeMonitor};if($tabs.SelectedTab -eq $install){Start-EnvironmentMonitor}}})
-$form.Add_Shown({if(!$SmokeTest){Start-ExchangeMonitor;Start-EnvironmentMonitor}})
+$tabs.Add_SelectedIndexChanged({Show-TabProgress;if(!$SmokeTest){if($tabs.SelectedTab -eq $exchangeTab){Start-ExchangeMonitor};if($tabs.SelectedTab -eq $install){Start-EnvironmentMonitor}}})
+$form.Add_Shown({Show-TabProgress;if(!$SmokeTest){Start-ExchangeMonitor;Start-EnvironmentMonitor}})
 $exchangeTimer.Start()
 $form.Add_FormClosed({
     $timer.Dispose();$exchangeTimer.Dispose();$exchangePoll.Dispose();$environmentTimer.Dispose();Clear-EnvironmentMonitor;$environmentPoll.Dispose()
@@ -418,7 +444,7 @@ $form.Add_FormClosed({
 $tabs.SelectedIndex=@('Install','Database','Pages','Exchange').IndexOf($Tab)
 if($SmokeTest){
     if($list.Items.Count -ne 77){throw '頁面目錄不完整'}
-    if($tabs.TabPages.Count -ne 4 -or !$exchangeLog.ReadOnly){throw 'Exchange tab construction failed'}
+    if($tabs.TabPages.Count -ne 4 -or $script:tabProgress.Count -ne 4 -or !$exchangeLog.ReadOnly){throw 'Exchange tab construction failed'}
     $exchangeTimer.Dispose();$exchangePoll.Dispose();$environmentTimer.Dispose();$environmentPoll.Dispose();$timer.Dispose();$form.Dispose();'GUI construction OK';return
 }
 [void]$form.ShowDialog()
