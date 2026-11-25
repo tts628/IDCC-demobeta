@@ -1,4 +1,4 @@
-function Read-IdccEnvFile([string]$Path){
+﻿function Read-IdccEnvFile([string]$Path){
     $values=@{}
     if(Test-Path -LiteralPath $Path){foreach($line in [IO.File]::ReadAllLines($Path)){
         if($line -match '^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$'){
@@ -45,7 +45,8 @@ function Get-IdccConnectionProfiles([string]$Root){
         $demo[$suffix]=[string]$envValues[$prefix+'_DB_'+$suffix]
         $spc[$suffix]=[string]$envValues['SPC_DB_'+$suffix]
     }
-    return @{IDCC=@{HOST='postgres';PORT='5432';NAME='idcc';UID='idcc';PWD=[string]$pg['POSTGRES_PASSWORD'];DRIVER='pgsql'};DemoIDCC=$demo;SPC=$spc;Legacy=$legacy}
+    $database=if($pg['IDCC_DB_NAME']){[string]$pg['IDCC_DB_NAME']}elseif($pg['POSTGRES_DB']){[string]$pg['POSTGRES_DB']}elseif($pg['POSTGRES_PASSWORD']){'idcc'}else{'BatchDyeingCentral'}
+    return @{IDCC=@{HOST='postgres';PORT='5432';NAME=$database;UID='idcc';PWD=[string]$pg['POSTGRES_PASSWORD'];DRIVER='pgsql'};DemoIDCC=$demo;SPC=$spc;Legacy=$legacy}
 }
 function Initialize-IdccConnectionProfiles([string]$Root){
     $profile=Get-IdccConnectionProfiles $Root
@@ -60,7 +61,7 @@ function Initialize-IdccConnectionProfiles([string]$Root){
     Write-IdccEnvFile (Join-Path $Root '.env') $updates $remove
     # PostgreSQL credentials are kept in the existing secret file; never regenerated here.
     if($profile.IDCC.PWD -ne ''){
-        $primary=@{IDCC_DB_DRIVER='pgsql'}
+        $primary=@{IDCC_DB_DRIVER='pgsql';POSTGRES_DB=$profile.IDCC.NAME}
         foreach($suffix in @('HOST','PORT','NAME','UID','PWD')){$primary['IDCC_DB_'+$suffix]=$profile.IDCC[$suffix]}
         Write-IdccEnvFile (Join-Path $Root '.env.postgres') $primary
     }

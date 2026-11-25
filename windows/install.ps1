@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 [CmdletBinding()]
 param(
     [ValidateRange(1024,65535)][int]$Port = 8080,
@@ -79,7 +79,7 @@ if (!(Test-Path -LiteralPath $pgEnv)) {
     $rng = [Security.Cryptography.RandomNumberGenerator]::Create()
     try { $rng.GetBytes($bytes) } finally { $rng.Dispose() }
     $password = [BitConverter]::ToString($bytes).Replace('-', '').ToLowerInvariant()
-    [IO.File]::WriteAllText($pgEnv, "POSTGRES_PASSWORD=$password`n", (New-Object Text.UTF8Encoding($false)))
+    [IO.File]::WriteAllText($pgEnv, "POSTGRES_DB=BatchDyeingCentral`nPOSTGRES_PASSWORD=$password`n", (New-Object Text.UTF8Encoding($false)))
     Write-Host 'Created local PostgreSQL credential; existing SQL Server settings preserved.'
 }
 Import-Module (Join-Path $PSScriptRoot 'ConnectionProfiles.psm1') -Force

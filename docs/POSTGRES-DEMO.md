@@ -6,7 +6,7 @@
 - 手動關閉 Demo：網站 IDCC 選用安裝建立的 PostgreSQL。
 - SPC 永遠使用自己的 SQL Server 連線。
 
-Windows 執行 `windows/install.cmd` 或圖形介面 `windows/setup.cmd`；Ubuntu 執行 `bash ubuntu/setup.sh` 或 `bash ubuntu/install.sh`。PostgreSQL 建立空的 idcc 資料庫，安裝自動填入 IDCC Server，密碼保留在 `.env.postgres`；不匯入展示資料，不更動既有 Demo 或 SPC 資料。
+Windows 執行 `windows/install.cmd` 或圖形介面 `windows/setup.cmd`；Ubuntu 執行 `bash ubuntu/setup.sh` 或 `bash ubuntu/install.sh`。PostgreSQL 建立空的 BatchDyeingCentral 資料庫，安裝自動填入 IDCC Server，密碼保留在 `.env.postgres`；不匯入展示資料，不更動既有 Demo 或 SPC 資料。
 
 開啟 Demo 不會因 PostgreSQL 已安裝就自動切過去。DemoIDCC 未設定或失敗時會顯示錯誤，不改用正式庫；SPC 也不會被 Demo 開關替換。
 

@@ -148,7 +148,7 @@ if [[ ! -e "$project_root/.env.postgres" ]]; then
    password=$(od -An -N32 -tx1 /dev/urandom | tr -d ' \n')
    [[ ${#password} == 64 ]] || exit 1
    set -o noclobber
-   printf 'POSTGRES_PASSWORD=%s\n' "$password" > "$project_root/.env.postgres") || die 'Cannot create PostgreSQL credential file.'
+   printf 'POSTGRES_DB=BatchDyeingCentral\nPOSTGRES_PASSWORD=%s\n' "$password" > "$project_root/.env.postgres") || die 'Cannot create PostgreSQL credential file.'
 fi
 # Prepare distinct DemoIDCC (SQL Server) and IDCC (installed PostgreSQL) profiles.
 if ! command -v python3 >/dev/null; then

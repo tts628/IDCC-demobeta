@@ -48,12 +48,12 @@ SPC_DB_TRUST_SERVER_CERTIFICATE=false
 IDCC_DB_DRIVER=pgsql
 IDCC_DB_HOST=postgres
 IDCC_DB_PORT=5432
-IDCC_DB_NAME=idcc
+IDCC_DB_NAME=BatchDyeingCentral
 IDCC_DB_UID=idcc
 # IDCC_DB_PWD 由安裝程式同步為既有 POSTGRES_PASSWORD，這裡不示範真實密碼。
 ```
 
-這些是網站容器內的正式連線資訊，請勿在根目錄 `.env` 再放舊的 IDCC_DB_* SQL Server 帳密。DBeaver 在 Windows 主機上連線時使用主機映射的 IP／埠，不能直接把容器名稱 postgres 當成 Windows 主機名稱。專案預設映射 `127.0.0.1:15432:5432`，同台電腦的 DBeaver 使用 Host `127.0.0.1`、Port `15432`、Database `idcc`、Username `idcc`，密碼填本機 `.env.postgres` 的 `POSTGRES_PASSWORD` 值。網站容器內仍使用 `postgres:5432`。此映射僅接受本機連線。
+這些是網站容器內的正式連線資訊，請勿在根目錄 `.env` 再放舊的 IDCC_DB_* SQL Server 帳密。DBeaver 在 Windows 主機上連線時使用主機映射的 IP／埠，不能直接把容器名稱 postgres 當成 Windows 主機名稱。專案預設映射 `127.0.0.1:15432:5432`，同台電腦的 DBeaver 使用 Host `127.0.0.1`、Port `15432`、Database `BatchDyeingCentral`、Username `idcc`，密碼填本機 `.env.postgres` 的 `POSTGRES_PASSWORD` 值。網站容器內仍使用 `postgres:5432`。此映射僅接受本機連線。
 
 更新既有環境後，Windows 在專案根目錄執行：
 
@@ -68,3 +68,5 @@ Ubuntu 執行 `docker compose up -d postgres`（需要時加 sudo）。套用會
 更新完整程式後，重跑安裝，或在設定介面按「儲存並套用」。程式會將根目錄舊 IDCC_DB_* SQL Server 設定轉為 DEMOIDCC_DB_*，保留原資料庫名稱、帳密與憑證選項，再把正式 IDCC PostgreSQL 資訊寫入 `.env.postgres`。已明確設定的 DemoIDCC 不會被覆寫，SPC 不會被轉換或更換；已手動關閉的 Demo 也會保留選擇。
 
 轉換只調整本機設定檔，不搬移、改名或清除資料庫。仍請保留自己的備份；更新保留 `.env`、`.env.postgres`、`.idcc-docker-backend`、`.idcc-pages.json` 與自訂資料。重跑會重用既有 PostgreSQL 密碼與資料卷。若只覆蓋程式未重建容器，容器仍使用舊環境變數；轉換前的舊 SQL 設定僅為升級相容保留，不是連線失敗時的備援。
+
+新安裝預設資料庫為 `BatchDyeingCentral`，帳號仍為 `idcc`。既有安裝保留 `.env.postgres` 中已儲存的資料庫名稱；舊版只有密碼的設定視為原本的 `idcc`，不會切換到尚未建立的空庫。若要將既有庫改名，請依 [保留資料改名](RENAME-POSTGRES.md) 操作。

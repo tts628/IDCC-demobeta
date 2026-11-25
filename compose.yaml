@@ -17,7 +17,6 @@ services:
       IDCC_DEMO_MODE: "${IDCC_DEMO_MODE:-true}"
       IDCC_PG_HOST: postgres
       IDCC_PG_PORT: "5432"
-      POSTGRES_DB: idcc
       POSTGRES_USER: idcc
       APACHE_RUN_USER: "${IDCC_APACHE_USER:-www-data}"
       APACHE_RUN_GROUP: "${IDCC_APACHE_GROUP:-www-data}"
@@ -57,7 +56,6 @@ services:
     environment:
       IDCC_PG_HOST: postgres
       IDCC_PG_PORT: "5432"
-      POSTGRES_DB: idcc
       POSTGRES_USER: idcc
       DATA_EXCHANGE_INTERVAL_SECONDS: "600"
     depends_on:
@@ -90,12 +88,11 @@ services:
     env_file:
       - ./.env.postgres
     environment:
-      POSTGRES_DB: idcc
       POSTGRES_USER: idcc
     volumes:
       - idcc_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U idcc -d idcc"]
+      test: ["CMD-SHELL", "pg_isready -U idcc -d postgres"]
       interval: 5s
       timeout: 5s
       retries: 20

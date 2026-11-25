@@ -88,10 +88,12 @@ class Settings:
         legacy = (not any(k.startswith('DEMOIDCC_DB_') for k in values)
                   and values.get('IDCC_CONNECTION_LAYOUT') != '2'
                   and values.get('IDCC_DB_DRIVER') != 'pgsql')
+        database = (pg.get('IDCC_DB_NAME') or pg.get('POSTGRES_DB')
+                    or ('idcc' if pg.get('POSTGRES_PASSWORD') else 'BatchDyeingCentral'))
         prefix = 'IDCC' if legacy else 'DEMOIDCC'
         suffixes = ('HOST', 'NAME', 'UID', 'PWD', 'TRUST_SERVER_CERTIFICATE')
         return {
-            'IDCC': dict(HOST='postgres', PORT='5432', NAME='idcc', UID='idcc', PWD=pg.get('POSTGRES_PASSWORD', ''), DRIVER='pgsql'),
+            'IDCC': dict(HOST='postgres', PORT='5432', NAME=database, UID='idcc', PWD=pg.get('POSTGRES_PASSWORD', ''), DRIVER='pgsql'),
             'DemoIDCC': {k: values.get(prefix + '_DB_' + k, '') for k in suffixes},
             'SPC': {k: values.get('SPC_DB_' + k, '') for k in suffixes},
             'legacy': legacy,
@@ -110,6 +112,7 @@ class Settings:
         self.save_env(updates, remove=remove)
         if profiles['IDCC']['PWD']:
             primary = {'IDCC_DB_' + key: value for key, value in profiles['IDCC'].items()}
+            primary['POSTGRES_DB'] = profiles['IDCC']['NAME']
             self.save_env(primary, path=self.root / '.env.postgres')
 
 
