@@ -41,6 +41,48 @@ services:
     stop_grace_period: 30s
     security_opt:
       - no-new-privileges:true
+  data-exchange:
+    profiles: [data-exchange]
+    image: idcc-demobata-web:local
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    entrypoint: ["bash", "/var/www/html/DemoBeta/DataExchange/scheduler.sh"]
+    init: true
+    env_file:
+      - path: ./.env
+        required: false
+      - path: ./.env.postgres
+        required: true
+    environment:
+      IDCC_PG_HOST: postgres
+      IDCC_PG_PORT: "5432"
+      POSTGRES_DB: idcc
+      POSTGRES_USER: idcc
+      DATA_EXCHANGE_INTERVAL_SECONDS: "600"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - type: bind
+        source: .
+        target: /var/www/html/DemoBeta
+        read_only: true
+        bind:
+          create_host_path: false
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      disable: true
+    restart: unless-stopped
+    stop_grace_period: 30s
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
   postgres:
     image: postgres:17-bookworm
     env_file:

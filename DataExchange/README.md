@@ -56,7 +56,7 @@ php DataExchange/sync.php --sync
 powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose exec -T web php DataExchange/sync.php --check
 ```
 
-`--sync --yes` 可略過互動確認，用於自己明確安排的批次執行；工具本身不建立排程。
+`--sync --yes` 可略過互動確認，用於自己明確安排的批次執行；也可使用下面的 Docker 定時同步服務。
 
 ## 連線來源
 
@@ -116,3 +116,36 @@ php DataExchange/tests/test-target.php
 它們用模擬來源／目標驗證全量替換、空來源、重跑不追加、失敗回復、精度與保護條件，不能取代真實 SQL Server／PostgreSQL 整合測試。正式交換前請先執行 --check。資料寫入完成也不代表原網站已完成 PostgreSQL SQL 移植，工具不會自動關閉 Demo。
 
 技術依據：[Microsoft SQLSRV 欄位 metadata](https://learn.microsoft.com/en-us/sql/connect/php/sqlsrv-field-metadata)、[ODBC 日期時間型別](https://learn.microsoft.com/en-us/sql/relational-databases/native-client-odbc-date-time/data-type-support-for-odbc-date-and-time-improvements)。
+
+## 每十分鐘自動同步
+
+定時服務和手動工具使用相同的 SPC／正式 IDCC PostgreSQL 連線，不受 Demo 開關影響，仍是八張表全量替換（零筆也清空）。一般安裝預設不啟用。**啟用代表授權持續替換這八張表，啟動會立即同步一次**；請先檢查連線與同步範圍。
+
+Windows 在專案根目錄執行：
+
+```powershell
+# 啟用（先檢查連線／結構，通過才建立排程容器）
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\DataExchange\schedule.ps1 -Action Enable
+# 查看是否執行中
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\DataExchange\schedule.ps1 -Action Status
+# 查看各次開始時間、結束代碼與錯誤
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\DataExchange\schedule.ps1 -Action Logs
+# 停用，保留已同步的資料
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\DataExchange\schedule.ps1 -Action Disable
+```
+
+Ubuntu 在專案根目錄執行（需要時在 docker 前加 sudo）：
+
+```sh
+bash DataExchange/sync.sh --check
+docker compose --profile data-exchange up -d --no-build data-exchange
+docker compose --profile data-exchange ps -a data-exchange
+docker compose --profile data-exchange logs --tail 100 data-exchange
+docker compose --profile data-exchange stop data-exchange
+```
+
+排程使用既有本機 PHP 映像，不需安裝 Windows 工作排程或 cron。先安裝／啟動專案，確保映像已建立。每次正常同步以開始時間相隔 600 秒；單次超過 600 秒則完成後等待 600 秒，不補跑、不累積工作。上一輪完成才開始下一輪；手動與排程亦共用 PostgreSQL 互斥鎖。同步失敗會記錄非零結束代碼，下一輪繼續嘗試；容器顯示 Up 只代表排程運作，須查看 Logs 確認同步成功（exit code 0）。時間記錄為 UTC。
+
+電腦關機、休眠或 Docker 引擎停止期間不會同步。重開機需先啟動 Docker 引擎；引擎啟動後服務依 unless-stopped 自動恢復。主動 Disable 後不會自行恢復，需再次 Enable。修改 .env／.env.postgres 後再次 Enable 以重建載入新設定的容器；不會把密碼寫在命令列。清除專案容器後需要重新 Enable。日誌循環保留最多三份、每份約 10MB。
+
+若要改頻率，在 compose.yaml 的 data-exchange.environment 調整 DATA_EXCHANGE_INTERVAL_SECONDS（預設 600，允許 60–86400），再 Enable；同步量很大時，全量交換可能持續超過十分鐘。
