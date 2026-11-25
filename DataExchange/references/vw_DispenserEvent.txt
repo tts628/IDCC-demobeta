@@ -1,0 +1,24 @@
+-- 確保您已經連接到 'BatchDyeingCentral' 這個資料庫
+
+CREATE VIEW [dbo].[vw_DispenserEvent]
+AS
+SELECT 
+    [EventID],
+    [EventType],
+    [Dispenser],
+    [Device],
+    [Dyelot],
+    [ReDye],
+    [StepNumber],
+    [Code],
+    [Description],
+    [Description_BIG],
+    [Description_GB],
+    [CreateDate],
+    [ConfirmDate],
+    [FinishDate],
+    [Shift],
+    [UserAccount]
+FROM 
+    [BatchDyeingCentral].[dbo].[DispenserEvent]; -- 這裡保留資料庫名稱是正確的！
+GO

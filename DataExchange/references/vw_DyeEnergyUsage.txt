@@ -1,0 +1,32 @@
+CREATE VIEW vw_DyeEnergyUsage
+AS
+SELECT
+    Dyelot
+    ,Redye
+    ,Machine
+    -- ,State  -- 根據您的要求，將此欄位註釋掉
+    ,StartTime    
+    ,EndTime    
+    
+    -- 計算 WaterUsed 的差值 (當前 - 前一筆)
+    ,WaterUsed - LAG(WaterUsed, 1, 0) OVER (PARTITION BY Dyelot ORDER BY EndTime) AS WaterUsage    
+    
+    -- 計算 PowerUsed 的差值 (當前 - 前一筆)
+    ,PowerUsed - LAG(PowerUsed, 1, 0) OVER (PARTITION BY Dyelot ORDER BY EndTime) AS PowerUsage    
+    
+    -- 計算 SteamUsed 的差值 (當前 - 前一筆)
+    ,SteamUsed - LAG(SteamUsed, 1, 0) OVER (PARTITION BY Dyelot ORDER BY EndTime) AS SteamUsage    
+    
+    -- ,CarbonEmission  -- 根據您的要求，將此欄位註釋掉
+    ,Notes AS Note -- 重新命名 Notes 欄位為 Note
+FROM 
+    [BatchDyeingCentral].[dbo].[StepVisits]
+WHERE
+    -- 篩選條件：EndTime 必須大於或等於一年前的今天
+    -- 注意：GETDATE() 是非確定性函數，雖然可以用於 VIEW，
+    -- 但這會使 VIEW 無法被索引 (Index)，可能會影響查詢效能。
+    EndTime >= DATEADD(year, -1, GETDATE());
+GO
+
+-- 接下來您可以像查詢一般表格一樣查詢這個 VIEW:
+-- SELECT * FROM vw_DyeEnergyUsage;

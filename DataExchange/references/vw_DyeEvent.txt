@@ -1,0 +1,96 @@
+USE [LAIdcc]
+GO
+
+/****** Object:  View [dbo].[vw_DyeEvent]    Script Date: 2025/9/25 下午 04:27:37 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE VIEW [dbo].[vw_DyeEvent] AS
+WITH CombinedResults AS (
+    SELECT 
+        [Machine],
+        COALESCE(Dyelot, '') AS Dyelot,
+        COALESCE(ReDye, 0) AS ReDye,
+        COALESCE(Name, '') AS Description,
+        COALESCE(Name, '') AS Description_BIG,
+        COALESCE(Name, '') AS Description_Local,
+        CONVERT(varchar, StartTime + 0.291667, 120) AS CreateDate,
+        CONVERT(varchar, EndTime + 0.291667, 120) AS ConfirmDate,
+        CONVERT(varchar, EndTime + 0.291667, 120) AS FinishDate,
+        COALESCE(Duration, '') AS Duration
+    FROM 
+        [BatchDyeingCentral].[dbo].[Delays]
+
+    UNION ALL
+
+    SELECT 
+        [Machine],
+        COALESCE(Dyelot, '') AS Dyelot,
+        COALESCE(ReDye, 0) AS ReDye,
+        COALESCE(Name, '') AS Description,
+        COALESCE(Name, '') AS Description_BIG,
+        COALESCE(Name, '') AS Description_Local,
+        CONVERT(varchar, StartTime + 0.291667, 120) AS CreateDate,
+        CONVERT(varchar, EndTime + 0.291667, 120) AS ConfirmDate,
+        CONVERT(varchar, EndTime + 0.291667, 120) AS FinishDate,
+        COALESCE(Duration, '') AS Duration
+    FROM 
+        [BatchDyeingCentral].[dbo].[Alarms]
+)
+SELECT 
+    CASE
+        WHEN Description LIKE '%異常%' OR 
+             Description LIKE '%過載%' OR 
+             Description LIKE '%短路%' OR 
+             Description LIKE '%斷路%' OR 
+             Description LIKE '%Low%' OR 
+             Description LIKE '%不足%' OR 
+             Description LIKE '%纏車%' OR 
+             Description LIKE '%超溫%' THEN '3'
+        WHEN Description LIKE '%超時%' OR 
+             Description LIKE '%太%' OR 
+             Description LIKE '%無法%' OR 
+             Description LIKE '%等待%' THEN '2'
+        WHEN Description LIKE '%暫停%' THEN '2'
+        WHEN Description LIKE '%故障%' OR 
+             Description LIKE '%無PLC%' THEN '4'
+        ELSE '1'
+    END AS EventType,
+    Machine,
+    Dyelot,
+    ReDye,
+    Description,
+    Description_BIG,
+    Description_Local,
+    CreateDate,
+    ConfirmDate,
+    FinishDate,
+    Duration,
+    CASE
+        WHEN Description LIKE '%異常%' OR 
+             Description LIKE '%過載%' OR 
+             Description LIKE '%短路%' OR 
+             Description LIKE '%斷路%' OR 
+             Description LIKE '%Low%' OR 
+             Description LIKE '%不足%' OR 
+             Description LIKE '%纏車%' OR 
+             Description LIKE '%超溫%' THEN '1'
+        WHEN Description LIKE '%超時%' OR 
+             Description LIKE '%太%' OR 
+             Description LIKE '%無法%' OR 
+             Description LIKE '%等待%' THEN '2'
+        WHEN Description LIKE '%暫停%' THEN '3'
+        WHEN Description LIKE '%故障%' OR 
+             Description LIKE '%無PLC%' THEN '5'
+        ELSE '4'
+    END AS IdccEventType
+FROM 
+    CombinedResults
+	WHERE FinishDate >= DATEADD(month, -6, GETDATE());
+GO
+
+

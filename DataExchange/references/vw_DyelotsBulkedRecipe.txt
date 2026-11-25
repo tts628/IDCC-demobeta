@@ -1,0 +1,85 @@
+USE [LAIdcc]
+GO
+
+/****** Object:  View [dbo].[vw_DyeMachines]    Script Date: 2025/10/3 下午 02:27:39 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+
+
+CREATE VIEW [dbo].[vw_DyelotsBulkedRecipe] AS
+SELECT  [ID]
+      ,[Dyelot]
+      ,[ReDye]
+      ,[StepNumber]
+      ,[Station]
+      ,[DevideNo]
+      ,[ShotNo]
+      ,[ProductCode]
+      ,[ProductName]
+      ,[ProductType]
+      ,[ProductLot]
+      ,[ProductClass]
+      ,[SN]
+      ,[Amount]
+      ,[Grams]
+      ,[Created]
+      ,[DispenseStartTime]
+      ,[DispenseEndTime]
+      ,[DispenseTime]
+      ,[DispenseGrams]
+      ,[DispenseResult]
+      ,[LADispenseResult]
+      ,[Volume]
+      ,[HostRead]
+      ,[State]
+      ,[NeedDispense]
+      ,[MixTankNo]
+      ,[DyeWeightTime]
+      ,[Process]
+      ,[FinalProcess]
+      ,[Dispenser]
+      ,[TankNo]
+      ,[Error]
+      ,[BucketNo]
+      ,[DID]
+      ,[StepDevideNo]
+      ,[StepTotalBuckets]
+      ,[ReferenceDyelot]
+      ,[DispenseWater]
+      ,[DrainWater]
+      ,[DissolveTemperature]
+      ,[SchDispenseTime]
+      ,[UserAccount]
+      ,[TargetGrams]
+      ,[ActualGrams]
+      ,[FinishTime]
+      ,[Tagged]
+      ,[TotalBuckets]
+      ,[Final]
+      ,[DissolveManual]
+      ,[Concentration]
+      ,[DeductTotalBuckets]
+      ,[DeductBuckets]
+      ,[Flow]
+      ,[CallTime]
+      ,[BreakGrams]
+      ,[RecoveryAction]
+      ,[SmallDye]
+      ,[PrepareTank]
+      ,[DeductBox]
+      ,[Shade]
+      ,[LAState]
+      ,[EstTotalBuckets]
+      ,[OnShelf]
+      ,[SortString]
+      ,[SAPStatus]
+  FROM [BatchDyeingCentral].[dbo].[DyelotsBulkedRecipe] ;
+GO
+
+

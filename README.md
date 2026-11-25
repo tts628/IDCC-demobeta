@@ -1,3 +1,5 @@
+> 全量交換工具已放在 [DataExchange](DataExchange/README.md)：SPC SQL Server → 正式 IDCC PostgreSQL，對應提供的八份 SQL，已移除資料列篩選。先執行只檢查模式，確認後才全量替換八張目標表；不更動 SPC 或 DemoIDCC。
+
 > 資料庫設定已分成三組：正式 **IDCC Server（PostgreSQL，安裝自動填入）**、**DemoIDCC Server（SQL Server）**、獨立 **SPC Server**。新安裝預設 Demo 開啟，網站 IDCC 使用 DemoIDCC；SPC 不隨開關改變。舊設定會在重跑安裝或儲存並套用時轉換，詳見 [資料庫設定](docs/DATABASE-SETUP.md)。
 
 > Ubuntu 終端機選單：`bash ubuntu/setup.sh`；獨立資料庫設定：`bash ubuntu/database-setup.sh`；頁面勾選：`bash ubuntu/pages-setup.sh`。詳見 [終端機操作說明](docs/UBUNTU-TUI.md)。

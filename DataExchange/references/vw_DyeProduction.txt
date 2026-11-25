@@ -1,0 +1,44 @@
+USE [LAIdcc]
+GO
+
+/****** Object:  View [dbo].[vw_DyeProduction]    Script Date: 2025/9/24 下午 01:09:08 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+
+CREATE VIEW [dbo].[vw_DyeProduction]
+AS
+SELECT     
+    Dyelot,     
+    ReDye,     
+    Machine,     
+    Batch,     
+    CONVERT(varchar, StartTime + 0.29166, 120) AS StartTime,     
+    CONVERT(varchar, EndTime + 0.29166, 120) AS EndTime,
+    CAST(DATEDIFF(minute, [StartTime], [EndTime]) / 1440.0 AS VARCHAR) as ProcessTime,  
+    ISNULL(StandardTime, 0) AS StandardTime,   
+	CAST(DATEDIFF(minute, [StartTime], [EndTime]) / 1440.0 AS VARCHAR)-StandardTime as OverRunTime,
+    Program,     
+    Notes,     
+    ISNULL(Color, 0) AS Color,     
+    CreationTime,     
+    DATEDIFF(ss, GETDATE(), EndTime) / DATEDIFF(ss, StartTime, EndTime) AS Process,     
+    TotalWeight,     
+    TotalVolume,     
+    SheetNo,     
+    CustomerName,     
+    CUSTOMER_CODE,     
+    GRAMS_YARD,     
+    FABRIC_CODE,     
+    Shade 
+FROM      
+    [BatchDyeingCentral].[dbo].[Dyelots] 
+WHERE      
+    State = 3 
+GO
+
+

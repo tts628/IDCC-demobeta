@@ -1,0 +1,60 @@
+USE [LAIdcc]
+GO
+
+/****** Object:  View [dbo].[vw_DispenserProduction]    Script Date: 2025/12/1 下午 02:17:21 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE VIEW [dbo].[vw_DispenserProduction]
+AS
+SELECT 
+    [ID],
+    [Dyelot],
+    [Redye],
+    Dispenser AS 'Machine',
+    (SELECT TOP 1 [Machine] FROM [BatchDyeingCentral].[dbo].[Dyelots] D WHERE  DBR.[Dyelot] = D.[Dyelot]) as 'Destination',
+    [ProductCode],
+    [ProductName],
+    [ProductType],
+    TRY_CAST(REPLACE(REPLACE(REPLACE([Amount], ',', ''), 'g', ''), ' ', '') AS FLOAT) as TargetGrams,
+    [DispenseGrams],
+    -- COALESCE 用於選擇第一個非 NULL 的時間值作為 StartTime
+    COALESCE([DispenseStartTime], [DispenseTime]) AS 'StartTime',
+    [DispenseEndTime] AS 'EndTime',
+    --,[StandardTime]
+    --,[ProcessTime]
+    --,[OverRunTime]
+    --,[MixTemperature]
+    --,[MixLiters]
+    --,[MixTime]
+    --,[RinseTemperature]
+    --,[RinseLiters]
+    --,[TransferTime]
+    --,[Note]
+    [Process],
+    [StepNumber],
+	DATEDIFF(SECOND, COALESCE([DispenseStartTime], [DispenseTime]), [DispenseEndTime]) AS 'DispenseSeconds',
+	DispenseGrams-TRY_CAST(REPLACE(REPLACE(REPLACE([Amount], ',', ''), 'g', ''), ' ', '') AS FLOAT) as 'DispenseError'
+    --,[DyelotsBulkedRecipe_Created]
+FROM 
+    [BatchDyeingCentral].[dbo].[DyelotsBulkedRecipe] DBR	
+WHERE 
+    -- 篩選 LADispenseResult 為 '301' 或 '203' 的記錄
+    [LADispenseResult] IN ('301', '203')
+	AND Dispenser is not null
+	AND Dispenser<>'';
+
+-- 註解中保留的篩選條件範例 (在視圖定義中被註釋，不生效)
+/*
+WHERE
+    (Dispenser LIKE '%301%' OR Dispenser LIKE '%302%') 
+    AND DispenseTime >='2025-07-01 00:00:00.000'
+    AND DispenseTime <'2025-08-01 00:00:00.000' 
+*/
+GO
+
+

@@ -1,0 +1,19 @@
+USE [LAIdcc]
+GO
+
+/****** Object:  View [dbo].[vw_DyeStepVisits]    Script Date: 2025/12/12 下午 02:29:57 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+  CREATE VIEW [dbo].[vw_DyeStepVisits]
+AS
+SELECT *
+  FROM [BatchDyeingCentral].[dbo].[StepVisits]
+  where Machine <>'099'
+and Machine <>'NC'
+GO
+
+
