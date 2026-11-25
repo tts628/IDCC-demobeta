@@ -149,3 +149,9 @@ docker compose --profile data-exchange stop data-exchange
 電腦關機、休眠或 Docker 引擎停止期間不會同步。重開機需先啟動 Docker 引擎；引擎啟動後服務依 unless-stopped 自動恢復。主動 Disable 後不會自行恢復，需再次 Enable。修改 .env／.env.postgres 後再次 Enable 以重建載入新設定的容器；不會把密碼寫在命令列。清除專案容器後需要重新 Enable。日誌循環保留最多三份、每份約 10MB。
 
 若要改頻率，在 compose.yaml 的 data-exchange.environment 調整 DATA_EXCHANGE_INTERVAL_SECONDS（預設 600，允許 60–86400），再 Enable；同步量很大時，全量交換可能持續超過十分鐘。
+
+## Windows setup 視窗
+
+開啟 `windows/setup.cmd`，選擇「4 定時資料同步（選用）」。可先按「先檢查（不寫入）」，再自行選擇「啟用每 10 分鐘同步」；完全可略過，不影響安裝環境、資料庫設定及頁面選擇。啟用前會說明全量替換範圍並請你確認。
+
+同頁可停用同步、查看狀態與最近 100 行紀錄。停留此頁時預設每 10 秒更新，可取消勾選；亦可手動重新整理。狀態顯示排程執行中，並不代表每輪同步成功，請確認紀錄的 `exit code 0`。關閉 setup 不會停用排程。

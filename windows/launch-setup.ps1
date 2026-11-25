@@ -1,7 +1,7 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 [CmdletBinding()]
 param(
-    [ValidateSet('Install','Database','Pages')][string]$Tab='Install',
+    [ValidateSet('Install','Database','Pages','Exchange')][string]$Tab='Install',
     [switch]$SmokeTest,
     [string]$LogDirectory
 )

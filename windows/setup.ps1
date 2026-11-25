@@ -1,6 +1,6 @@
 ﻿#Requires -Version 5.1
 [CmdletBinding()]
-param([ValidateSet('Install','Database','Pages')][string]$Tab='Install',[switch]$SmokeTest)
+param([ValidateSet('Install','Database','Pages','Exchange')][string]$Tab='Install',[switch]$SmokeTest)
 $ErrorActionPreference='Stop'
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
@@ -76,6 +76,7 @@ $tabs=New-Object Windows.Forms.TabControl;$tabs.Dock='Fill';$outer.Controls.Add(
 $install=New-Object Windows.Forms.TabPage;$install.Text='1  安裝環境';[void]$tabs.TabPages.Add($install)
 $db=New-Object Windows.Forms.TabPage;$db.Text='2  資料庫設定（可稍後）';[void]$tabs.TabPages.Add($db)
 $pages=New-Object Windows.Forms.TabPage;$pages.Text='3  頁面選擇';[void]$tabs.TabPages.Add($pages)
+$exchangeTab=New-Object Windows.Forms.TabPage;$exchangeTab.Text='4  定時資料同步（選用）';[void]$tabs.TabPages.Add($exchangeTab)
 $progressBox=New-Object Windows.Forms.GroupBox;$progressBox.Text='執行進度';$progressBox.Dock='Fill';$progressBox.Padding='10,14,10,8';$outer.Controls.Add($progressBox,0,2)
 $progressLayout=New-Object Windows.Forms.TableLayoutPanel;$progressLayout.Dock='Fill';$progressLayout.ColumnCount=1;$progressLayout.RowCount=4
 foreach($height in @(32,25,127,22)){[void]$progressLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',$height)))}
@@ -181,6 +182,24 @@ $savePages=New-Button $pageButtons '儲存頁面選擇' {
         Note '頁面設定已儲存。首次更新需重建映像，之後按 Ctrl+F5 重新整理即可套用。'
     }catch{Note $_.Exception.Message}
 }
+# Optional scheduler; opening setup never enables data exchange.
+$exchangeLayout=New-Object Windows.Forms.TableLayoutPanel;$exchangeLayout.Dock='Fill';$exchangeLayout.ColumnCount=1;$exchangeLayout.RowCount=4
+foreach($height in @(90,48,44)){[void]$exchangeLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',$height)))}
+[void]$exchangeLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Percent',100)));$exchangeTab.Controls.Add($exchangeLayout)
+$exchangeLayout.Controls.Add((New-Label "選用流程：先安裝環境，並在資料庫設定儲存、套用 SPC 連線。`n啟用後立即執行，再每 10 分鐘將 SPC 全量替換至正式 IDCC PostgreSQL 的八張表。`n不受 Demo 開關影響；來源零筆也會清空目標。上一輪未完成時不重複執行。"),0,0)
+$exchangeButtons=New-Object Windows.Forms.FlowLayoutPanel;$exchangeButtons.Dock='Fill';$exchangeLayout.Controls.Add($exchangeButtons,0,1)
+$exchangeCheck=New-Button $exchangeButtons '先檢查（不寫入）' {Start-Task SyncCheck}
+$exchangeEnable=New-Button $exchangeButtons '啟用每 10 分鐘同步' {
+    $answer=[Windows.Forms.MessageBox]::Show("啟用後立即同步，之後每 10 分鐘持續完整替換正式 IDCC 的八張表。`n來源零筆時對應目標表會清空，Demo 模式也不會略過。`n確定啟用？",'啟用定時資料同步',[Windows.Forms.MessageBoxButtons]::YesNo,[Windows.Forms.MessageBoxIcon]::Warning)
+    if($answer -eq 'Yes'){Start-Task SyncEnable}
+}
+$exchangeDisable=New-Button $exchangeButtons '停用同步' {Start-Task SyncDisable}
+$exchangeRefresh=New-Button $exchangeButtons '重新整理狀態與紀錄' {Start-Task SyncInspect}
+$exchangeStatus=New-Object Windows.Forms.FlowLayoutPanel;$exchangeStatus.Dock='Fill';$exchangeLayout.Controls.Add($exchangeStatus,0,2)
+$exchangeState=New-Label '尚未查詢排程狀態';$exchangeStatus.Controls.Add($exchangeState)
+$exchangeAuto=New-Object Windows.Forms.CheckBox;$exchangeAuto.Text='每 10 秒更新紀錄';$exchangeAuto.Checked=$true;$exchangeAuto.AutoSize=$true;$exchangeAuto.Margin='10,7,0,0';$exchangeStatus.Controls.Add($exchangeAuto)
+$exchangeLog=New-Object Windows.Forms.TextBox;$exchangeLog.Multiline=$true;$exchangeLog.ReadOnly=$true;$exchangeLog.ScrollBars='Both';$exchangeLog.WordWrap=$false;$exchangeLog.Dock='Fill';$exchangeLog.Text='啟用為選用步驟，可直接略過。狀態為執行中代表排程容器運作；請以紀錄中的 exit code 0 確認每次同步成功。關閉 setup 不會停止已啟用的同步。';$exchangeLayout.Controls.Add($exchangeLog,0,3)
+
 # Child process runs outside the UI thread. Poll log files so the window stays responsive.
 $script:job=$null;$timer=New-Object Windows.Forms.Timer;$timer.Interval=500
 function Read-Log([string]$Path){
@@ -227,16 +246,30 @@ $timer.Add_Tick({
         $text=(Read-Log $script:outFile)+"`r`n"+(Read-Log $script:errFile)
         $view=Get-SetupTaskView -Action $script:activeAction -Text $text -ExitCode $code
         Show-TaskView $view
+        if($script:activeAction -eq 'SyncInspect'){
+            $exchangeLog.Text=$text -replace '(?m)^IDCC_SYNC_STATUS:[^\r\n]*',''
+            $exchangeLog.SelectionStart=$exchangeLog.TextLength;$exchangeLog.ScrollToCaret()
+            $exchangeState.Text=if($code -ne 0){'無法取得狀態，請確認 Docker 環境'}elseif($text -match 'IDCC_SYNC_STATUS:running'){'排程執行中（每 10 分鐘；成功與否請看紀錄）'}elseif($text -match 'IDCC_SYNC_STATUS:missing'){'尚未啟用排程'}else{'排程已停止／未就緒，請查看紀錄'}
+        }elseif($script:activeAction -in @('SyncCheck','SyncEnable','SyncDisable')){
+            $exchangeLog.Text=$text
+            if($code -eq 0 -and $script:activeAction -eq 'SyncEnable'){$exchangeState.Text='已啟用；請查看紀錄確認同步結果'}
+            if($code -eq 0 -and $script:activeAction -eq 'SyncDisable'){$exchangeState.Text='已停用同步'}
+        }
         if($code -eq 3010){$taskTime.Text='請重新啟動 Windows 後再繼續。'}elseif($view.State -eq 'Error'){$taskTime.Text='請依上方說明處理後重試。'}else{$taskTime.Text='操作已結束，可以繼續使用其他功能。'}
         if($code -eq 0 -and $script:activeAction -in @('Install','Apply')){Refresh-PrimaryConnection}
         $script:job.Dispose();$script:job=$null
     }else{Show-TaskView (Get-SetupTaskView -Action $script:activeAction -Text $text)}
 })
 $form.Add_FormClosing({param($sender,$e) if($script:busy){$e.Cancel=$true;Note '作業執行中，請等候完成再關閉。'}})
-$form.Add_FormClosed({$timer.Dispose()})
-$tabs.SelectedIndex=@('Install','Database','Pages').IndexOf($Tab)
+$exchangeTimer=New-Object Windows.Forms.Timer;$exchangeTimer.Interval=10000
+$exchangeTimer.Add_Tick({if(!$script:busy -and $tabs.SelectedTab -eq $exchangeTab -and $exchangeAuto.Checked){Start-Task SyncInspect}})
+$tabs.Add_SelectedIndexChanged({if(!$SmokeTest -and !$script:busy -and $tabs.SelectedTab -eq $exchangeTab){Start-Task SyncInspect}})
+$exchangeTimer.Start()
+$form.Add_FormClosed({$timer.Dispose();$exchangeTimer.Dispose()})
+$tabs.SelectedIndex=@('Install','Database','Pages','Exchange').IndexOf($Tab)
 if($SmokeTest){
     if($list.Items.Count -ne 77){throw '頁面目錄不完整'}
-    $form.Dispose();'GUI construction OK';return
+    if($tabs.TabPages.Count -ne 4 -or !$exchangeLog.ReadOnly){throw 'Exchange tab construction failed'}
+    $exchangeTimer.Dispose();$timer.Dispose();$form.Dispose();'GUI construction OK';return
 }
 [void]$form.ShowDialog()

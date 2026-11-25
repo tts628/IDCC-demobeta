@@ -65,7 +65,21 @@
 
 function Get-SetupTaskView {
     [CmdletBinding()]
-    param([ValidateSet('Install','Plan','Apply','Diagnose','Reset')][string]$Action,[string]$Text='',[int]$ExitCode=-99999)
+    param([ValidateSet('Install','Plan','Apply','Diagnose','Reset','SyncCheck','SyncEnable','SyncDisable','SyncInspect')][string]$Action,[string]$Text='',[int]$ExitCode=-99999)
+    if($Action -like 'Sync*'){
+        $titles=@{SyncCheck='正在檢查同步連線與資料表';SyncEnable='正在檢查設定並啟用定時同步';SyncDisable='正在停用定時同步';SyncInspect='正在讀取同步狀態與紀錄'}
+        $view=[pscustomobject]@{Title=$titles[$Action];Detail='不顯示帳號密碼。請稍候，完成後可在同步頁查看紀錄。';State='Running';Complete=($ExitCode -ne -99999);Progress=0}
+        if(!$view.Complete){return $view}
+        if($ExitCode -ne 0){$view.Title='同步操作未完成';$view.Detail='請先完成環境安裝、儲存並套用 SPC 設定；同步頁的紀錄會顯示失敗原因。';$view.State='Error';return $view}
+        $view.State='Success';$view.Progress=100
+        switch($Action){
+            SyncCheck {$view.Title='同步檢查通過';$view.Detail='連線與結構檢查通過，沒有寫入資料。可選擇啟用定時同步，也可略過。'}
+            SyncEnable {$view.Title='定時同步已啟用';$view.Detail='已啟動背景排程，立即同步一次，之後每 10 分鐘執行。啟用成功不代表資料同步成功，請查看執行紀錄。'}
+            SyncDisable {$view.Title='定時同步已停用';$view.Detail='背景排程已停止，已提交的資料保留。'}
+            SyncInspect {$view.Title='同步狀態與紀錄已更新';$view.Detail='請在同步頁查看最近紀錄；exit code 0 代表該次同步成功。'}
+        }
+        return $view
+    }
     if($Action -eq 'Diagnose'){return Get-ConnectionTaskView -Text $Text -ExitCode $ExitCode}
     $titles=@{Install='正在準備安裝環境';Plan='正在檢查安裝方式';Apply='正在準備套用資料庫設定';Diagnose='正在準備測試資料庫連線';Reset='正在準備重設環境'}
     $view=[pscustomobject]@{Title=$titles[$Action];Detail='請稍候，完成後會自動顯示結果。';State='Running';Complete=$false;Progress=0}
