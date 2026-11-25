@@ -8,18 +8,19 @@ use DataExchange\{Exchange,Schema,SqlServerSource,PostgresTarget,SyncError,Commi
 function exchangeDefinitions(): array
 {
     $manifest=json_decode(file_get_contents(__DIR__.'/tables.json'),true,512,JSON_THROW_ON_ERROR);
-    $expected=['DispenserEvent','DispenserProduction','DyeEnergyUsage','DyeEvent','DyelotsBulkedRecipe','DyeMachines','DyeProduction','DyeStepVisits'];
-    if(($manifest['schema']??'')!=='public'||($manifest['source_profile']??'')!=='SPC'||($manifest['target_profile']??'')!=='IDCC_SERVER'||($manifest['mode']??'')!=='full_replace')throw new SyncError('交換設定必須是 SPC → 正式 IDCC_SERVER，public schema、full_replace。');
+    $expected=['DispenserEvent','DyelotsBulkedRecipe','Dyelots','StepVisits','Delays','Alarms','Machines'];
+    if(($manifest['schema']??'')!=='public'||($manifest['source_profile']??'')!=='SPC'||($manifest['target_profile']??'')!=='IDCC_SERVER'||($manifest['mode']??'')!=='full_replace'||($manifest['scope']??'')!=='source_tables')throw new SyncError('交換設定必須是 SPC → 正式 IDCC_SERVER，public schema、來源實體表 full_replace。');
     $names=array_column($manifest['tables']??[],'table');$sorted=$names;$allowed=$expected;sort($sorted);sort($allowed);
-    if($sorted!==$allowed)throw new SyncError('交換設定必須包含指定的八張表，每張一次。');
+    if($sorted!==$allowed)throw new SyncError('交換設定必須包含指定的七張來源表，每張一次。');
     $definitions=[];
     foreach($manifest['tables']as$entry){
-        if($entry['sql']!=='sql/'.$entry['table'].'.sql')throw new SyncError('SQL 檔案路徑不正確。');
+        $table=$entry['table'];
+        if(($entry['source_schema']??'')!=='dbo'||($entry['source_table']??'')!==$table||($entry['sql']??'')!=='sql/'.$table.'.sql')throw new SyncError('來源表或 SQL 檔案設定不正確。');
         $query=file_get_contents(__DIR__.'/'.$entry['sql']);
-        // Reject accidental source writes. Only the shipped SELECT/CTE definitions are accepted.
-        $tokens=preg_replace("~'(?:''|[^'])*'|\[(?:\]\]|[^\]])*\]|\"(?:\"\"|[^\"])*\"|/\*.*?\*/|--[^\r\n]*~s",' ',$query);
-        if(!preg_match('/^\s*(SELECT|WITH)\b/i',$tokens)||str_contains(rtrim(rtrim($tokens),';'),';')||preg_match('/\b(INSERT|UPDATE|DELETE|MERGE|DROP|ALTER|TRUNCATE|CREATE|EXEC|EXECUTE|GRANT|DENY|REVOKE|DBCC|USE|GO|INTO|OPENROWSET|OPENDATASOURCE|BULK)\b/i',$tokens))throw new SyncError('來源 SQL 必須是單一唯讀 SELECT：'.$entry['table']);
-        $definitions[]=['table'=>$entry['table'],'query'=>$query];
+        // Fixed table allow-list, exact SELECT *: no projections, filters, joins or source writes.
+        $expectedQuery='SELECT * FROM [dbo].['.$table.'];';
+        if(trim($query)!==$expectedQuery)throw new SyncError('來源 SQL 必須完整讀取來源實體表全部欄位：'.$table);
+        $definitions[]=['table'=>$table,'query'=>$query];
     }
     return $definitions;
 }
@@ -83,18 +84,18 @@ function exchangeMain(array$args): int
     try{
         $definitions=exchangeDefinitions();
         $emit('來源：SPC SQL Server → 目標：正式 IDCC PostgreSQL（不受 Demo 開關影響）');
-        $emit('範圍：指定八張表。所有資料列篩選已移除，欄位計算與關聯保留。');
+        $emit('範圍：七張來源實體表；SELECT * 同步全部現有欄位與資料列，不執行 View 計算或關聯。');
         [$sourceConnection,$pdo]=exchangeConnections();
         $source=new SqlServerSource($sourceConnection,$timeout);$target=new PostgresTarget($pdo);
         $exchange=new Exchange($source,$target,$emit);$jobs=$exchange->check($definitions);
         if(!$sync){$emit('檢查完成，沒有更動來源或目標資料。正式交換請使用 --sync。');return 0;}
         if(!$yes){
-            $emit('將全量替換正式 IDCC 的這八張表；來源零筆也會清空對應目標表。其他表不在同步範圍。');
+            $emit('將全量替換正式 IDCC 的這七張來源同名表；來源零筆也會清空對應目標表。其他表不在同步範圍。');
             $emit('輸入 SYNC 確認執行，其他輸入取消：');
             if(trim(fgets(STDIN)?:'')!=='SYNC'){$emit('已取消，未更動資料。');return 0;}
         }
         $summary=$exchange->sync($jobs,$batch);
-        $emit('交換完成，八張目標表已一併提交：');
+        $emit('交換完成，七張目標表已一併提交：');
         foreach($summary as$table=>$count)$emit('  '.$table.'：'.$count.' 筆');
         return 0;
     }finally{if($sourceConnection!==null)sqlsrv_close($sourceConnection);}

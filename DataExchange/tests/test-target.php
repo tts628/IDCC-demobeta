@@ -18,7 +18,7 @@ class CatalogStatement extends PDOStatement {
     }
 }
 class CatalogPdo extends PDO {
-    public array $relations=[['oid'=>'42','relname'=>'dyeproduction','relkind'=>'r','relrowsecurity'=>false]];
+    public array $relations=[['oid'=>'42','relname'=>'dyelots','relkind'=>'r','relrowsecurity'=>false]];
     public array $fields=[['column_name'=>'id','is_generated'=>'NEVER','is_identity'=>'NO','column_default'=>null],['column_name'=>'note','is_generated'=>'NEVER','is_identity'=>'NO','column_default'=>null]];
     public array $sql=[];public array $executions=[];public int $blockers=0;public bool $lock=true;public bool $transaction=false;
     public function __construct(){}
@@ -31,15 +31,15 @@ class CatalogPdo extends PDO {
     public function commit():bool{$this->transaction=false;return true;}
 }
 $columns=Schema::columns([['Name'=>'ID','Type'=>4],['Name'=>'Note','Type'=>-9]]);
-$pdo=new CatalogPdo;$target=new PostgresTarget($pdo);$info=$target->inspect('DyeProduction',$columns);
-assertTarget($info['table']==='dyeproduction'&&$info['columns']===['id','note'],'Existing lower-case table not reused');
+$pdo=new CatalogPdo;$target=new PostgresTarget($pdo);$info=$target->inspect('Dyelots',$columns);
+assertTarget($info['table']==='dyelots'&&$info['columns']===['id','note'],'Existing lower-case table not reused');
 $target->begin();$target->stage('exchange_test',$columns);
 $target->append('exchange_test',$columns,[['1',"'; DROP TABLE outside; --"],['2',null]]);
 [$sql,$params]=end($pdo->executions);
 assertTarget(!str_contains($sql,'DROP TABLE outside')&&$params[1]==="'; DROP TABLE outside; --",'Data concatenated into SQL');
-$target->replace([['table'=>'DyeProduction','columns'=>$columns,'stage'=>'exchange_test','rows'=>2]]);$target->commit();
+$target->replace([['table'=>'Dyelots','columns'=>$columns,'stage'=>'exchange_test','rows'=>2]]);$target->commit();
 $sql=implode("\n",$pdo->sql);
-assertTarget(str_contains($sql,'DELETE FROM "public"."dyeproduction"'),'Wrong replacement table');
+assertTarget(str_contains($sql,'DELETE FROM "public"."dyelots"'),'Wrong replacement table');
 assertTarget(!preg_match('/DROP TABLE|TRUNCATE|CASCADE/i',$sql),'Unsafe global/cascading deletion');
 foreach(['foreign_key','identity','row_security','view','ambiguous_case']as$case){
     $p=new CatalogPdo;
@@ -48,7 +48,7 @@ foreach(['foreign_key','identity','row_security','view','ambiguous_case']as$case
     if($case==='row_security')$p->relations[0]['relrowsecurity']=true;
     if($case==='view')$p->relations[0]['relkind']='v';
     if($case==='ambiguous_case')$p->relations[]=$p->relations[0];
-    try{(new PostgresTarget($p))->inspect('DyeProduction',$columns);throw new Exception('Unsafe target accepted:'.$case);}catch(SyncError$error){}
+    try{(new PostgresTarget($p))->inspect('Dyelots',$columns);throw new Exception('Unsafe target accepted:'.$case);}catch(SyncError$error){}
     assertTarget(!$p->sql,'Target guard changed data');
 }
 $p=new CatalogPdo;$p->lock=false;$target=new PostgresTarget($p);

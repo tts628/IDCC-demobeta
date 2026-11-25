@@ -28,7 +28,7 @@ compose=(compose --project-directory "$project_root" --file "$project_root/compo
 docker_call "${compose[@]}" exec -T web php DataExchange/sync.php --check "${extra[@]}"
 $check && exit 0
 if ! $yes; then
-  printf '即將全量替換正式 IDCC 的八張目標表，來源零筆也會清空對應目標表。SPC 與 DemoIDCC 不會被修改。\n'
+  printf '即將全量替換正式 IDCC 的七張目標表，來源零筆也會清空對應目標表。SPC 與 DemoIDCC 不會被修改。\n'
   read -r -p '請輸入大寫 SYNC 確認，其他輸入取消：' confirmation || exit 1
   [[ $confirmation == SYNC ]] || { printf '已取消，沒有更動資料。\n'; exit 0; }
 fi

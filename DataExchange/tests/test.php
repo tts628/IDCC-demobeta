@@ -2,11 +2,12 @@
 require __DIR__.'/../sync.php';
 use DataExchange\{Source,Target,Schema,Exchange,SyncError,CommitUncertain};
 function ensure($condition,$message){if(!$condition)throw new Exception($message);}
-$definitions=exchangeDefinitions();ensure(count($definitions)===8,'Eight definitions required');
+$definitions=exchangeDefinitions();ensure(count($definitions)===7,'Seven source definitions required');
+foreach($definitions as$definition)ensure(trim($definition['query'])==='SELECT * FROM [dbo].['.$definition['table'].'];','Not a complete raw-table SELECT');
 $columns=Schema::columns([['Name'=>'ID','Type'=>-5],['Name'=>'Note','Type'=>-9]]);
 final class FakeSource implements Source {
     public array $data=[];public bool $finished=false;public bool $aborted=false;public ?string $fail=null;
-    public function __construct(public array $columns,array$definitions){foreach($definitions as$i=>$d)$this->data[$d['query']]=$i===7?[]:[[(string)($i+1),"繁體中文\t\n'\\"],[(string)($i+100),null]];}
+    public function __construct(public array $columns,array$definitions){foreach($definitions as$i=>$d)$this->data[$d['query']]=$i===6?[]:[[(string)($i+1),"繁體中文\t\n'\\"],[(string)($i+100),null]];}
     public function describe(string$sql):array{return$this->columns;}
     public function rows(string$sql,array$columns):iterable{foreach($this->data[$sql]as$row){yield$row;if($sql===$this->fail)throw new SyncError('Simulated source failure');}}
     public function beginRead():bool{return true;}
@@ -28,8 +29,8 @@ final class FakeTarget implements Target {
 $source=new FakeSource($columns,$definitions);$target=new FakeTarget($definitions);$events=[];$engine=new Exchange($source,$target,function($line)use(&$events){$events[]=$line;});
 $jobs=$engine->check($definitions);ensure(!$target->calls,'Check performed writes');
 $summary=$engine->sync($jobs,1);
-ensure(count($summary)===8 && $summary['DyeStepVisits']===0,'Wrong counts or empty table not handled');
-ensure($target->tables['DyeStepVisits']===[],'Full sync did not clear target for empty source');
+ensure(count($summary)===7 && $summary['Machines']===0,'Wrong counts or empty table not handled');
+ensure($target->tables['Machines']===[],'Full sync did not clear target for empty source');
 ensure($target->tables['Unrelated']===[['keep']],'Unrelated table changed');
 ensure($target->tables['DispenserEvent'][0][1]==="繁體中文\t\n'\\",'Text changed');
 ensure($source->finished && in_array('commit',$target->calls,true),'No atomic completion');
@@ -45,6 +46,10 @@ foreach(['source','target','nul']as$failure){
 }
 $s=new FakeSource($columns,$definitions);$t=new FakeTarget($definitions);$t->failCommit=true;$x=new Exchange($s,$t,static fn($line)=>null);
 try{$x->sync($x->check($definitions));throw new Exception('Expected uncertain commit');}catch(CommitUncertain$error){}
+$oddColumns=Schema::columns([['Name'=>'CustomerSpecificField','Type'=>-9],['Name'=>'OnlyHere','Type'=>4],['Name'=>'Payload','Type'=>-3]]);
+$s=new FakeSource($oddColumns,$definitions);foreach($s->data as$q=>$rows)$s->data[$q]=[['custom','9',"\x01\x02"]];
+$t=new FakeTarget($definitions);$x=new Exchange($s,$t,static fn($line)=>null);$customJobs=$x->check($definitions);$x->sync($customJobs);
+ensure($t->tables['StepVisits']===[['custom','9','\\x0102']],'Arbitrary source fields not copied');
 $precise=Schema::columns([['Name'=>'Amount','Type'=>3,'Precision'=>38,'Scale'=>12],['Name'=>'Date','Type'=>93,'Scale'=>7],['Name'=>'Blob','Type'=>-3],['Name'=>'Flag','Type'=>-7]]);
 ensure($precise[0]['pg_type']==='numeric(38,12)' && Schema::value('12345678901234567890.123456789012',$precise[0])==='12345678901234567890.123456789012','Decimal precision lost');
 ensure($precise[1]['pg_type']==='text' && Schema::value('2026-01-01 00:00:00.1234567',$precise[1])==='2026-01-01 00:00:00.1234567','Date precision lost');
@@ -52,4 +57,4 @@ ensure(Schema::value("\0\t\xff",$precise[2])==='\\x0009ff','Binary changed');
 ensure(Schema::value(false,$precise[3])==='f'&&Schema::value(null,$precise[3])===null,'Boolean/null changed');
 try{Schema::columns([['Name'=>'variant','Type'=>-150]]);throw new Exception('Unsupported type accepted');}catch(SyncError$error){}
 $error=new PDOException('Failing row contains dummy-secret');$error->errorInfo=['23505',7,'dummy-secret'];ensure(!str_contains(exchangeError($error),'dummy-secret'),'Error leaked data');
-echo "PASS: eight-table atomic sync, repeatability, empty-source replacement, source/target failure rollback, commit uncertainty, precision/binary/null handling and safe errors\n";
+echo "PASS: seven-table atomic sync, repeatability, empty-source replacement, source/target failure rollback, commit uncertainty, precision/binary/null handling and safe errors\n";

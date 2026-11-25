@@ -3,54 +3,83 @@
   "source_profile": "SPC",
   "target_profile": "IDCC_SERVER",
   "mode": "full_replace",
+  "scope": "source_tables",
   "tables": [
     {
       "table": "DispenserEvent",
-      "sql": "sql/DispenserEvent.sql",
-      "reference": "references/vw_DispenserEvent.txt",
-      "reference_sha256": "b9b59dd64096bd062d089645eae31d50e7c37c821f4e0e01ffeebcada52644bb"
-    },
-    {
-      "table": "DispenserProduction",
-      "sql": "sql/DispenserProduction.sql",
-      "reference": "references/vw_DispenserProduction.txt",
-      "reference_sha256": "0035aa53e8e67780364631a9edac294f42b1a317fc2b4410d455e0ef22cc606d"
-    },
-    {
-      "table": "DyeEnergyUsage",
-      "sql": "sql/DyeEnergyUsage.sql",
-      "reference": "references/vw_DyeEnergyUsage.txt",
-      "reference_sha256": "e0c3f6a892ac9684e270abd8aeb745acfbe1cc04aafced342047ebcc38856b9a"
-    },
-    {
-      "table": "DyeEvent",
-      "sql": "sql/DyeEvent.sql",
-      "reference": "references/vw_DyeEvent.txt",
-      "reference_sha256": "42711a4b5c183ffa847da3f40ef2d3c9abe2497fc4d358bb269b9ea4f45a833d"
+      "source_schema": "dbo",
+      "source_table": "DispenserEvent",
+      "sql": "sql/DispenserEvent.sql"
     },
     {
       "table": "DyelotsBulkedRecipe",
-      "sql": "sql/DyelotsBulkedRecipe.sql",
-      "reference": "references/vw_DyelotsBulkedRecipe.txt",
-      "reference_sha256": "24af83503a8dd71c850e3869bd82e32b4e64a25bee23bb56fad2570ce1d99339"
+      "source_schema": "dbo",
+      "source_table": "DyelotsBulkedRecipe",
+      "sql": "sql/DyelotsBulkedRecipe.sql"
     },
     {
-      "table": "DyeMachines",
-      "sql": "sql/DyeMachines.sql",
-      "reference": "references/vw_DyeMachines.txt",
-      "reference_sha256": "9b848da0da21783db470fb9bbcfd8dfbf339af13664aeab98818aea07c851b1f"
+      "table": "Dyelots",
+      "source_schema": "dbo",
+      "source_table": "Dyelots",
+      "sql": "sql/Dyelots.sql"
     },
     {
-      "table": "DyeProduction",
-      "sql": "sql/DyeProduction.sql",
-      "reference": "references/vw_DyeProduction.txt",
-      "reference_sha256": "28305d4da84feaf88424864a832f302d9c3cb1af1e10a5bc22fc72c57c658d56"
+      "table": "StepVisits",
+      "source_schema": "dbo",
+      "source_table": "StepVisits",
+      "sql": "sql/StepVisits.sql"
     },
     {
-      "table": "DyeStepVisits",
-      "sql": "sql/DyeStepVisits.sql",
-      "reference": "references/vw_DyeStepVisits.txt",
-      "reference_sha256": "8673f72e88718c2f72a46336720f8c155e5b22f36d368bbd7ace1e69b4958d6d"
+      "table": "Delays",
+      "source_schema": "dbo",
+      "source_table": "Delays",
+      "sql": "sql/Delays.sql"
+    },
+    {
+      "table": "Alarms",
+      "source_schema": "dbo",
+      "source_table": "Alarms",
+      "sql": "sql/Alarms.sql"
+    },
+    {
+      "table": "Machines",
+      "source_schema": "dbo",
+      "source_table": "Machines",
+      "sql": "sql/Machines.sql"
+    }
+  ],
+  "references": [
+    {
+      "file": "references/vw_DispenserEvent.txt",
+      "sha256": "b9b59dd64096bd062d089645eae31d50e7c37c821f4e0e01ffeebcada52644bb"
+    },
+    {
+      "file": "references/vw_DispenserProduction.txt",
+      "sha256": "0035aa53e8e67780364631a9edac294f42b1a317fc2b4410d455e0ef22cc606d"
+    },
+    {
+      "file": "references/vw_DyeEnergyUsage.txt",
+      "sha256": "e0c3f6a892ac9684e270abd8aeb745acfbe1cc04aafced342047ebcc38856b9a"
+    },
+    {
+      "file": "references/vw_DyeEvent.txt",
+      "sha256": "42711a4b5c183ffa847da3f40ef2d3c9abe2497fc4d358bb269b9ea4f45a833d"
+    },
+    {
+      "file": "references/vw_DyelotsBulkedRecipe.txt",
+      "sha256": "24af83503a8dd71c850e3869bd82e32b4e64a25bee23bb56fad2570ce1d99339"
+    },
+    {
+      "file": "references/vw_DyeMachines.txt",
+      "sha256": "9b848da0da21783db470fb9bbcfd8dfbf339af13664aeab98818aea07c851b1f"
+    },
+    {
+      "file": "references/vw_DyeProduction.txt",
+      "sha256": "28305d4da84feaf88424864a832f302d9c3cb1af1e10a5bc22fc72c57c658d56"
+    },
+    {
+      "file": "references/vw_DyeStepVisits.txt",
+      "sha256": "8673f72e88718c2f72a46336720f8c155e5b22f36d368bbd7ace1e69b4958d6d"
     }
   ]
 }

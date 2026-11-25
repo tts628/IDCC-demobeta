@@ -1,19 +1,18 @@
-# DataExchange：SPC → 正式 IDCC 全量交換
+# DataExchange：SPC 來源表 → 正式 IDCC 全量交換
 
-這個工具以你提供的八份 SQL 為欄位與計算依據，直接讀取 **SPC SQL Server** 的底層表，寫入 **正式 IDCC PostgreSQL**。不需要先在 SQL Server 建立 vw_*，不會執行原檔的 USE／CREATE VIEW，不會改動來源或 DemoIDCC，也不改變 Demo 開關。
+直接讀取八份 SQL 所用的七張 **SPC SQL Server 實體表**，以 `SELECT *` 取得實際存在的全部欄位與全部資料列，寫入正式 **IDCC PostgreSQL** 的同名表。不再依 View 的欄位投影、計算、JOIN 或篩選讀取，因此不要求來源有 WaterUsed、PowerUsed、SteamUsed 等預設欄位。不改動來源／DemoIDCC，也不受 Demo 開關影響。
 
-「完整同步」指下列八個查詢結果的所有資料列，欄位仍依原 SQL 投影，不是整個 SPC 資料庫的備份。日期、狀態、機台、供料結果等資料篩選都已移除；欄位計算及關聯條件保留。
-
-| 原始定義 | PostgreSQL 目標表 |
+| SPC 來源 | PostgreSQL 目標 |
 |---|---|
-| vw_DispenserEvent | public."DispenserEvent" |
-| vw_DispenserProduction | public."DispenserProduction" |
-| vw_DyeEnergyUsage | public."DyeEnergyUsage" |
-| vw_DyeEvent | public."DyeEvent" |
-| vw_DyelotsBulkedRecipe | public."DyelotsBulkedRecipe" |
-| vw_DyeMachines | public."DyeMachines" |
-| vw_DyeProduction | public."DyeProduction" |
-| vw_DyeStepVisits | public."DyeStepVisits" |
+| dbo.DispenserEvent | public."DispenserEvent" |
+| dbo.DyelotsBulkedRecipe | public."DyelotsBulkedRecipe" |
+| dbo.Dyelots | public."Dyelots" |
+| dbo.StepVisits | public."StepVisits" |
+| dbo.Delays | public."Delays" |
+| dbo.Alarms | public."Alarms" |
+| dbo.Machines | public."Machines" |
+
+`StepVisits`、`Dyelots` 被多份 View 共用，各只同步一次。這不是整個 SPC 資料庫備份。舊版的 DispenserProduction、DyeEnergyUsage、DyeEvent、DyeMachines、DyeProduction、DyeStepVisits 計算結果不再產生／更新；如果它們已存在，不會自動刪除。
 
 ## Windows 操作
 
@@ -30,7 +29,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File DataExchange\sync.ps1 -C
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File DataExchange\sync.ps1
 ```
 
-列出八張目標表後，輸入大寫 **SYNC** 才會執行。這是全量替換，不是追加：來源零筆也會清空對應目標表，本機手動新增到這八張表的資料也會被來源結果取代。其他表不在範圍。請保留自己的資料庫備份。
+列出七張目標表後，輸入大寫 **SYNC** 才會執行。這是全量替換，不是追加：來源零筆也會清空對應目標表，本機手動新增到這七張表的資料也會被來源結果取代。其他表不在範圍。請保留自己的資料庫備份。
 
 若使用不同專案路徑，先切換到自己的專案根目錄；必須保留整個 DataExchange 目錄與專案 windows/docker.ps1，不是只複製 sync.php。
 
@@ -67,10 +66,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose
 
 ## 交換方式與保留範圍
 
-1. 在來源以 prepared statement metadata 檢查八個 SELECT 欄位，並檢查目標結構。
+1. 在來源以 prepared statement metadata 檢查七個 SELECT 欄位，並檢查目標結構。
 2. 在 PostgreSQL 開啟一個交易與互斥鎖，避免同時執行兩次交換。
 3. 來源逐列讀取，分批寫入 session 暫存表；預設每批最多 500 筆，並按參數數量與約 4 MiB 內容自動縮小。
-4. 八張暫存表筆數核對成功後，短暫鎖定這八張目標表、刪除舊資料、寫入新資料、再次核對筆數，最後一次提交。
+4. 七張暫存表筆數核對成功後，短暫鎖定這七張目標表、刪除舊資料、寫入新資料、再次核對筆數，最後一次提交。
 
 提交前出錯會回復整批目標變更。若最後提交時網路中斷，程式會明確標示「提交結果未能確認」，不能假設一定沒提交，請先檢查目標筆數。工具不使用 DROP TABLE、TRUNCATE CASCADE 或全域清除。
 
@@ -80,15 +79,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose
 
 為避免間接影響其他資料，若既有目標是 View、分割／繼承表、啟用 RLS，或存在外鍵、觸發器、identity/generated/sequence 欄位，檢查會停止，不會自行刪除這些限制。這是交換用資料表，不複製 SQL Server 的索引、主鍵、權限、預設值、觸發器或 stored procedure。
 
-## SQL 改動
+## 來源欄位與 SQL
 
-- 原本固定的 BatchDyeingCentral.dbo 改為目前 SPC 連線資料庫的 dbo，不硬寫客戶的資料庫名稱。
-- 移除近一年／近半年、State=3、State IS NULL、機台排除、LADispenseResult 301/203、非空 Dispenser 等條件。
-- DispenserProduction 的工單對照條件、LEFT JOIN 條件保留，否則會變成錯誤的關聯。TOP 1／OFFSET 仍保留原本的關聯欄位查找方式，不用來限制主要來源的總筆數；DyeMachines 的 D1／D2 不會額外改寫成另一種排程算法。
-- LAG 分組、事件文字分類、B/M/S 分類與原本約七小時的偏移規則保留；日期先 CAST 為 datetime，以相容 datetime2 的加值運算。這不是時區重新設計。
-- DyeProduction 的秒／分鐘差改用 DATEDIFF_BIG，並在 Process 分母加 NULLIF，避免納入全部歷史與零秒工單後整批失敗。來源需 SQL Server 2016 以上。
+`tables.json` 固定七張表；`sql/` 每檔只有 `SELECT * FROM [dbo].[表名];`，直接使用設定的 SPC 資料庫。來源每張表的實際欄位與型別由 SQLSRV metadata 取得，不要求固定欄位數或名稱。新目標表依這些欄位建立，不會自行加上計算欄位。
 
-`references/` 保存原始八份檔案，`sql/` 是真正執行的無資料列篩選版本，`tables.json` 固定同步範圍。引用原檔的 SHA256 記在 manifest，交換程式不執行 references 內容。
+`references/` 保存原始八份 SQL（manifest 保留原始 SHA256），`references/view-queries/` 保存舊版轉換查詢，兩者皆不執行。新流程不需 DATEDIFF_BIG、LAG、時間偏移或資料關聯；時間及數值直接取來源欄位，不重新計算。
+
+已存在的目標表仍須能容納來源欄位；若來源日後新增／刪除欄位造成結構不同，會停止並指出目標結構問題，避免自動刪除既有欄位或依賴。這個限制和 View 預期欄位檢查不同；目前不再要求來源存在任何指定的業務欄位。
 
 ## 型別與精度
 
@@ -97,7 +94,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose
 SQL Server 的第七位時間小數無法由 PostgreSQL 的六位精度完整表示，因此該類欄位以 text 保存；原 View 的 varchar 時間欄位也保持文字。保留大小寫的欄位／新表在 PostgreSQL SQL 中須雙引號，例如：
 
 ```sql
-SELECT * FROM public."DyeProduction";
+SELECT * FROM public."Dyelots";
 ```
 
 工具不會偷偷刪除文字中的 NUL 或替換無效字元，這些內容不相容時會停止回復。已有目標表的型別與長度仍由 PostgreSQL 驗證，結構不合需先調整。特大型單筆 LOB 仍需要足夠 PHP 記憶體；分批處理不代表單筆可無限大。
@@ -119,7 +116,7 @@ php DataExchange/tests/test-target.php
 
 ## 每十分鐘自動同步
 
-定時服務和手動工具使用相同的 SPC／正式 IDCC PostgreSQL 連線，不受 Demo 開關影響，仍是八張表全量替換（零筆也清空）。一般安裝預設不啟用。**啟用代表授權持續替換這八張表，啟動會立即同步一次**；請先檢查連線與同步範圍。
+定時服務和手動工具使用相同的 SPC／正式 IDCC PostgreSQL 連線，不受 Demo 開關影響，仍是七張表全量替換（零筆也清空）。一般安裝預設不啟用。**啟用代表授權持續替換這七張表，啟動會立即同步一次**；請先檢查連線與同步範圍。
 
 Windows 在專案根目錄執行：
 
@@ -155,3 +152,7 @@ docker compose --profile data-exchange stop data-exchange
 開啟 `windows/setup.cmd`，選擇「4 定時資料同步（選用）」。可先按「先檢查（不寫入）」，再自行選擇「啟用每 10 分鐘同步」；完全可略過，不影響安裝環境、資料庫設定及頁面選擇。啟用前會說明全量替換範圍並請你確認。
 
 同頁可停用同步、查看狀態與最近 100 行紀錄。停留此頁時預設每 10 秒更新，可取消勾選；亦可手動重新整理。狀態顯示排程執行中，並不代表每輪同步成功，請確認紀錄的 `exit code 0`。關閉 setup 不會停用排程。
+
+## 從舊版 View 同步更新
+
+若排程已啟用，更新整包程式前先停用，避免更新一半時啟動一輪。更新後在 setup 的「定時資料同步」先檢查再啟用，或執行 `schedule.ps1 -Action Enable`。Ubuntu 同樣先 stop，更新完整程式後再 up。原本的計算結果表保留，這次只更新上述七張來源同名表，不自動移除其他表。
