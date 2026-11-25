@@ -205,9 +205,28 @@ $exchangeLog=New-Object Windows.Forms.TextBox;$exchangeLog.Multiline=$true;$exch
 
 # Child process runs outside the UI thread. Poll log files so the window stays responsive.
 $script:job=$null;$timer=New-Object Windows.Forms.Timer;$timer.Interval=500
+function New-SetupJobDirectory([string]$Prefix){
+    # TEMP may contain an obsolete 8.3 alias. Prefer the Windows known-folder path.
+    $base=[Environment]::GetFolderPath([Environment+SpecialFolder]::LocalApplicationData)
+    if([string]::IsNullOrWhiteSpace($base)){$base=[IO.Path]::GetTempPath()}
+    $parent=[IO.Path]::Combine($base,'IDCC-DemoBeta','jobs')
+    $path=[IO.Path]::Combine($parent,($Prefix+'-'+[guid]::NewGuid().ToString('N')))
+    [void][IO.Directory]::CreateDirectory($path)
+    return $path
+}
 function Read-Log([string]$Path){
-    if(!(Test-Path -LiteralPath $Path)){return ''}
-    try{$stream=[IO.File]::Open($Path,'Open','Read','ReadWrite');$reader=New-Object IO.StreamReader($stream);try{return $reader.ReadToEnd()}finally{$reader.Dispose()}}catch{return ''}
+    try{
+        if([string]::IsNullOrWhiteSpace($Path) -or ![IO.File]::Exists($Path)){return ''}
+        $stream=[IO.File]::Open($Path,'Open','Read','ReadWrite');$reader=New-Object IO.StreamReader($stream)
+        try{return $reader.ReadToEnd()}finally{$reader.Dispose()}
+    }catch{return ''}
+}
+function Remove-MonitorFiles {
+    # Best-effort, non-recursive cleanup via .NET, without PowerShell provider normalization.
+    foreach($file in @($script:exchangeOut,$script:exchangeErr)){
+        try{if(![string]::IsNullOrWhiteSpace($file)){[IO.File]::Delete($file)}}catch{}
+    }
+    try{if(![string]::IsNullOrWhiteSpace($script:exchangeDir)){[IO.Directory]::Delete($script:exchangeDir,$false)}}catch{}
 }
 function Show-TaskView($View){
     $taskTitle.Text=$View.Title;$taskDetail.Text=$View.Detail
@@ -225,13 +244,13 @@ function Start-Task([string]$Action){
     $script:exchangeGeneration++
     $script:lastProgress=0;$progress.Value=0
     try{
-        $script:jobDir=Join-Path $env:TEMP ('IDCC-setup-'+[guid]::NewGuid().ToString('N'));[void](New-Item -ItemType Directory $script:jobDir)
-        $script:outFile=Join-Path $script:jobDir 'stdout.log';$script:errFile=Join-Path $script:jobDir 'stderr.log'
-        $runner=Join-Path $PSScriptRoot 'setup-action.ps1'
+        $script:jobDir=New-SetupJobDirectory 'setup'
+        $script:outFile=[IO.Path]::Combine($script:jobDir,'stdout.log');$script:errFile=[IO.Path]::Combine($script:jobDir,'stderr.log')
+        $runner=[IO.Path]::Combine($PSScriptRoot,'setup-action.ps1')
         $script:activeAction=$Action;$script:busy=$true;$tabs.Enabled=$false
         $script:watch=[Diagnostics.Stopwatch]::StartNew();$taskTime.Text='處理中，請保持視窗開啟。'
         Show-TaskView (Get-SetupTaskView -Action $Action)
-        $script:job=Start-Process powershell.exe -WindowStyle Hidden -PassThru -RedirectStandardOutput $script:outFile -RedirectStandardError $script:errFile -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$runner+'"'),'-Action',$Action,'-Port',[string]$port.Value)
+        $script:job=Start-Process powershell.exe -WindowStyle Hidden -WorkingDirectory $script:root -PassThru -RedirectStandardOutput $script:outFile -RedirectStandardError $script:errFile -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$runner+'"'),'-Action',$Action,'-Port',[string]$port.Value)
         $null=$script:job.Handle
         $timer.Start()
     }catch{
@@ -267,46 +286,57 @@ $exchangePoll=New-Object Windows.Forms.Timer;$exchangePoll.Interval=300
 function Start-ExchangeMonitor {
     if($script:busy -or $script:exchangeJob -or $form.IsDisposed){return}
     try{
-        $script:exchangeDir=Join-Path $env:TEMP ('IDCC-monitor-'+[guid]::NewGuid().ToString('N'));[void](New-Item -ItemType Directory $script:exchangeDir)
-        $script:exchangeOut=Join-Path $script:exchangeDir 'stdout.log';$script:exchangeErr=Join-Path $script:exchangeDir 'stderr.log'
-        $runner=Join-Path $PSScriptRoot 'setup-action.ps1'
+        $script:exchangeDir=New-SetupJobDirectory 'monitor'
+        $script:exchangeOut=[IO.Path]::Combine($script:exchangeDir,'stdout.log');$script:exchangeErr=[IO.Path]::Combine($script:exchangeDir,'stderr.log')
+        $runner=[IO.Path]::Combine($PSScriptRoot,'setup-action.ps1')
         $script:exchangeReadGeneration=$script:exchangeGeneration
         $script:exchangeWatch=[Diagnostics.Stopwatch]::StartNew()
-        $script:exchangeJob=Start-Process powershell.exe -WindowStyle Hidden -PassThru -RedirectStandardOutput $script:exchangeOut -RedirectStandardError $script:exchangeErr -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$runner+'"'),'-Action','SyncInspect')
+        $script:exchangeJob=Start-Process powershell.exe -WindowStyle Hidden -WorkingDirectory $script:root -PassThru -RedirectStandardOutput $script:exchangeOut -RedirectStandardError $script:exchangeErr -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$runner+'"'),'-Action','SyncInspect')
         $null=$script:exchangeJob.Handle;$exchangePoll.Start()
     }catch{
         $exchangeState.Text='同步排程：狀態未知（無法查詢）';$exchangeState.ForeColor=[Drawing.Color]::DarkOrange
-        $script:exchangeJob=$null
+        if($script:exchangeJob){try{if(!$script:exchangeJob.HasExited){$script:exchangeJob.Kill()};$script:exchangeJob.Dispose()}catch{}}
+        $script:exchangeJob=$null;$exchangePoll.Stop();Remove-MonitorFiles
     }
 }
 $exchangePoll.Add_Tick({
     if(!$script:exchangeJob){return}
-    if(!$script:exchangeJob.HasExited -and $script:exchangeWatch.Elapsed.TotalSeconds -lt 45){return}
-    $timedOut=!$script:exchangeJob.HasExited
-    if($timedOut){try{$script:exchangeJob.Kill()}catch{}; $code=1}else{$script:exchangeJob.WaitForExit();$code=$script:exchangeJob.ExitCode}
-    $text=(Read-Log $script:exchangeOut)+"`r`n"+(Read-Log $script:exchangeErr)
-    if(!$script:busy -and $script:exchangeReadGeneration -eq $script:exchangeGeneration){
-        $exchangeState.ForeColor=[Drawing.Color]::DimGray
-        if($code -ne 0){$exchangeState.Text='同步排程：狀態未知（請確認 Docker 環境）';$exchangeState.ForeColor=[Drawing.Color]::DarkOrange}
-        elseif($text -match 'IDCC_SYNC_STATUS:running'){$exchangeState.Text='同步排程：已啟用｜每 10 分鐘';$exchangeState.ForeColor=[Drawing.Color]::ForestGreen}
-        elseif($text -match 'IDCC_SYNC_STATUS:missing'){$exchangeState.Text='同步排程：尚未啟用'}
-        elseif($text -match 'IDCC_SYNC_STATUS:stopped'){$exchangeState.Text='同步排程：已停用'}
-        else{$exchangeState.Text='同步排程：未就緒（請查看紀錄）';$exchangeState.ForeColor=[Drawing.Color]::DarkOrange}
-        $exchangeUpdated.Text='最後查詢：'+(Get-Date -Format 'HH:mm:ss')
-        $logs=($text -replace '(?m)^IDCC_SYNC_STATUS:[^\r\n]*','').Trim()
-        if(!$logs){$logs='目前沒有同步紀錄。啟用後會立即執行第一次同步。'}
-        if($logs -ne $exchangeLog.Text){
-            $selection=$exchangeLog.SelectionStart;$length=$exchangeLog.SelectionLength
-            $atEnd=($selection -ge [Math]::Max(0,$exchangeLog.TextLength-1))
-            $exchangeLog.Text=$logs
-            if($atEnd){$exchangeLog.SelectionStart=$exchangeLog.TextLength;$exchangeLog.ScrollToCaret()}
-            else{$exchangeLog.SelectionStart=[Math]::Min($selection,$exchangeLog.TextLength);$exchangeLog.SelectionLength=[Math]::Min($length,$exchangeLog.TextLength-$exchangeLog.SelectionStart)}
+    $release=$false
+    try {
+        if(!$script:exchangeJob.HasExited -and $script:exchangeWatch.Elapsed.TotalSeconds -lt 45){return}
+        $release=$true
+        $timedOut=!$script:exchangeJob.HasExited
+        if($timedOut){try{$script:exchangeJob.Kill()}catch{}; $code=1}else{$script:exchangeJob.WaitForExit();$code=$script:exchangeJob.ExitCode}
+        $text=(Read-Log $script:exchangeOut)+"`r`n"+(Read-Log $script:exchangeErr)
+        if(!$script:busy -and $script:exchangeReadGeneration -eq $script:exchangeGeneration){
+            $exchangeState.ForeColor=[Drawing.Color]::DimGray
+            if($code -ne 0){$exchangeState.Text='同步排程：狀態未知（請確認 Docker 環境）';$exchangeState.ForeColor=[Drawing.Color]::DarkOrange}
+            elseif($text -match 'IDCC_SYNC_STATUS:running'){$exchangeState.Text='同步排程：已啟用｜每 10 分鐘';$exchangeState.ForeColor=[Drawing.Color]::ForestGreen}
+            elseif($text -match 'IDCC_SYNC_STATUS:missing'){$exchangeState.Text='同步排程：尚未啟用'}
+            elseif($text -match 'IDCC_SYNC_STATUS:stopped'){$exchangeState.Text='同步排程：已停用'}
+            else{$exchangeState.Text='同步排程：未就緒（請查看紀錄）';$exchangeState.ForeColor=[Drawing.Color]::DarkOrange}
+            $exchangeUpdated.Text='最後查詢：'+(Get-Date -Format 'HH:mm:ss')
+            $logs=($text -replace '(?m)^IDCC_SYNC_STATUS:[^\r\n]*','').Trim()
+            if(!$logs){$logs='目前沒有同步紀錄。啟用後會立即執行第一次同步。'}
+            if($logs -ne $exchangeLog.Text){
+                $selection=$exchangeLog.SelectionStart;$length=$exchangeLog.SelectionLength
+                $atEnd=($selection -ge [Math]::Max(0,$exchangeLog.TextLength-1))
+                $exchangeLog.Text=$logs
+                if($atEnd){$exchangeLog.SelectionStart=$exchangeLog.TextLength;$exchangeLog.ScrollToCaret()}
+                else{$exchangeLog.SelectionStart=[Math]::Min($selection,$exchangeLog.TextLength);$exchangeLog.SelectionLength=[Math]::Min($length,$exchangeLog.TextLength-$exchangeLog.SelectionStart)}
+            }
+        }
+    }catch{
+        $release=$true
+        # A read-only timer must never raise a WinForms unhandled-exception dialog.
+        if(!$form.IsDisposed){$exchangeState.Text='同步排程：狀態未知（查詢未完成，請重新整理）';$exchangeState.ForeColor=[Drawing.Color]::DarkOrange}
+    }finally{
+        # The early return above keeps a running query alive; completed/error queries are released.
+        if($release){
+            try{if($script:exchangeJob -and !$script:exchangeJob.HasExited){$script:exchangeJob.Kill()};if($script:exchangeJob){$script:exchangeJob.Dispose()}}catch{}
+            $script:exchangeJob=$null;$exchangePoll.Stop();if($script:exchangeWatch){$script:exchangeWatch.Stop()};Remove-MonitorFiles
         }
     }
-    $script:exchangeJob.Dispose();$script:exchangeJob=$null;$exchangePoll.Stop();$script:exchangeWatch.Stop()
-    # Only remove files created by this read-only query, never project files.
-    foreach($file in @($script:exchangeOut,$script:exchangeErr)){if(Test-Path -LiteralPath $file){Remove-Item -LiteralPath $file -ErrorAction SilentlyContinue}}
-    if(Test-Path -LiteralPath $script:exchangeDir){Remove-Item -LiteralPath $script:exchangeDir -ErrorAction SilentlyContinue}
 })
 $exchangeTimer=New-Object Windows.Forms.Timer;$exchangeTimer.Interval=10000
 $exchangeTimer.Add_Tick({if($tabs.SelectedTab -eq $exchangeTab -and $exchangeAuto.Checked){Start-ExchangeMonitor}})
