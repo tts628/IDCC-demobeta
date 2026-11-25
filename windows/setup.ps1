@@ -86,6 +86,21 @@ $progress=New-Object Windows.Forms.ProgressBar;$progress.Dock='Fill';$progress.M
 $taskDetail=New-Object Windows.Forms.Label;$taskDetail.Text='可以先安裝環境，資料庫設定可稍後再填。執行時會在這裡說明目前的步驟。';$taskDetail.Dock='Fill';$taskDetail.Padding='0,7,0,0';$progressLayout.Controls.Add($taskDetail,0,2)
 $taskTime=New-Object Windows.Forms.Label;$taskTime.Dock='Fill';$taskTime.ForeColor=[Drawing.Color]::DimGray;$progressLayout.Controls.Add($taskTime,0,3)
 $flow=New-Object Windows.Forms.FlowLayoutPanel;$flow.Dock='Fill';$flow.FlowDirection='TopDown';$flow.WrapContents=$false;$flow.AutoScroll=$true;$install.Controls.Add($flow)
+# Current environment state is independent from installation task progress.
+$environmentBox=New-Object Windows.Forms.GroupBox;$environmentBox.Text='目前環境狀態';$environmentBox.Width=940;$environmentBox.Height=190;$environmentBox.Margin='6,6,6,6'
+$environmentLayout=New-Object Windows.Forms.TableLayoutPanel;$environmentLayout.Dock='Fill';$environmentLayout.ColumnCount=1;$environmentLayout.RowCount=6
+foreach($i in 0..4){[void]$environmentLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',24)))}
+[void]$environmentLayout.RowStyles.Add((New-Object Windows.Forms.RowStyle('Absolute',44)))
+$script:environmentLabels=@{}
+foreach($key in @('backend','docker','image','web','postgres')){
+    $label=New-Object Windows.Forms.Label;$label.Text='尚未查詢';$label.Dock='Fill';$label.TextAlign='MiddleLeft';$label.Padding='10,0,0,0';$script:environmentLabels[$key]=$label
+    $environmentLayout.Controls.Add($label,0,$environmentLayout.Controls.Count)
+}
+$environmentButtons=New-Object Windows.Forms.FlowLayoutPanel;$environmentButtons.Dock='Fill';$environmentLayout.Controls.Add($environmentButtons,0,5)
+$environmentRefresh=New-Button $environmentButtons '重新整理環境狀態' {Start-EnvironmentMonitor}
+$environmentUpdated=New-Label '尚未查詢；不會自動安裝或啟動服務';$environmentButtons.Controls.Add($environmentUpdated)
+$environmentBox.Controls.Add($environmentLayout);$flow.Controls.Add($environmentBox)
+$flow.Add_Resize({$environmentBox.Width=[Math]::Max(300,$flow.ClientSize.Width-28)})
 $flow.Controls.Add((New-Label "新電腦：WSL 2 → Ubuntu 24.04 → Docker Engine → Apache/PHP + PostgreSQL。`n已有 Docker Desktop 時沿用既有引擎。首次可能需要重開機，再開啟本工具。"))
 $portRow=New-Object Windows.Forms.FlowLayoutPanel;$portRow.AutoSize=$true;$portRow.Controls.Add((New-Label '網站連接埠'))
 $port=New-Object Windows.Forms.NumericUpDown;$port.Minimum=1024;$port.Maximum=65535;$port.Value=8080;$port.Width=110
@@ -277,6 +292,7 @@ $timer.Add_Tick({
         if($code -eq 0 -and $script:activeAction -in @('Install','Apply')){Refresh-PrimaryConnection}
         $script:job.Dispose();$script:job=$null
         if($script:activeAction -in @('SyncEnable','SyncDisable','Install','Apply','Reset')){Start-ExchangeMonitor}
+        if($script:activeAction -in @('Install','Apply','Reset')){Start-EnvironmentMonitor}
     }else{Show-TaskView (Get-SetupTaskView -Action $script:activeAction -Text $text)}
 })
 $form.Add_FormClosing({param($sender,$e) if($script:busy){$e.Cancel=$true;Note '作業執行中，請等候完成再關閉。'}})
@@ -338,19 +354,71 @@ $exchangePoll.Add_Tick({
         }
     }
 })
+$script:environmentJob=$null
+$environmentPoll=New-Object Windows.Forms.Timer;$environmentPoll.Interval=300
+function Clear-EnvironmentMonitor {
+    try{if($script:environmentJob){if(!$script:environmentJob.HasExited){$script:environmentJob.Kill()};$script:environmentJob.Dispose()}}catch{}
+    $script:environmentJob=$null;$environmentPoll.Stop()
+    foreach($path in @($script:environmentOut,$script:environmentErr)){try{if($path){[IO.File]::Delete($path)}}catch{}}
+    try{if($script:environmentDir){[IO.Directory]::Delete($script:environmentDir,$false)}}catch{}
+}
+function Show-EnvironmentState($record){
+    $names=@{backend='執行環境';docker='Docker 引擎';image='Apache／PHP 映像';web='網站服務';postgres='PostgreSQL'}
+    $states=@{not_configured='尚未完成安裝／引擎設定';unknown='狀態未知';ready='已就緒';missing='尚未建立';unavailable='無法連線，可能尚未啟動';healthy='已啟動，健康檢查通過';running='已啟動，尚無健康確認';stopped='已停止';starting='啟動中';unhealthy='已啟動，健康檢查未通過'}
+    foreach($key in @('backend','docker','image','web','postgres')){
+        $state=[string]$record.$key;$description=$states[$state]
+        if($key -eq 'backend'){$description=switch($state){'wsl'{'WSL 2／Ubuntu 24.04／Docker Engine'};'desktop'{'沿用 Docker Desktop'};'unknown'{'狀態未知'};default{'尚未完成安裝／引擎設定'}}}
+        if(!$description){$description='狀態未知'}
+        if($key -eq 'docker' -and $state -eq 'ready' -and $record.version){$description+='（'+[string]$record.version+'）'}
+        $label=$script:environmentLabels[$key];$label.Text=$names[$key]+'：'+$description
+        $label.ForeColor=if($state -in @('ready','healthy','wsl','desktop')){[Drawing.Color]::ForestGreen}elseif($state -in @('unknown','unavailable','unhealthy','starting')){[Drawing.Color]::DarkOrange}else{[Drawing.Color]::DimGray}
+    }
+    $environmentUpdated.Text='最後查詢：'+(Get-Date -Format 'HH:mm:ss')+'（不測試 SPC 業務連線）'
+}
+function Start-EnvironmentMonitor {
+    if($script:busy -or $script:environmentJob -or $form.IsDisposed){return}
+    try{
+        $script:environmentDir=New-SetupJobDirectory 'environment'
+        $script:environmentOut=[IO.Path]::Combine($script:environmentDir,'stdout.log');$script:environmentErr=[IO.Path]::Combine($script:environmentDir,'stderr.log')
+        $script:environmentGeneration=$script:exchangeGeneration;$script:environmentWatch=[Diagnostics.Stopwatch]::StartNew()
+        $runner=[IO.Path]::Combine($PSScriptRoot,'setup-action.ps1')
+        $script:environmentJob=Start-Process powershell.exe -WindowStyle Hidden -WorkingDirectory $script:root -PassThru -RedirectStandardOutput $script:environmentOut -RedirectStandardError $script:environmentErr -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$runner+'"'),'-Action','EnvironmentInspect')
+        $null=$script:environmentJob.Handle;$environmentPoll.Start()
+    }catch{Clear-EnvironmentMonitor;Show-EnvironmentState ([pscustomobject]@{backend='unknown';docker='unknown';image='unknown';web='unknown';postgres='unknown'})}
+}
+$environmentPoll.Add_Tick({
+    if(!$script:environmentJob){return}
+    $release=$false
+    try{
+        if(!$script:environmentJob.HasExited -and $script:environmentWatch.Elapsed.TotalSeconds -lt 45){return}
+        $release=$true
+        if(!$script:environmentJob.HasExited){throw 'Status query timed out'}
+        $script:environmentJob.WaitForExit()
+        if($script:environmentJob.ExitCode -ne 0){throw 'Status query failed'}
+        $record=Read-Log $script:environmentOut | ConvertFrom-Json
+        if($record.stage -ne 'environment_status'){throw 'No status record'}
+        if(!$script:busy -and $script:environmentGeneration -eq $script:exchangeGeneration){Show-EnvironmentState $record}
+    }catch{
+        $release=$true
+        if(!$script:busy -and $script:environmentGeneration -eq $script:exchangeGeneration){Show-EnvironmentState ([pscustomobject]@{backend='unknown';docker='unknown';image='unknown';web='unknown';postgres='unknown'})}
+    }finally{if($release){Clear-EnvironmentMonitor}}
+})
+$environmentTimer=New-Object Windows.Forms.Timer;$environmentTimer.Interval=30000
+$environmentTimer.Add_Tick({if($tabs.SelectedTab -eq $install){Start-EnvironmentMonitor}})
+$environmentTimer.Start()
 $exchangeTimer=New-Object Windows.Forms.Timer;$exchangeTimer.Interval=10000
 $exchangeTimer.Add_Tick({if($tabs.SelectedTab -eq $exchangeTab -and $exchangeAuto.Checked){Start-ExchangeMonitor}})
-$tabs.Add_SelectedIndexChanged({if(!$SmokeTest -and $tabs.SelectedTab -eq $exchangeTab){Start-ExchangeMonitor}})
-$form.Add_Shown({if(!$SmokeTest){Start-ExchangeMonitor}})
+$tabs.Add_SelectedIndexChanged({if(!$SmokeTest){if($tabs.SelectedTab -eq $exchangeTab){Start-ExchangeMonitor};if($tabs.SelectedTab -eq $install){Start-EnvironmentMonitor}}})
+$form.Add_Shown({if(!$SmokeTest){Start-ExchangeMonitor;Start-EnvironmentMonitor}})
 $exchangeTimer.Start()
 $form.Add_FormClosed({
-    $timer.Dispose();$exchangeTimer.Dispose();$exchangePoll.Dispose()
+    $timer.Dispose();$exchangeTimer.Dispose();$exchangePoll.Dispose();$environmentTimer.Dispose();Clear-EnvironmentMonitor;$environmentPoll.Dispose()
     if($script:exchangeJob){try{if(!$script:exchangeJob.HasExited){$script:exchangeJob.Kill()}}catch{};$script:exchangeJob.Dispose()}
 })
 $tabs.SelectedIndex=@('Install','Database','Pages','Exchange').IndexOf($Tab)
 if($SmokeTest){
     if($list.Items.Count -ne 77){throw '頁面目錄不完整'}
     if($tabs.TabPages.Count -ne 4 -or !$exchangeLog.ReadOnly){throw 'Exchange tab construction failed'}
-    $exchangeTimer.Dispose();$exchangePoll.Dispose();$timer.Dispose();$form.Dispose();'GUI construction OK';return
+    $exchangeTimer.Dispose();$exchangePoll.Dispose();$environmentTimer.Dispose();$environmentPoll.Dispose();$timer.Dispose();$form.Dispose();'GUI construction OK';return
 }
 [void]$form.ShowDialog()

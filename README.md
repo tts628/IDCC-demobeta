@@ -318,3 +318,9 @@ docker compose down
 ## DBeaver 連入本機 PostgreSQL
 
 預設開放 `127.0.0.1:15432` 給同台電腦的 DBeaver。Database／Username 均為 `idcc`，密碼使用本機 `.env.postgres` 的 `POSTGRES_PASSWORD`。容器之間仍使用 `postgres:5432`。既有環境更新後須執行 `compose up -d postgres` 套用；詳見 [資料庫設定](docs/DATABASE-SETUP.md)。
+
+## setup 第一頁的環境狀態
+
+Windows 開啟 `windows/setup.cmd`，第一頁會顯示執行環境（WSL／Docker Desktop）、Docker 引擎、Apache／PHP 映像、網站服務與 PostgreSQL 的目前狀態。開啟時查詢一次，停留第一頁每 30 秒背景更新，也可按「重新整理環境狀態」；安裝、套用或重設完成後會重新查詢。不會為了查詢安裝、啟動或重建服務，也不會重設流程進度。
+
+「已就緒／健康檢查通過」是本機 Docker 與容器狀態，不代表 SPC／DemoIDCC 業務資料庫連線已通過；請在資料庫分頁另外測試。「狀態未知／無法連線」不代表未安裝，可能是引擎未啟動或查詢失敗。
