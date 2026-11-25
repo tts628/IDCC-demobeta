@@ -69,4 +69,6 @@ Ubuntu 執行 `docker compose up -d postgres`（需要時加 sudo）。套用會
 
 轉換只調整本機設定檔，不搬移、改名或清除資料庫。仍請保留自己的備份；更新保留 `.env`、`.env.postgres`、`.idcc-docker-backend`、`.idcc-pages.json` 與自訂資料。重跑會重用既有 PostgreSQL 密碼與資料卷。若只覆蓋程式未重建容器，容器仍使用舊環境變數；轉換前的舊 SQL 設定僅為升級相容保留，不是連線失敗時的備援。
 
-新安裝預設資料庫為 `BatchDyeingCentral`，帳號仍為 `idcc`。既有安裝保留 `.env.postgres` 中已儲存的資料庫名稱；舊版只有密碼的設定視為原本的 `idcc`，不會切換到尚未建立的空庫。若要將既有庫改名，請依 [保留資料改名](RENAME-POSTGRES.md) 操作。
+安裝與重新安裝均會確認並建立 `BatchDyeingCentral`，帳號仍為 `idcc`。即使原資料卷已有 `idcc`，也會先建立新庫、成功後才將正式 IDCC 連線改到 `BatchDyeingCentral`；舊庫保留，不自動搬移資料或刪除。新庫初次為空，資料交換執行後才有來源資料。
+
+只開啟 setup 或儲存資料庫設定不會擅自建庫／換庫；請執行第一頁「安裝／啟動環境」。若要將原庫直接保留資料改名，請在重新安裝前依 [保留資料改名](RENAME-POSTGRES.md) 操作。

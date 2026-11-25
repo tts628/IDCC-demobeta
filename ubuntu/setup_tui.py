@@ -99,8 +99,10 @@ class Settings:
             'legacy': legacy,
         }
 
-    def prepare_connections(self):
+    def prepare_connections(self, use_installed_database=False):
         profiles = self.connection_profiles()
+        if use_installed_database:
+            profiles['IDCC']['NAME'] = 'BatchDyeingCentral'
         values = self.read_env()
         updates = {'IDCC_CONNECTION_LAYOUT': '2'}
         if not values.get('IDCC_DEMO_MODE'):
@@ -402,12 +404,13 @@ def main():
     parser = argparse.ArgumentParser(description='IDCC Ubuntu 終端機安裝與設定')
     parser.add_argument('--screen', choices=['main', 'database', 'pages'], default='main')
     parser.add_argument('--check', action='store_true', help='只檢查頁面設定，不啟動互動介面、不安裝套件')
+    parser.add_argument('--installed-database', action='store_true', help='Use BatchDyeingCentral after installation ensures it exists')
     parser.add_argument('--prepare-connections', action='store_true', help='Initialize connection profiles without showing credentials')
     args = parser.parse_args()
     root = Path(__file__).resolve().parent.parent
     try:
         if args.prepare_connections:
-            Settings(root).prepare_connections()
+            Settings(root).prepare_connections(use_installed_database=args.installed_database)
             print('Connection profiles prepared. SPC settings preserved.')
             return 0
         if args.check:

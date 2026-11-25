@@ -156,10 +156,23 @@ if ! command -v python3 >/dev/null; then
   as_root apt-get update
   as_root apt-get install -y python3
 fi
-python3 "$project_root/ubuntu/setup_tui.py" --prepare-connections
 
 docker_call "${compose[@]}" config --quiet
+log 'Ensuring BatchDyeingCentral exists on the PostgreSQL volume...'
+docker_call "${compose[@]}" up --detach --wait --wait-timeout 180 postgres
+scheduler_was_running=false
+if [[ $(docker_call "${compose[@]}" --profile data-exchange ps --status running --services data-exchange) == data-exchange ]]; then
+  scheduler_was_running=true
+  docker_call "${compose[@]}" --profile data-exchange stop data-exchange
+fi
+docker_call "${compose[@]}" cp "$project_root/docker/ensure-postgres-database.sql" postgres:/tmp/idcc-ensure-database.sql
+docker_call "${compose[@]}" exec -T postgres psql -w -U idcc -d postgres -v ON_ERROR_STOP=1 -f /tmp/idcc-ensure-database.sql
+# Change the application profile only after database provisioning succeeds.
+python3 "$project_root/ubuntu/setup_tui.py" --prepare-connections --installed-database
 docker_call "${compose[@]}" up --detach --build --wait --wait-timeout 180
+if $scheduler_was_running; then
+  docker_call "${compose[@]}" --profile data-exchange up --detach --no-build data-exchange
+fi
 docker_call "${compose[@]}" ps
 printf '\nDocker environment verified. Open http://127.0.0.1:%s/DemoBeta/Home/\n' "$port"
 printf 'env is mounted read-only. Original database settings and application dependencies were preserved.\n'

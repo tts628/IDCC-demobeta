@@ -327,4 +327,6 @@ Windows 開啟 `windows/setup.cmd`，第一頁會顯示執行環境（WSL／Dock
 
 setup 的四個分頁各自保留本次開啟期間的進度與操作結果，切換分頁只顯示該頁的進度。執行作業時可切換查看，但其他操作會暫停，避免同時修改環境；背景狀態查詢不會改寫各頁進度。
 
-新安裝的 PostgreSQL 資料庫預設命名 `BatchDyeingCentral`，連線資訊會自動填入 IDCC Server，資料交換亦使用此連線。既有安裝保留原庫名及資料；要改名請看 [保留資料改名](docs/RENAME-POSTGRES.md)。
+新安裝的 PostgreSQL 資料庫預設命名 `BatchDyeingCentral`，連線資訊會自動填入 IDCC Server，資料交換亦使用此連線。重新執行安裝時會確認並建立 `BatchDyeingCentral`，再將正式 IDCC 連線切至此庫；舊 `idcc` 庫及其資料保留，不自動搬移。若想直接保留原庫內容改名，請先看 [保留資料改名](docs/RENAME-POSTGRES.md)。
+
+安裝／重新安裝會在 PostgreSQL 啟動後執行可重跑的建庫步驟，保留原資料卷也適用；資料庫存在時不會重新建立或清空。確認建庫成功後才更新 `.env.postgres` 的 `POSTGRES_DB` 與 `IDCC_DB_NAME` 為 `BatchDyeingCentral`。原本已啟用的同步會暫停並於安裝成功後恢復，未啟用者不會自動啟用；安裝中途失敗請先確認狀態再重試。

@@ -83,11 +83,19 @@ if (!(Test-Path -LiteralPath $pgEnv)) {
     Write-Host 'Created local PostgreSQL credential; existing SQL Server settings preserved.'
 }
 Import-Module (Join-Path $PSScriptRoot 'ConnectionProfiles.psm1') -Force
-Initialize-IdccConnectionProfiles $projectRoot
 Write-Host 'Validating Compose configuration...'
 Invoke-Docker -Arguments @('compose','--file',$composeFile,'config','--quiet')
+Write-Host 'Ensuring BatchDyeingCentral exists on the PostgreSQL volume...'
+Invoke-Docker -Arguments @('compose','--file',$composeFile,'up','--detach','--wait','--wait-timeout','180','postgres')
+$schedulerWasRunning=@(Invoke-Docker -Arguments @('compose','--file',$composeFile,'--profile','data-exchange','ps','--status','running','--services','data-exchange')) -contains 'data-exchange'
+if($schedulerWasRunning){Invoke-Docker -Arguments @('compose','--file',$composeFile,'--profile','data-exchange','stop','data-exchange')}
+Invoke-Docker -Arguments @('compose','--file',$composeFile,'cp',(Join-Path $projectRoot 'docker\ensure-postgres-database.sql'),'postgres:/tmp/idcc-ensure-database.sql')
+Invoke-Docker -Arguments @('compose','--file',$composeFile,'exec','-T','postgres','psql','-w','-U','idcc','-d','postgres','-v','ON_ERROR_STOP=1','-f','/tmp/idcc-ensure-database.sql')
+# Switch profiles only after the required database was successfully created or found.
+Initialize-IdccConnectionProfiles $projectRoot -UseInstalledDatabase
 Write-Host 'Building Apache/PHP and starting the app. The first build can take several minutes...'
 Invoke-Docker -Arguments @('compose','--file',$composeFile,'up','--detach','--build','--wait','--wait-timeout','180')
+if($schedulerWasRunning){Invoke-Docker -Arguments @('compose','--file',$composeFile,'--profile','data-exchange','up','--detach','--no-build','data-exchange')}
 Invoke-Docker -Arguments @('compose','--file',$composeFile,'ps')
 Write-Host "Docker environment verified. Open http://127.0.0.1:$Port/DemoBeta/Home/" -ForegroundColor Green
 Write-Host 'Application files persist in this project folder. env is mounted read-only and excluded from the image.'

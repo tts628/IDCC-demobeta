@@ -48,8 +48,9 @@ function Get-IdccConnectionProfiles([string]$Root){
     $database=if($pg['IDCC_DB_NAME']){[string]$pg['IDCC_DB_NAME']}elseif($pg['POSTGRES_DB']){[string]$pg['POSTGRES_DB']}elseif($pg['POSTGRES_PASSWORD']){'idcc'}else{'BatchDyeingCentral'}
     return @{IDCC=@{HOST='postgres';PORT='5432';NAME=$database;UID='idcc';PWD=[string]$pg['POSTGRES_PASSWORD'];DRIVER='pgsql'};DemoIDCC=$demo;SPC=$spc;Legacy=$legacy}
 }
-function Initialize-IdccConnectionProfiles([string]$Root){
+function Initialize-IdccConnectionProfiles([string]$Root,[switch]$UseInstalledDatabase){
     $profile=Get-IdccConnectionProfiles $Root
+    if($UseInstalledDatabase){$profile.IDCC.NAME='BatchDyeingCentral'}
     $envValues=Read-IdccEnvFile (Join-Path $Root '.env')
     $updates=@{IDCC_CONNECTION_LAYOUT='2'}
     if(!$envValues.ContainsKey('IDCC_DEMO_MODE') -or $envValues['IDCC_DEMO_MODE'] -eq ''){$updates.IDCC_DEMO_MODE='true'}
