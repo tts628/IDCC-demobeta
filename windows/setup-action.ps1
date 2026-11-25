@@ -19,7 +19,7 @@ try {
             $raw=& $docker compose --profile data-exchange ps -a --format json data-exchange
             if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}
             $records=@(foreach($line in $raw){if($line.Trim()){ $line | ConvertFrom-Json }})
-            $state=if(!$records.Count){'missing'}elseif(@($records | Where-Object {$_.State -eq 'running'}).Count){'running'}else{'stopped'}
+            $state=if(!$records.Count){'missing'}elseif(@($records | Where-Object {$_.State -eq 'running'}).Count){'running'}elseif(@($records | Where-Object {$_.State -in @('exited','created')}).Count){'stopped'}else{'unready'}
             Write-Output ('IDCC_SYNC_STATUS:'+$state)
             if($records.Count){ & $docker compose --profile data-exchange logs --no-color --tail 100 data-exchange }
         }
