@@ -314,3 +314,7 @@ docker compose down
 | [Docker 詳細說明](docs/DOCKER-SETUP.md) | 容器、掛載、網路與管理 |
 | [共用依賴](common/ASSETS.md) | common 套件與舊版依賴範圍 |
 | [原生 Windows 備用安裝](docs/WINDOWS-NATIVE-SETUP.md) | 刻意不使用 Docker 時的替代方式 |
+
+## DBeaver 連入本機 PostgreSQL
+
+預設開放 `127.0.0.1:15432` 給同台電腦的 DBeaver。Database／Username 均為 `idcc`，密碼使用本機 `.env.postgres` 的 `POSTGRES_PASSWORD`。容器之間仍使用 `postgres:5432`。既有環境更新後須執行 `compose up -d postgres` 套用；詳見 [資料庫設定](docs/DATABASE-SETUP.md)。

@@ -53,7 +53,15 @@ IDCC_DB_UID=idcc
 # IDCC_DB_PWD 由安裝程式同步為既有 POSTGRES_PASSWORD，這裡不示範真實密碼。
 ```
 
-這些是網站容器內的正式連線資訊，請勿在根目錄 `.env` 再放舊的 IDCC_DB_* SQL Server 帳密。DBeaver 在 Windows 主機上連線時使用主機映射的 IP／埠，不能直接把容器名稱 postgres 當成 Windows 主機名稱。是否已開放 DBeaver 連接埠仍取決於自己的 Compose 映射，此次不會新增或刪除映射。
+這些是網站容器內的正式連線資訊，請勿在根目錄 `.env` 再放舊的 IDCC_DB_* SQL Server 帳密。DBeaver 在 Windows 主機上連線時使用主機映射的 IP／埠，不能直接把容器名稱 postgres 當成 Windows 主機名稱。專案預設映射 `127.0.0.1:15432:5432`，同台電腦的 DBeaver 使用 Host `127.0.0.1`、Port `15432`、Database `idcc`、Username `idcc`，密碼填本機 `.env.postgres` 的 `POSTGRES_PASSWORD` 值。網站容器內仍使用 `postgres:5432`。此映射僅接受本機連線。
+
+更新既有環境後，Windows 在專案根目錄執行：
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\windows\docker.ps1 compose up -d postgres
+```
+
+Ubuntu 執行 `docker compose up -d postgres`（需要時加 sudo）。套用會短暫重建資料庫容器，既有資料卷與資料保留，不需 reset。
 
 ## 從舊版更新
 

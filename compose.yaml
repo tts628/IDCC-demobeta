@@ -85,6 +85,8 @@ services:
         max-file: "3"
   postgres:
     image: postgres:17-bookworm
+    ports:
+      - "127.0.0.1:15432:5432"
     env_file:
       - ./.env.postgres
     environment:
